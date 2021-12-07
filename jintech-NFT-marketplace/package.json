@@ -1,0 +1,58 @@
+{
+  "name": "JintechNFT",
+  "version": "0.1.0",
+  "description": "Jintech NFT Marketplace",
+  "author": "devpavan04",
+  "homepage": "https://devpavan04.github.io/jintech-nft-marketplace",
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@openzeppelin/contracts": "^3.4.1",
+    "axios": "^0.24.0",
+    "babel-polyfill": "6.26.0",
+    "babel-preset-env": "1.7.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "babel-preset-stage-3": "6.24.1",
+    "babel-register": "6.26.0",
+    "bootstrap": "4.3.1",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "chai-bignumber": "3.0.0",
+    "dayjs": "^1.10.4",
+    "http-proxy-middleware": "^2.0.1",
+    "ipfs-api": "^18.1.1",
+    "ipfs-http-client": "^54.0.1",
+    "notistack": "^1.0.10",
+    "react": "16.8.4",
+    "react-bootstrap": "^1.6.4",
+    "react-dom": "16.8.4",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "truffle": "^5.4.22",
+    "truffle-flattener": "^1.5.0",
+    "web3": "^1.6.0"
+  },
+  "scripts": {
+    "start": "set PORT=15001 && react-scripts start",
+    "build": "react-scripts build && cp build/index.html build/404.html",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "tr": "truffle"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  }
+}

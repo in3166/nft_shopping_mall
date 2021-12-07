@@ -1,0 +1,28 @@
+
+.form-input-name {
+    font-size: 0.94em;
+    font-weight: 500;
+}
+
+.form-input-name:before {
+    content: '';
+    border-left: 3px solid #888;
+    margin-right: 8px;
+}
+
+.submit-btn-box {
+    text-align: right;
+}
+
+
+/* MEDIA */
+@media screen and (max-width: 767px)  {
+    .form-container .form-input-wrap {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .submit-btn {
+        width: 100%;
+    }   
+}

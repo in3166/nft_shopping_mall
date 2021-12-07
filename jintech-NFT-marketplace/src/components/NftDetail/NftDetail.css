@@ -1,0 +1,171 @@
+.nft-detail-adj {
+    position: relative;
+    overflow: hidden;
+}
+.detail-info-wrapper > div {
+    padding: 1em;
+}
+.detail-adj-box {
+    flex: 0 0 auto;
+    flex-grow: 1;
+}
+
+/* img box */
+.adj-img-wrap {
+	display: inline-block;
+    width: 24em;
+    height: 24em;
+    background-color: #f8f8f8;
+	border: 1px solid #eee;
+	border-radius: 4px;
+}
+.adj-img-wrap .homeimage {
+    width: inherit;
+    height: inherit;
+}
+
+.detail-table-wrap {
+    padding-left: 1.4em;
+}
+
+.detail-table-custom th, .detail-table-custom td {
+    line-height: 1.75em;
+	word-break: break-all;
+	white-space: normal;
+}
+.detail-table-custom td {
+    letter-spacing: 0;
+    padding: 0.45em;
+}
+
+.adj-title-name {
+    margin-bottom: .5em;
+    color: #333;
+    font-weight: 600;
+    font-size: 2em;
+    width: 100%;
+    text-align: center;
+    letter-spacing: -0.2pt;
+}
+
+/* submit */
+.price-etk-wrap {
+    line-height: 3em;
+    height: 3em;
+}
+.price-etk-wrap .form-control {
+    text-align: right;
+}
+.etk-title {
+    flex: 0 0 30%;
+}
+.price-etk-wrap input {
+    margin-left: .25rem;
+    flex: 0 0 35%;
+    line-height: 0;
+}
+
+/* transactions table */
+.detail-action h5 {
+    margin: 3em 0 2em;
+}
+
+.tb-tab-wrap {
+    line-height: 2.8em
+}
+.tb-tab {
+    cursor: pointer;
+    font-weight: 500;
+    width: 120px;
+    text-align: center;
+}
+.active-tb {
+	border-bottom: 3px solid #333;
+}
+.show-tb {
+    display: none;
+}
+
+/* bid history info */
+.bid-history-tb {
+    line-height: 1.4em;
+}
+.bid-history-tb tr:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+.bid-history-tb td {
+    letter-spacing: 0;
+    font-weight: 400;
+}
+.bid-history-tb td:last-child {
+    text-align: right;
+}
+.bid-icon {
+    float: left;
+    margin-right: .75em;
+    width: 2em;
+    height: 2em;
+    background: #ddd;
+    border-radius: 50%;
+}
+.bid-name {
+    font-size: 1em;
+    font-weight: 600;
+}
+.pl-bid {
+    font-size: 0.75em;
+    margin-left: .55em;
+}
+.history-time, .eth-dolor {
+    display: block;
+    font-size: 0.9em;
+    color: #888
+}
+.history-time {
+    margin-left: 2em;
+}
+.eth-price {
+}
+
+
+
+/* MEDIA */
+@media screen and (max-width: 767px)  {
+    .detail-info-wrapper {
+        flex-direction: column;
+    }
+    .detail-adj-box {
+        width: 100%;
+        flex-shrink: 0;
+        flex-grow: 1;    
+    }
+
+    .detail-info-wrapper > div {
+        padding: 0;
+    }
+    .detail-table-wrap {
+        margin-top: 1.4em;
+    }
+    .submit-btn {
+        width: 100%;
+    }   
+
+    /* transactions table */
+    .tb-tab {
+        width: 50%;
+        text-align: center;
+    }
+
+    .price-etk, .price-etk form,
+    .price-etk-wrap input {
+        width: 100%;
+        line-height: 2.4em;
+    }
+    .price-etk-wrap {
+        flex-direction: column;
+        height: auto;
+    }
+    .price-etk-wrap .form-control {
+        margin-bottom: .75em;
+    }
+}

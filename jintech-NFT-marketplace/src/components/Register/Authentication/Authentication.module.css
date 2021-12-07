@@ -1,0 +1,18 @@
+.auth {
+    width: 90%;
+    max-width: 40rem;
+    margin: 2rem auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .link{
+    display: inline-block;
+    color:rgb(49, 49, 49);
+    font-size: large;
+    font-weight: 500;
+    padding: 0.4rem 1.0rem;
+    /* border: 1px rgb(146, 146, 146) solid; */
+    margin: 30px 10px;
+    border-radius: 30px;
+  }

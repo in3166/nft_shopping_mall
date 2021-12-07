@@ -1,0 +1,127 @@
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 Nov14 ?        00:00:12 /sbin/init
+root           2       0  0 Nov14 ?        00:00:00 [kthreadd]
+root           3       2  0 Nov14 ?        00:00:00 [rcu_gp]
+root           4       2  0 Nov14 ?        00:00:00 [rcu_par_gp]
+root           6       2  0 Nov14 ?        00:00:00 [kworker/0:0H-events_highpri]
+root           9       2  0 Nov14 ?        00:00:00 [mm_percpu_wq]
+root          10       2  0 Nov14 ?        00:00:00 [rcu_tasks_rude_]
+root          11       2  0 Nov14 ?        00:00:00 [rcu_tasks_trace]
+root          12       2  0 Nov14 ?        00:00:02 [ksoftirqd/0]
+root          13       2  0 Nov14 ?        00:00:25 [rcu_sched]
+root          14       2  0 Nov14 ?        00:00:03 [migration/0]
+root          15       2  0 Nov14 ?        00:00:00 [idle_inject/0]
+root          16       2  0 Nov14 ?        00:00:00 [cpuhp/0]
+root          17       2  0 Nov14 ?        00:00:00 [cpuhp/1]
+root          18       2  0 Nov14 ?        00:00:00 [idle_inject/1]
+root          19       2  0 Nov14 ?        00:00:02 [migration/1]
+root          20       2  0 Nov14 ?        00:00:03 [ksoftirqd/1]
+root          22       2  0 Nov14 ?        00:00:00 [kworker/1:0H-events_highpri]
+root          23       2  0 Nov14 ?        00:00:00 [kdevtmpfs]
+root          24       2  0 Nov14 ?        00:00:00 [netns]
+root          25       2  0 Nov14 ?        00:00:00 [inet_frag_wq]
+root          26       2  0 Nov14 ?        00:00:00 [kauditd]
+root          27       2  0 Nov14 ?        00:00:00 [khungtaskd]
+root          28       2  0 Nov14 ?        00:00:00 [oom_reaper]
+root          29       2  0 Nov14 ?        00:00:00 [writeback]
+root          30       2  0 Nov14 ?        00:00:23 [kcompactd0]
+root          31       2  0 Nov14 ?        00:00:00 [ksmd]
+root          32       2  0 Nov14 ?        00:00:02 [khugepaged]
+root          78       2  0 Nov14 ?        00:00:00 [kintegrityd]
+root          79       2  0 Nov14 ?        00:00:00 [kblockd]
+root          80       2  0 Nov14 ?        00:00:00 [blkcg_punt_bio]
+root          81       2  0 Nov14 ?        00:00:00 [tpm_dev_wq]
+root          82       2  0 Nov14 ?        00:00:00 [ata_sff]
+root          83       2  0 Nov14 ?        00:00:00 [md]
+root          84       2  0 Nov14 ?        00:00:00 [edac-poller]
+root          85       2  0 Nov14 ?        00:00:00 [devfreq_wq]
+root          86       2  0 Nov14 ?        00:00:00 [watchdogd]
+root          89       2  0 Nov14 ?        00:00:00 [kworker/0:1H-kblockd]
+root          91       2  0 Nov14 ?        00:00:00 [kswapd0]
+root          92       2  0 Nov14 ?        00:00:00 [ecryptfs-kthrea]
+root          94       2  0 Nov14 ?        00:00:00 [kthrotld]
+root          95       2  0 Nov14 ?        00:00:00 [acpi_thermal_pm]
+root          96       2  0 Nov14 ?        00:00:00 [nvme-wq]
+root          97       2  0 Nov14 ?        00:00:00 [nvme-reset-wq]
+root          98       2  0 Nov14 ?        00:00:00 [nvme-delete-wq]
+root         100       2  0 Nov14 ?        00:00:00 [vfio-irqfd-clea]
+root         102       2  0 Nov14 ?        00:00:00 [kworker/1:1H-kblockd]
+root         103       2  0 Nov14 ?        00:00:00 [ipv6_addrconf]
+root         112       2  0 Nov14 ?        00:00:00 [kstrp]
+root         116       2  0 Nov14 ?        00:00:00 [zswap-shrink]
+root         117       2  0 Nov14 ?        00:00:00 [kworker/u5:0]
+root         122       2  0 Nov14 ?        00:00:00 [charger_manager]
+root         123       2  0 Nov14 ?        00:00:02 [jbd2/nvme0n1p1-]
+root         124       2  0 Nov14 ?        00:00:00 [ext4-rsv-conver]
+root         165       1  0 Nov14 ?        00:00:08 /lib/systemd/systemd-journald
+root         194       1  0 Nov14 ?        00:00:00 /lib/systemd/systemd-udevd
+root         216       2  0 Nov14 ?        00:00:00 [ena]
+root         218       2  0 Nov14 ?        00:00:00 [cryptd]
+root         291       2  0 Nov14 ?        00:00:00 [kaluad]
+root         292       2  0 Nov14 ?        00:00:00 [kmpath_rdacd]
+root         293       2  0 Nov14 ?        00:00:00 [kmpathd]
+root         294       2  0 Nov14 ?        00:00:00 [kmpath_handlerd]
+root         295       1  0 Nov14 ?        00:01:06 /sbin/multipathd -d -s
+root         304       2  0 Nov14 ?        00:00:00 [loop0]
+root         312       2  0 Nov14 ?        00:00:00 [loop2]
+root         313       2  0 Nov14 ?        00:00:00 [loop3]
+root         314       2  0 Nov14 ?        00:00:00 [loop4]
+root         315       2  0 Nov14 ?        00:00:00 [loop5]
+root         317       2  0 Nov14 ?        00:00:00 [loop6]
+root         318       2  0 Nov14 ?        00:00:00 [loop7]
+systemd+     353       1  0 Nov14 ?        00:00:00 /lib/systemd/systemd-timesyncd
+systemd+     409       1  0 Nov14 ?        00:00:02 /lib/systemd/systemd-networkd
+systemd+     411       1  0 Nov14 ?        00:00:01 /lib/systemd/systemd-resolved
+root         446       1  0 Nov14 ?        00:00:00 /usr/sbin/acpid
+root         449       1  0 Nov14 ?        00:00:00 /usr/sbin/cron -f
+message+     450       1  0 Nov14 ?        00:00:01 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         459       1  0 Nov14 ?        00:00:17 /usr/sbin/irqbalance --foreground
+root         461       1  0 Nov14 ?        00:00:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         464       1  0 Nov14 ?        00:00:40 /snap/amazon-ssm-agent/4046/amazon-ssm-agent
+root         466       1  0 Nov14 ?        00:00:34 /usr/lib/snapd/snapd
+root         468       1  0 Nov14 ?        00:00:01 /lib/systemd/systemd-logind
+root         475       1  0 Nov14 ?        00:00:00 /usr/lib/udisks2/udisksd
+daemon       476       1  0 Nov14 ?        00:00:00 /usr/sbin/atd -f
+root         484       1  0 Nov14 ttyS0    00:00:00 /sbin/agetty -o -p -- \u --keep-baud 115200,38400,9600 ttyS0 vt220
+root         486       1  0 Nov14 tty1     00:00:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
+root         520       1  0 Nov14 ?        00:00:00 /usr/lib/policykit-1/polkitd --no-debug
+root         581       1  0 Nov14 ?        00:00:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root         637       1  0 Nov14 ?        00:00:04 sshd: /usr/sbin/sshd -D -o AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys %u %f -o AuthorizedKeysCommandUser ec2-instance-connect [listener] 0 of 10-100 startups
+root         779     464  0 Nov14 ?        00:00:25 /snap/amazon-ssm-agent/4046/ssm-agent-worker
+ubuntu       799       1  0 Nov14 ?        00:00:00 /lib/systemd/systemd --user
+ubuntu       800     799  0 Nov14 ?        00:00:00 (sd-pam)
+ubuntu       947       1  0 Nov14 ?        00:00:01 SCREEN -S ganache-cli
+ubuntu       948     947  0 Nov14 pts/1    00:00:00 /bin/bash
+ubuntu       955     948  0 Nov14 pts/1    00:01:45 node /usr/local/bin/ganache-cli -h 0.0.0.0
+ubuntu       973       1  0 Nov14 ?        00:00:00 SCREEN -S simple_login
+ubuntu       974     973  0 Nov14 pts/2    00:00:00 /bin/bash
+ubuntu       989     974  0 Nov14 pts/2    00:00:04 node /usr/local/bin/json-server-auth db.json -H 0.0.0.0 -p 3333
+ubuntu      1093     799  0 Nov14 ?        00:00:00 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+ubuntu      1442       1  0 Nov14 ?        00:01:17 SCREEN -S nft
+ubuntu      1443    1442  0 Nov14 pts/3    00:00:00 /bin/bash
+root       14214       1  0 Nov17 ?        00:00:09 /usr/lib/accountsservice/accounts-daemon
+root       15741       2  0 Nov17 ?        00:00:00 [loop8]
+root       97248       2  0 Nov20 ?        00:00:00 [loop9]
+syslog    104826       1  0 Nov21 ?        00:00:00 /usr/sbin/rsyslogd -n -iNONE
+ubuntu    110832    1443  0 Nov22 pts/3    00:13:30 npm start
+ubuntu    110843  110832  0 Nov22 pts/3    00:00:00 sh -c react-scripts start
+ubuntu    110844  110843  0 Nov22 pts/3    00:00:00 node /home/ubuntu/Projects/jintech-NFT-marketplace/node_modules/.bin/react-scripts start
+ubuntu    110851  110844  0 Nov22 pts/3    00:06:19 /usr/local/bin/node /home/ubuntu/Projects/jintech-NFT-marketplace/node_modules/react-scripts/scripts/start.js
+root      112177     637  0 Nov22 ?        00:00:00 sshd: ubuntu [priv]
+ubuntu    112274  112177  0 Nov22 ?        00:00:00 sshd: ubuntu@pts/6
+ubuntu    112277  112274  0 Nov22 pts/6    00:00:00 -bash
+root      112294  112277  0 Nov22 pts/6    00:00:00 su
+root      112295  112294  0 Nov22 pts/6    00:00:00 bash
+root      112304       2  0 Nov22 ?        00:00:00 bpfilter_umh
+root      112467     637  0 Nov22 ?        00:00:00 sshd: ubuntu [priv]
+ubuntu    112541  112467  0 Nov22 ?        00:00:03 sshd: ubuntu@pts/7
+ubuntu    112542  112541  0 Nov22 pts/7    00:00:01 -bash
+ubuntu    112755  110851  0 Nov22 pts/3    00:00:00 vi /home/ubuntu/Projects/jintech-NFT-marketplace/src/components/App.js
+root      113186       2  0 Nov22 ?        00:00:02 [kworker/1:1-cgroup_destroy]
+root      116019       2  0 Nov22 ?        00:00:02 [kworker/0:0-mm_percpu_wq]
+root      125805       2  0 00:00 ?        00:00:00 [kworker/0:1-events]
+root      125808       2  0 00:00 ?        00:00:00 [kworker/1:2-mm_percpu_wq]
+root      126077       2  0 00:14 ?        00:00:00 [kworker/u4:1-events_power_efficient]
+root      126140       2  0 00:21 ?        00:00:00 [kworker/u4:2-events_unbound]
+root      126275       2  0 00:31 ?        00:00:00 [kworker/u4:0-events_unbound]
+ubuntu    126296  112542  0 00:36 pts/7    00:00:00 ps -eaf

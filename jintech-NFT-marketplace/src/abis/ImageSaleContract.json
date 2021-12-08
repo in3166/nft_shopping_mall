@@ -48,7 +48,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -71,7 +72,8 @@
       "name": "buyImage",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -94,7 +96,8 @@
       "name": "bid",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract ImageContract\",\"name\":\"_imageContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"_buyer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"BoughtNFT\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"bid\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"}],\"name\":\"buyImage\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"imageContract\",\"outputs\":[{\"internalType\":\"contract ImageContract\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/src/contracts/ImageSaleContract.sol\":\"ImageSaleContract\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/src/contracts/ImageContract.sol\":{\"keccak256\":\"0xb1bf3bd444be7dfa055edfcc77d9cf62c66903bb659d1adbffa11579ddd41a16\",\"urls\":[\"bzz-raw://2ef7fc202fb3e2aa4f888355324913377066254a77ab5e5c83b1b0043acf1371\",\"dweb:/ipfs/QmPSoLSBrqwJubcfaY15hJKj5cDisEWhbs3WbGSaJd8NhG\"]},\"project:/src/contracts/ImageSaleContract.sol\":{\"keccak256\":\"0x3ca3bb1db14e52682bbd1e29353b45d419a4a50788841d0802fa23ef89f82eff\",\"urls\":[\"bzz-raw://774fff96e9461e51a4159ba468225fd0a414401a4d32ae62d9840ceb4ceeab85\",\"dweb:/ipfs/QmYwdiNrDXRpCw7LA42MmS9swXqK9Z5iaobwB9BJcnNfmd\"]},\"project:/src/openzeppelin/token/ERC721/ERC721.sol\":{\"keccak256\":\"0x2d9f9af8b84d252e0e7ee716e4cb3ad1b58f3ec6619e4f54f40d4b5e28f75eb7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://43d6abdcb4cd5be9933f526b53f21008e9a7ab75ce134478625cc8ccd3c1a638\",\"dweb:/ipfs/QmZrzWUYmNANRCvHaMGsJQXYnWCe6HvMmvrqaPn1GEcpJ1\"]},\"project:/src/openzeppelin/token/ERC721/IERC721.sol\":{\"keccak256\":\"0xc1c941ad1e580b4623007305921efe2f26fc7320a4edc226234dd707c658a428\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://473e11d739868e0d9f48254ccf84ba63290d6a2321d59a37b74c244a27f9cad7\",\"dweb:/ipfs/QmUGzDmecP936jzgM7SYyGwR1YgBGsveoHHJTbDfB8jbGF\"]},\"project:/src/openzeppelin/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0x96877bb2eb8ca360e949ee1bd77b47a14e92e42f79897c350f088f87a3c231d4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://48593d699a4ef6b5bd2efb20d37320e69303fd27d4b59a2b6b8a8e563e608456\",\"dweb:/ipfs/QmdAPS8uLrzPJEeFZyJVkwTtaL3KB9jo9wJm1UcoJP55wT\"]},\"project:/src/openzeppelin/token/ERC721/extensions/ERC721Full.sol\":{\"keccak256\":\"0x06f0e029d60375719b0b452b9d3038bc3d7f4570690adaab8a93a51de94665d8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8987bcbbd662d3efeb40cf24cc4a4d40bc18664c5d22d86cb70dcd697a7d7ab8\",\"dweb:/ipfs/QmcYsDhzFsvEc7R6a2Q249XnPr921xhX1u4fJYqUtFH1QF\"]},\"project:/src/openzeppelin/token/ERC721/extensions/IERC721Enumerable.sol\":{\"keccak256\":\"0xc34d71f4d8da4f6a2ed33d31b7137eb252b9a7d43b5de4fd835e295081b1cf18\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://47c3b71f7072ba7bb0416301f0d9e2fb0dd285fa7aa6ac5454300dbe1b265a5f\",\"dweb:/ipfs/QmcVhxbViyPPikss27j8ecpxAiTJudiXPNuf3r3vxpFMax\"]},\"project:/src/openzeppelin/token/ERC721/extensions/IERC721Metadata.sol\":{\"keccak256\":\"0x81df0392c02dbb362f3c800ef7c11e20d165655339fc41b7dbc307629a7a121c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1f4f5dedf436705715ea98e66babed67392a7566419f65d5314476344d5310fe\",\"dweb:/ipfs/QmYz1MtWFuvg4hCsFSzLS55EQtKauawJDSLswqDq61aHay\"]},\"project:/src/openzeppelin/utils/Address.sol\":{\"keccak256\":\"0x069b2631bb5b5193a58ccf7a06266c7361bd2c20095667af4402817605627f45\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6a4c96fafff76deda5697c3c5c98cade6e6e1b178254544c106bf360c079ce4e\",\"dweb:/ipfs/QmXmxubE3jnatFgZuN8ay1VV6hZ8WRmhvUjNpeVjki15HX\"]},\"project:/src/openzeppelin/utils/Context.sol\":{\"keccak256\":\"0xf930d2df426bfcfc1f7415be724f04081c96f4fb9ec8d0e3a521c07692dface0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fc2bfdea0d2562c76fb3c4cf70a86c6ba25c5a30e8f8515c95aafdf8383f8395\",\"dweb:/ipfs/QmTbFya18786ckJfLYUoWau9jBTKfmWnWm5XSViWvB7PXN\"]},\"project:/src/openzeppelin/utils/Strings.sol\":{\"keccak256\":\"0x456e9b3a2bfe189b5249857f624f4139e59331db518483b456c4e587a20552e0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1123c9545decc48a011370ebab4bf53dda98524fa21f9498e68851ba8f0ffc0f\",\"dweb:/ipfs/QmUpgMg8EFDnv87ePKUjXxXpJT3qwHRj9VDNSnRxu7T9sy\"]},\"project:/src/openzeppelin/utils/introspection/ERC165.sol\":{\"keccak256\":\"0x5718c5df9bd67ac68a796961df938821bb5dc0cd4c6118d77e9145afb187409b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d10e1d9b26042424789246603906ad06143bf9a928f4e99de8b5e3bdc662f549\",\"dweb:/ipfs/Qmejonoaj5MLekPus229rJQHcC6E9dz2xorjHJR84fMfmn\"]},\"project:/src/openzeppelin/utils/introspection/IERC165.sol\":{\"keccak256\":\"0xa28007762d9da9db878dd421960c8cb9a10471f47ab5c1b3309bfe48e9e79ff4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://796ab6e88af7bf0e78def0f059310c903af6a312b565344e0ff524a0f26e81c6\",\"dweb:/ipfs/QmcsVgLgzWdor3UnAztUkXKNGcysm1MPneWksF72AvnwBx\"]}},\"version\":1}",
@@ -5307,8 +5310,8 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xEc89449B79e8AF19d72A105B4c34Ef52E4358b8B",
-      "transactionHash": "0x56a315324faae75b8a2f0e46c1c5826f6ae3f127e293b8646f261dfde1694948"
+      "address": "0x8F31E450C94C1aF1C0Ff70c9BAdEedf9Aa579D33",
+      "transactionHash": "0xee83b5e648e0c2d66223d5902a568169fa517a44bfcf6f9b91f68fcf4e5e89c3"
     },
     "1635407360966": {
       "events": {},
@@ -5348,7 +5351,8 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T06:34:20.277Z",
+  "updatedAt": "2021-12-08T04:27:11.376Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

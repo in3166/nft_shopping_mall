@@ -58,14 +58,15 @@ class MyTokens extends Component {
         // transferFrom() : _from 주소에서 _to 주소로 _value 만큼의 이더를 전송함.
         // approve() : _spender가 인출할 수 있는 한도를 지정함. (신용카드 한도같은 느낌)
         // allowance() : _owner가 _spender에게 인출을 허락한 토큰의 개수
-        const totalSupply = await contract.methods.totalSupply().call();
-        // console.log(totalSupply)
+        console.log("totalSupply: ");
+        const totalSupply = await contract?.methods?.totalSupply()?.call();
+        console.log("totalSupply: ", totalSupply);
         this.setState({ totalSupply });
 
         // Load NFTs
         for (var i = 1; i <= totalSupply; i++) {
           const id = await contract.methods.images(i - 1).call();
-          console.log('id: ',id)
+          console.log("id: ", id);
           this.setState({
             images: [...this.state.images, id],
           });
@@ -104,10 +105,10 @@ class MyTokens extends Component {
         this.setState({ token_sale_contract });
         // console.log(token_sale_contract)
 
-        if(this.state.token_sale_contract){
+        if (this.state.token_sale_contract) {
           var token_price = await this.state.token_sale_contract.methods
-          .tokenPrice()
-          .call();
+            .tokenPrice()
+            .call();
           console.log("token_price: ", token_price);
           this.setState({
             token_price: web3.utils.fromWei(token_price, "ether"),

@@ -29,16 +29,27 @@
 
 
 ### ignore
-*/node_modules
-*/config
-.env.development
-.env.production
+- */node_modules
+- */config
+- .env.development
+- .env.production
+
+<br><br>
+
+## error
+- git push 시 하위 폴더 에러 (`modified content, untracked content`)
+  - `.git` 폴더 삭제
+  - `git rm -rf --cached`
+
 
 <br>
+
 # Jintech NFT Marketplace
 <i>NFT marketplace DApp where users mint ERC721 implemented Jintech NFTs.</i>
+
 #
 `<img align="right" width="350" src="./image.png"></img>`
+
 ### Features
 - Mint custom ERC721 implemented Jintech Tokens.
 - Sell Jintech tokens on the marketplace.

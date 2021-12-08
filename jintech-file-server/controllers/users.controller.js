@@ -76,7 +76,7 @@ const authentication = async (email, authCode) => {
 exports.verify = async (req, res) => {
   const email = req.query.email;
   const code = req.query.code;
-  
+
   const user = await User.findOne({
     where: { email: email },
     attributes: ["auth"],
@@ -122,7 +122,6 @@ exports.create = async (req, res) => {
           message: "E-Mail이 이미 존재합니다.",
         });
       } else {
-
         const authCode = String(Math.random().toString(36).slice(2)); //? 랜덤 문자열 생성
         const user = {
           email: req.body.email,
@@ -130,7 +129,6 @@ exports.create = async (req, res) => {
           address: req.body.address,
           auth: authCode,
         };
-
 
         // 인증메일 발송
         const error = await authentication(req.body.email, authCode);
@@ -297,6 +295,53 @@ exports.deleteAll = (req, res) => {
 //     });
 // };
 
-
-// 로그인 시 비밀번호 암호화 비교하기 
+// 로그인 시 비밀번호 암호화 비교하기
 // https://javascript.plainenglish.io/password-encryption-using-bcrypt-sequelize-and-nodejs-fb9198634ee7
+exports.login = (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log("로그인: ", email, password);
+  try {
+    User.findOne({
+      where: {
+        email: email, // user email
+      },
+    }).then(async (response) => {
+      console.log(response);
+      if (!response) {
+        return res.status(200).send({ success: false, message: response });
+      } else {
+        if (
+          !response.dataValues.password ||
+          !(await response.validPassword(
+            password,
+            response.dataValues.password
+          ))
+        ) {
+          return res
+            .status(200)
+            .send({ success: false, message: "비밀번호가 틀립니다." });
+        } else {
+          return res
+            .status(200)
+            .send({
+              success: true,
+              user: {
+                address: response.dataValues.address,
+                id: response.dataValues.id,
+              },
+            });
+        }
+      }
+    });
+  } catch (error) {
+    const response = {
+      status: 500,
+      data: {},
+      error: {
+        message: "user match failed",
+      },
+    };
+    return res.status(500).send(response);
+  }
+};

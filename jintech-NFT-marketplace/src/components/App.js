@@ -21,6 +21,7 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import AuthenticationSuccess from "./Register/Authentication/AuthenticationSuccess";
 import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
+import { AuthContextProvider } from "../store/auth-context";
 
 //ipfs 서버 정보
 /*
@@ -31,7 +32,6 @@ const ipfs = ipfsClient({
   protocol: "https",
 });
 */
-
 
 class App extends Component {
   constructor(props) {
@@ -330,76 +330,81 @@ class App extends Component {
       return <Login setToken={this.setToken}/>
     }
     */
+    console.log(
+      "process.env.REACT_APP_ACCOUNT: ",
+      process.env.REACT_APP_ACCOUNT
+    );
     return (
-      <div className="container">
-        {/* metamask 와 연결 되었는가? */}
-        {!this.state.metamaskConnected ? (
-          /* 아니면 연결 창으로 이동 */
-          <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
-        ) : (
-          /*
+      <AuthContextProvider>
+        <div className="container">
+          {/* metamask 와 연결 되었는가? */}
+          {!this.state.metamaskConnected ? (
+            /* 아니면 연결 창으로 이동 */
+            <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
+          ) : (
+            /*
         ) : !this.state.contractDetected ? (
           <Loading />
         ) : this.state.loading ? (
           <Loading />
           */
-          <>
-            <BrowserRouter>
-              {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
-              <Navbar
-                permission={
-                  this.state.account == process.env.REACT_APP_ACCOUNT
-                    ? true
-                    : false
-                }
-              />
-              <Route
-                path="/"
-                exact
-                render={() => (
-                  <AccountDetails
-                    accountAddress={this.state.accountAddress}
-                    accountBalance={this.state.accountBalance}
-                  />
-                )}
-              />
-              <Route
-                path="/mint"
-                render={() => (
-                  <FormAndPreview
-                    mintMyNFT={this.mintMyNFT}
-                    nameIsUsed={this.state.nameIsUsed}
-                    colorIsUsed={this.state.colorIsUsed}
-                    colorsUsed={this.state.colorsUsed}
-                    setMintBtnTimer={this.setMintBtnTimer}
-                  />
-                )}
-              />
-              <Route
-                path="/marketplace"
-                render={() => (
-                  <AllCryptoBoys
-                    accountAddress={this.state.accountAddress}
-                    totalTokensMinted={this.state.totalTokensMinted}
-                    changeTokenPrice={this.changeTokenPrice}
-                    toggleForSale={this.toggleForSale}
-                  />
-                )}
-              />
+            <>
+              <BrowserRouter>
+                {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
+                <Navbar
+                  permission={
+                    this.state.account === process.env.REACT_APP_TEMP_ACCOUNT
+                      ? true
+                      : false
+                  }
+                />
+                <Route
+                  path="/"
+                  exact
+                  render={() => (
+                    <AccountDetails
+                      accountAddress={this.state.accountAddress}
+                      accountBalance={this.state.accountBalance}
+                    />
+                  )}
+                />
+                <Route
+                  path="/mint"
+                  render={() => (
+                    <FormAndPreview
+                      mintMyNFT={this.mintMyNFT}
+                      nameIsUsed={this.state.nameIsUsed}
+                      colorIsUsed={this.state.colorIsUsed}
+                      colorsUsed={this.state.colorsUsed}
+                      setMintBtnTimer={this.setMintBtnTimer}
+                    />
+                  )}
+                />
+                <Route
+                  path="/marketplace"
+                  render={() => (
+                    <AllCryptoBoys
+                      accountAddress={this.state.accountAddress}
+                      totalTokensMinted={this.state.totalTokensMinted}
+                      changeTokenPrice={this.changeTokenPrice}
+                      toggleForSale={this.toggleForSale}
+                    />
+                  )}
+                />
 
-              <Route
-                path="/mytokens"
-                render={() => (
-                  <MyTokens
-                    accountAddress={this.state.accountAddress}
-                    totalTokensMinted={this.state.totalTokensMinted}
-                    changeTokenPrice={this.changeTokenPrice}
-                    toggleForSale={this.toggleForSale}
-                  />
-                )}
-              />
+                <Route
+                  path="/mytokens"
+                  render={() => (
+                    <MyTokens
+                      accountAddress={this.state.accountAddress}
+                      totalTokensMinted={this.state.totalTokensMinted}
+                      changeTokenPrice={this.changeTokenPrice}
+                      toggleForSale={this.toggleForSale}
+                    />
+                  )}
+                />
 
-              {/*  2021-11-21 주석처리 
+                {/*  2021-11-21 주석처리 
               <Route
                 path="/queries"
                 render={() => (
@@ -408,26 +413,28 @@ class App extends Component {
               />
                 */}
 
-              <Route path="/nft-detail/:name" component={NtfDetail} />
-              <Route path="/user-nft-detail/:name" component={UserNFTDetail} />
+                <Route path="/nft-detail/:name" component={NtfDetail} />
+                <Route
+                  path="/user-nft-detail/:name"
+                  component={UserNFTDetail}
+                />
 
-              <Route path="/login">
-                <Login></Login>
-              </Route>
-              <Route path="/register">
-                <Register></Register>
-              </Route>
+                <Route path="/login" component={Login} />
+                <Route path="/register">
+                  <Register></Register>
+                </Route>
 
-              <Route path="/success">
-                <AuthenticationSuccess></AuthenticationSuccess>
-              </Route>
-              <Route path="/fail">
-                <AuthenticationFail></AuthenticationFail>
-              </Route>
-            </BrowserRouter>
-          </>
-        )}
-      </div>
+                <Route path="/success">
+                  <AuthenticationSuccess></AuthenticationSuccess>
+                </Route>
+                <Route path="/fail">
+                  <AuthenticationFail></AuthenticationFail>
+                </Route>
+              </BrowserRouter>
+            </>
+          )}
+        </div>
+      </AuthContextProvider>
     );
   }
 }

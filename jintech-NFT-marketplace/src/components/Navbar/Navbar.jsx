@@ -1,25 +1,27 @@
 import React, { Component } from "react";
 import icon from "./favicon-32x32.png";
 import { Link } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
 
 class Navbar extends Component {
+  static contextType = AuthContext;
   /**
-   * 예외처리 
-   * update 2021-11-15 
+   * 예외처리
+   * update 2021-11-15
    * @returns 사용자 토큰 유무에 따른 결과 리턴
    */
-  getToken(){
-    const tokenString = sessionStorage.getItem('nft_user_token');
+  getToken() {
+    const tokenString = sessionStorage.getItem("nft_user_token");
     const userToken = JSON.parse(tokenString);
     //임시 코드 , 2021-11-15
-    let result = false
+    let result = false;
 
-    try{
-      result = userToken.accessToken !== '' ? true : false;
-    }catch(e){
-      result = false
+    try {
+      result = userToken.accessToken !== "" ? true : false;
+    } catch (e) {
+      result = false;
     }
-    return result
+    return result;
   }
 
   render() {
@@ -49,15 +51,14 @@ class Navbar extends Component {
               </li>
               {
                 //r관리자 계정 이면 보이고 아니면 안보이는 메뉴 (update : 2021-11-15)
-                (this.props.permission && this.getToken()) ?
-                  (
-                    <li className="nav-item">
-                      <Link to="/mint" className="nav-link">
-                        Mint NFT
-                      </Link>
-                    </li>
-                  )
-                  : null
+                //this.props.permission && this.getToken() ? (
+                this.context.isAdmin ? (
+                  <li className="nav-item">
+                    <Link to="/mint" className="nav-link">
+                      Mint NFT
+                    </Link>
+                  </li>
+                ) : null
               }
               <li className="nav-item">
                 <Link to="/marketplace" className="nav-link">
@@ -77,17 +78,26 @@ class Navbar extends Component {
                 </Link>
               </li>
               */}
-              <li className="nav-item">
-                <Link to="/login" className="nav-link">
-                  Admin Login
-                </Link>
-              </li>
+              {!this.context.isLoggedIn && (
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    Admin Login
+                  </Link>
+                </li>
+              )}
+              {this.context.isLoggedIn && (
+                <li className="nav-item">
+                  <Link className="nav-link" onClick={this.context.logout}>
+                    Logout
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
       </nav>
     );
-  };
+  }
 }
 
 export default Navbar;

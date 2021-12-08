@@ -5,7 +5,8 @@ import TokenContract from '../../abis/TokenContract.json';
 import TokenSaleContract from '../../abis/TokenSaleContract.json';
 
 // CSS
-import "./NftDetail.css";
+import styles from "./NftDetail.module.css";
+// import classes from "./NftDetail.module.css";
 import coinImg from '../../public/icons8-coin-32.png'
 
 class NftDetail extends Component {
@@ -232,7 +233,7 @@ class NftDetail extends Component {
         const key = nft_id_path[nft_id_path.length - 1]
 
         return (
-            <div className="contents">
+            <div className={`contents ${styles.contents}`}>
                 <div className="card page-head">
                     <div className="card-body align-items-center d-flex justify-content-center">
                         <h5>NFT Detail</h5>

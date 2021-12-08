@@ -26,8 +26,10 @@ router.delete("/:email", users.delete);
 // Create a new Tutorial
 router.delete("/", users.deleteAll);
 
-// 
+
 //router.post("/authentication", users.authentication);
 router.get("/verify", users.verify);
+
+router.post("/login", users.login)
 
 module.exports = router;

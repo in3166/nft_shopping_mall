@@ -6,7 +6,7 @@ import Crypto from "crypto";
 
 /* 2021-11-19 ipfs 를 위한 취가 */
 import { create } from "ipfs-http-client";
-import classes from "./FormAndPreview.module.css";
+import styles from "./FormAndPreview.module.css";
 /* 2021-11-22 서버에서 ipfs-http-client가 안돌아가서 교체 */
 
 class FormAndPreview extends Component {
@@ -205,7 +205,7 @@ class FormAndPreview extends Component {
                   }}
                 >
                   <div className="col-6">
-                    <span className={classes["form-input-name"]}>Name</span>
+                    <span className={styles["form-input-name"]}>Name</span>
                     <input
                       type="file"
                       required
@@ -217,7 +217,7 @@ class FormAndPreview extends Component {
                     />
                   </div>
                   <div className="col-6">
-                  <span className={classes["form-input-name"]}>Url</span>
+                  <span className={styles["form-input-name"]}>Url</span>
                     <input
                       type="text"
                       required
@@ -239,7 +239,7 @@ class FormAndPreview extends Component {
                   </div>
                   */}
                   <div className="col-6">
-                  <span className={classes["form-input-name"]}>Price</span>
+                  <span className={styles["form-input-name"]}>Price</span>
                     <input
                       type="text"
                       required
@@ -251,7 +251,7 @@ class FormAndPreview extends Component {
                     />
                   </div>
                   <div className="col-12">
-                  <span className={classes["form-input-name"]}>Description</span>
+                  <span className={styles["form-input-name"]}>Description</span>
                     <textarea
                       type="text"
                       required

@@ -9,6 +9,13 @@ module.exports = function (app) {
       changeOrigin: true,
     }),
   );
+  app.use(
+    '/ip',
+    createProxyMiddleware({
+      target: `${CONFIG.IP}:5001`,
+      changeOrigin: true,
+    }),
+  );
 
   // app.use(
   //   '/userManage',

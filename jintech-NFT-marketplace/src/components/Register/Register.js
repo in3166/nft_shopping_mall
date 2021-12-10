@@ -133,6 +133,7 @@ const Register = () => {
             }, 2500);
           })
           .catch((err) => {
+            console.log(err.response.data)
             emailInputRef.current.focus();
             snackbarHandler(true, "error", err.response.data.message);
           });
@@ -169,7 +170,7 @@ const Register = () => {
           severity={severity}
           sx={{ width: "100%" }}
         >
-          {message.split("\n").map((v) => (
+          {message?.split("\n").map((v) => (
             <div key={v}>{v}</div>
           ))}
         </MuiAlert>

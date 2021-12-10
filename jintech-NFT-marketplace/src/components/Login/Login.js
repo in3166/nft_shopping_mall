@@ -42,28 +42,33 @@ class Login extends Component {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      let token = localStorage.getItem('nft_token');
+      console.log('token ', token)
+      token = JSON.parse(token);
 
       const body = {
         email,
         password,
+        token: token?.accessToken
       };
 
       axios
         .post("/api/users/login", body)
         .then((res) => {
-          console.log(res);
+          console.log('res: ',res);
           if (res.data.success) {
             alert("로그인 성공");
             console.log(res.data.user);
             this.context.login(res.data.user);
             history.replace("/");
           } else {
-            alert("로그인 실패");
+            alert(`로그인 실패: ${res.data.message}`);
             console.log(res);
           }
         })
         .catch((err) => {
-          alert(err);
+          console.log(err.response)
+          alert(`로그인 실패: ${err.response.data}\n${err.response.data.message}`);
         });
 
       // token = await this.loginUser({

@@ -19,6 +19,7 @@
   
 - postgre: ` npm install sequelize pg pg-hstore`
 
+- jwt `npm install jsonwebtoken`
 # Jintech NFT Marketplace
 <i>NFT marketplace DApp where users mint ERC721 implemented Jintech NFTs.</i>
 #

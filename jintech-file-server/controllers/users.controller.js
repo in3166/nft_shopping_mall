@@ -1,75 +1,60 @@
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
+
 const { smtpTransport } = require("../config/email.config");
 
-// 중복 확인 먼저해야
+const config = require("../config/auth.config");
+const Role = db.role;
 
+var jwt = require("jsonwebtoken");
+let from = `NFT-Jintech <in@gmail.com>`
+// 중복 확인 먼저해야?
 const authentication = async (email, authCode) => {
-  //const email = req.body.email;
-  // console.log(email);
-  // var condition = { email: { [Op.iLike]: `%${email}%` }, auth: "Y" };
-
-  // User.findAll({ where: condition }).then((data) => {
-  //   console.log("find data", data);
-  //   if (data.length > 0) {
-  //     res.status(200).send({
-  //       duplication: true,
-  //       message: "E-Mail이 이미 존재합니다.",
-  //     });
-  //   }
-
-  // console.log("받은 이메일", email, "코드: ", authCode)
-  // await User.update({ auth: authCode }, { where: { email: email } }).then(
-  //   async (data) => {
-  //     if (data) {
-  //       console.log("authcode 생성 후 저장", data);
-  //     }
-  //   }
-  // ).catch(err=>{
-  //   console.log("auth err update: ", err)
-  //   return err;
-  // });
-
-  // setTimeout(async () => {
-  //   await User.update(
-  //     { auth: "N" },
-  //     { where: { auth: { [Op.iLike]: `%${authCode}%` } } }
-  //   ).then(async (data) => {
-  //     if (data) {
-  //       console.log(data);
-  //     }
-  //   });
-  // }, 60 * 60 * 1000);
-
   const mailOptions = {
-    from: "NFT E-Mail 인증",
+    from: from,
     to: email,
     subject: "[NFT] 이메일 인증관련 메일입니다.",
     text:
       "다음 링크를 클릭하세요.: " +
-      "http://localhost:3000/api/users/verify?email=" +
+      "http://localhost:15001/api/users/verify?email=" +
       email +
       "&code=" +
       authCode,
+    html: `<h1>[NFT] 이메일 인증관련 메일입니다.</h1>
+          <br/>
+          <div><strong>다음의 링크를 클릭해주세요.</strong></div>
+          <br/>
+          <div>
+            <a href="http://localhost:15001/api/users/verify?email=${email}&code=${authCode}">이메일 인증 링크</a>
+          </div>
+          <br/>`,
   };
 
-  smtpTransport.sendMail(mailOptions, (error, responses) => {
-    if (error) {
-      console.log("err? : ", error);
-      return error;
-      // return res.status(400).send({
-      //   message: error,
-      // });
-    }
-    // else {
-    //   console.log("200 send");
-    //   return res.status(200).send();
-    // }
-  });
+  try {
+    const res = await smtpTransport.sendMail(mailOptions);
+    console.log("res2", res);
+    return false;
+  } catch (error) {
+    console.log("catch error: ", error);
+    return error;
+  } finally {
+    smtpTransport.close();
+  }
 
-  smtpTransport.close();
-  //});
+  //   , (error, users) => {
+  //   if (error) {
+  //     console.log("err? : ", error);
+  //     return error;
+  //     // return res.status(400).send({
+  //     //   message: error,
+  //     // });s
+  //   }
+  //   // else {
+  //   //   console.log("200 send");
+  //   //   return res.status(200).send();
+  //   // }
+  // });
 };
 
 // 이메일 인증
@@ -122,6 +107,7 @@ exports.create = async (req, res) => {
           message: "E-Mail이 이미 존재합니다.",
         });
       } else {
+        // 이메일 인증 문자열
         const authCode = String(Math.random().toString(36).slice(2)); //? 랜덤 문자열 생성
         const user = {
           email: req.body.email,
@@ -129,10 +115,9 @@ exports.create = async (req, res) => {
           address: req.body.address,
           auth: authCode,
         };
-
+        console.log("발송");
         // 인증메일 발송
         const error = await authentication(req.body.email, authCode);
-
         if (!error) {
           // 한 시간 뒤 auth 컬럼이 "Y"가 아니면 "N"으로 변경
           setTimeout(async () => {
@@ -141,8 +126,8 @@ exports.create = async (req, res) => {
               attributes: ["auth"],
             });
 
-            const authCode = user.dataValues.auth;
-            if (authCode !== "Y") {
+            const authDBCode = user.dataValues.auth;
+            if (authDBCode !== "Y") {
               await User.update(
                 { auth: "N" },
                 { where: { email: req.body.email } }
@@ -153,21 +138,38 @@ exports.create = async (req, res) => {
               });
             }
           }, 60 * 60 * 1000);
-
           User.create(user)
-            .then((data) => {
-              res.status(200).send(data);
+            .then((resUser) => {
+              if (req.body.roles) {
+                Role.findAll({
+                  where: {
+                    name: {
+                      [Op.or]: req.body.roles,
+                    },
+                  },
+                }).then((roles) => {
+                  resUser.setRoles(roles).then(() => {
+                    res.send({ message: "User was registered successfully!" });
+                  });
+                });
+              } else {
+                // user role = 1
+                resUser.setRoles([1]).then(() => {
+                  res.send({ message: "User was registered successfully!" });
+                });
+              }
             })
             .catch((err) => {
               res.status(500).send({
                 error: err.message,
-                message: "사용자 생성 오류",
+                message: err.message,
               });
             });
         } else {
+          console.log("error send2", error);
           res.status(500).send({
             error: error,
-            message: "인증 메일 발송 오류",
+            message: "인증 메일 발송 오류\n" + error,
           });
         }
       }
@@ -306,42 +308,59 @@ exports.login = (req, res) => {
       where: {
         email: email, // user email
       },
-    }).then(async (response) => {
-      console.log(response);
-      if (!response) {
-        return res.status(200).send({ success: false, message: response });
+    }).then(async (user) => {
+      console.log(user);
+      if (!user) {
+        return res
+          .status(200)
+          .send({ success: false, message: "User Not found." });
       } else {
         if (
-          !response.dataValues.password ||
-          !(await response.validPassword(
-            password,
-            response.dataValues.password
-          ))
+          !user.dataValues.password ||
+          !(await user.validPassword(password, user.dataValues.password))
         ) {
           return res
             .status(200)
             .send({ success: false, message: "비밀번호가 틀립니다." });
         } else {
-          return res
-            .status(200)
-            .send({
-              success: true,
-              user: {
-                address: response.dataValues.address,
-                id: response.dataValues.id,
-              },
+          if (user.dataValues.auth === "Y") {
+            var token = jwt.sign({ userEmail: user.email }, config.secret, {
+              expiresIn: 86400, // 24 hours
             });
+
+            var authorities = [];
+            user.getRoles().then((roles) => {
+              for (let i = 0; i < roles.length; i++) {
+                authorities.push("ROLE_" + roles[i].name.toUpperCase());
+              }
+
+              return res.status(200).send({
+                success: true,
+                user: {
+                  email: user.dataValues.email,
+                  address: user.dataValues.address,
+                  id: user.dataValues.id,
+                  roles: authorities,
+                  accessToken: token,
+                },
+              });
+            });
+          }else{
+            return res
+            .status(200)
+            .send({ success: false, message: "이메일 인증을 완료해주세요." });
+          }
         }
       }
     });
   } catch (error) {
-    const response = {
+    const user = {
       status: 500,
       data: {},
       error: {
         message: "user match failed",
       },
     };
-    return res.status(500).send(response);
+    return res.status(500).send(user);
   }
 };

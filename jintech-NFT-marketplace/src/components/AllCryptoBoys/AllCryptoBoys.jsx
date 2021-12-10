@@ -32,7 +32,7 @@ class AllCryptoBoys extends Component {
     const accounts = await web3.eth.getAccounts();
     //super 계정의 정보를 집어 넣어야 한다.
     //this.setState({ account: account[0] })
-    this.setState({ account: process.env.REACT_APP_ACCOUNT });
+    this.setState({ account: process.env.REACT_APP_TEMP_ACCOUNT });
     console.log(
       "process.env.REACT_APP_ACCOUNT: ",
       process.env.REACT_APP_ACCOUNT
@@ -53,10 +53,11 @@ class AllCryptoBoys extends Component {
       console.log("accout[0]: ", accounts);
       console.log("networkId: ", networkId);
       console.log("networkData: ", networkData);
+
       // Load NFTs
       for (var i = 1; i <= totalSupply; i++) {
         const id = await contract.methods.images(i - 1).call();
-        // console.log(id)
+
         this.setState({
           images: [...this.state.images, id],
         });
@@ -64,7 +65,7 @@ class AllCryptoBoys extends Component {
       // Load Owner
       for (i = 1; i <= totalSupply; i++) {
         const owner = await contract.methods.ownerOf(i - 1).call();
-        // console.log(owner)
+        //console.log(owner)
         this.setState({
           owners: [...this.state.owners, owner],
         });
@@ -72,7 +73,7 @@ class AllCryptoBoys extends Component {
       // Load NFTs Data
       for (i = 1; i <= totalSupply; i++) {
         const metadata = await contract.methods.imageData(i - 1).call();
-        // console.log(metadata)
+        //console.log(metadata)
         this.setState({
           imageData_name: [...this.state.imageData_name, metadata.name],
           imageData_price: [...this.state.imageData_price, metadata.price],
@@ -142,8 +143,13 @@ class AllCryptoBoys extends Component {
         </div>
         <div className="d-flex flex-wrap mb-2">
           {/* 이미지 들을 가져와서 화면에 출력 */}
+          {console.log("images: ", this.state.images)}
           {this.state.images.map((id, key) => {
-            return this.state.owners[key] === this.state.account ? (
+            // console.log("1: ", this.state.owners[key])
+            // console.log(this.state.account)
+            // console.log(this.state.imageData_url[key])
+            //return this.state.owners[key] === this.state.account ? (
+            return this.state.owners[key] !== undefined ? (
               <div key={key} className="col-3 card bg-light p-0 m-3">
                 <Link
                   to={{

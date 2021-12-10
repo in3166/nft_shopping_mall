@@ -243,7 +243,7 @@ class NftDetail extends Component {
                     <div className="detail-info-wrapper d-flex justify-content-around"> {/* d-flex  */}
                         <div className="flex-wrap detail-adj-box">
                             <div className="adj-img-wrap"> {/* max-300 */}
-                                <img alt="main" className="homeimage shadow-lg rounded" src={localStorage.getItem(this.state.imageData_name[key])} />
+                                <img alt="main" className="homeimage shadow-lg rounded" src={this.state.imageData_url[key]} width="100%"/>
                             </div>
                         </div>
 
@@ -285,9 +285,9 @@ class NftDetail extends Component {
 
                             <div className="flex-wrap mt-4 price-etk">
                                 {
-                                    ((this.state.owners[key] != null) && (this.state.owners[key] === process.env.REACT_APP_ACCOUNT) ) ?
+                                    ((this.state.owners[key] != null) && (this.state.owners[key] === process.env.REACT_APP_TEMP_ACCOUNT) ) ?
                                     (
-                                    (!this.state.approved[key] && (process.env.REACT_APP_ACCOUNT === this.state.account))  ?
+                                    (!this.state.approved[key] && (process.env.REACT_APP_TEMP_ACCOUNT === this.state.account))  ?
                                         (
                                             <form onSubmit={(event) => {
                                                 event.preventDefault()
@@ -339,7 +339,7 @@ class NftDetail extends Component {
 
                                 <div className="mx-2 submit-btn-box">
                                     {
-                                        (this.state.approved[key] && (process.env.REACT_APP_ACCOUNT !== this.state.account)) ?
+                                        (this.state.approved[key] && (process.env.REACT_APP_TEMP_ACCOUNT !== this.state.account)) ?
                                             (
                                                 <form onSubmit={(event) => {
                                                     event.preventDefault()

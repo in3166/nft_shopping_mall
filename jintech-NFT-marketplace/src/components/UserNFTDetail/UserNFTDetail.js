@@ -362,7 +362,7 @@ class UserNFTDetail extends Component {
 
                             <div className="d-flex justify-content-center align-items-center my-1">
                                 {
-                                    (!this.state.approved[key] && (process.env.REACT_APP_ACCOUNT !== this.state.account)) ?
+                                    (!this.state.approved[key] && (process.env.REACT_APP_TEMP_ACCOUNT !== this.state.account)) ?
                                         (
                                             <div className="text-danger">{"This NFT is not Approved by Owner"}</div>
                                         )

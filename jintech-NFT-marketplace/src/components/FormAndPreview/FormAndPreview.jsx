@@ -112,9 +112,14 @@ class FormAndPreview extends Component {
    */
   async mintImage() {
     let file = "";
-    var client = create("http://jte.iptime.org:5001/api/v0");
+    //var client = create("http://jtsol.iptime.org:5001/api/v0");
+    var client = create("https://ipfs.infura.io:5001/api/v0");
+    //var client = create("http://127.0.0.1:5001/");
+    console.log('client: ',client)
     const { cid } = await client.add(this.state.new_image);
-    const urlStr = `http://jte.iptime.org:8080/ipfs/${cid}`;
+    console.log('cid: ',cid)
+    const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+    // const urlStr = `http://localhost:8082/ipfs/${cid}`;
     this.setState({
       new_url: urlStr,
     });
@@ -138,6 +143,8 @@ class FormAndPreview extends Component {
         )
         .send({ from: this.state.account })
         .once("receipt", (receipt) => {
+
+          console.log("nft receipt: ", receipt);
           console.log("nft created");
         });
     });

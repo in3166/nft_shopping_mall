@@ -1,18 +1,31 @@
 # 추가사항
 
 - `<meta name="viewport" content="initial-scale=1, width=device-width" />`
+- react version 17.0.2로 업그레이드
+  - `npm install react@17.0.2 react-dom@17.0.2`
 
+- material ui 5.3 추가 
+  - `npm install @mui/material @emotion/react @emotion/styled`
+
+- table ui 추가
+  - `npm install @mui/x-data-grid`
+
+```
+xxx버전 업그레이드함 xxx
 - material ui 4.7ver 추가 (notistack)
-
   - `npm install @material-ui/core `
   - `npm install @material-ui/icons`
   - `npm install @material-ui/lab`
   - `npm install @mui/icons-material` (x)
+- table ui 추가
+  - `@material-ui/x-grid@v4.0.0-alpha.20`
+```
 
+  
 - http-proxy-middleware 설치, 추가 setup proxy.js / ipconfig
 - db 추가
 - axios 설치
-
+ @material-ui/core@4.12.3 @material-ui/icons@4.11.2 @material-ui/lab@4.0.0-alpha.60 @material-ui/x-grid@4.0.0-alpha.20
 - if(this.state.token_sale_contract){} 추가 in MyTokens.jsx, AllCry...
   // - mytoken.jsx, allcrt..에 local 메서드 생성자에 추가 (에러 때문)
 

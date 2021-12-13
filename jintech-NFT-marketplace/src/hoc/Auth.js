@@ -41,6 +41,7 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
       }
     }, [history]);
 
+
     return <SpecificComponent {...props} />;
   };
   return AuthCheck;

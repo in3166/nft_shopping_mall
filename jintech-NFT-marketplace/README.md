@@ -7,6 +7,8 @@
   - `npm install @material-ui/lab`
   - `npm install @mui/icons-material` (x)
 
+- table ui 추가
+  - `@material-ui/x-grid@v4.0.0-alpha.20`
 - http-proxy-middleware 설치, 추가 setup proxy.js / ipconfig
 - db 추가
 - axios 설치

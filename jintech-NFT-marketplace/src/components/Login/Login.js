@@ -4,7 +4,7 @@ import "./Login.css";
 //session 을 위한 추가 당장은 필요 없는 듯
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import Card from "../UI/Card/Card";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";

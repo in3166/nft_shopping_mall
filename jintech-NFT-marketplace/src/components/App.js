@@ -23,6 +23,7 @@ import AuthenticationSuccess from "./Register/Authentication/AuthenticationSucce
 import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
 import { AuthContextProvider } from "../store/auth-context";
 import Auth from "../hoc/Auth";
+import UserList from "./UserList/UserList";
 
 //ipfs 서버 정보
 /*
@@ -331,10 +332,10 @@ class App extends Component {
       return <Login setToken={this.setToken}/>
     }
     */
-    console.log(
-      "process.env.REACT_APP_ACCOUNT: ",
-      process.env.REACT_APP_ACCOUNT
-    );
+    // console.log(
+    //   "process.env.REACT_APP_ACCOUNT: ",
+    //   process.env.REACT_APP_ACCOUNT
+    // );
     return (
       <AuthContextProvider>
         <div className="container">
@@ -420,6 +421,7 @@ class App extends Component {
                   component={UserNFTDetail}
                 />
 
+                <Route path="/userlist" component={Auth(UserList, true, true)} />
                 <Route path="/login" component={Auth(Login, false)} />
                 <Route path="/register">
                   <Register></Register>

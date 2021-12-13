@@ -78,6 +78,13 @@ class Navbar extends Component {
                 </Link>
               </li>
               */}
+                 {this.context.isAdmin && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/userlist">
+                    Users
+                  </Link>
+                </li>
+              )}
               {!this.context.isLoggedIn && (
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
@@ -92,6 +99,7 @@ class Navbar extends Component {
                   </Link>
                 </li>
               )}
+
             </ul>
           </div>
         </div>

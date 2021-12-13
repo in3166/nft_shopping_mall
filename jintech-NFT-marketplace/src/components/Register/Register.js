@@ -5,11 +5,10 @@ import Input from "../UI/Input/Input";
 import Button from "../UI/Button/Button";
 import axios from "axios";
 
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import { Alert } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import useInput from "../../hooks/useInputreduce";
-
 
 const passwordValidator = (value) => value.trim().length > 5;
 const regEmail =
@@ -26,9 +25,9 @@ const Register = () => {
     valueChangeHandler: emailChangeHandler,
     valueBlurHandler: emailBlurHandler,
     reset: resetEmail,
-    inputRef: emailInputRef
+    inputRef: emailInputRef,
   } = useInput(emailValidator);
-  
+
   const {
     value: enteredFirstPassword,
     valueIsValid: firstPasswordIsValid,
@@ -36,7 +35,7 @@ const Register = () => {
     valueChangeHandler: firstPasswordChangeHandler,
     valueBlurHandler: firstPasswordBlurHandler,
     reset: resetFirstPassword,
-    inputRef: firstPasswordInputRef
+    inputRef: firstPasswordInputRef,
   } = useInput(passwordValidator);
 
   const {
@@ -133,7 +132,7 @@ const Register = () => {
             }, 2500);
           })
           .catch((err) => {
-            console.log(err.response.data)
+            console.log(err.response.data);
             emailInputRef.current.focus();
             snackbarHandler(true, "error", err.response.data.message);
           });
@@ -163,7 +162,7 @@ const Register = () => {
         anchorOrigin={{ vertical, horizontal }}
         onClose={snackbarHandleClose}
       >
-        <MuiAlert
+        <Alert
           elevation={6}
           variant="filled"
           onClose={snackbarHandleClose}
@@ -173,7 +172,7 @@ const Register = () => {
           {message?.split("\n").map((v) => (
             <div key={v}>{v}</div>
           ))}
-        </MuiAlert>
+        </Alert>
       </Snackbar>
 
       <form onSubmit={submitHandler}>
@@ -188,7 +187,7 @@ const Register = () => {
           ref={emailInputRef}
           message="이메일 형식이 아닙니다."
         />
-     
+
         <Input
           ref={firstPasswordInputRef}
           id="password"

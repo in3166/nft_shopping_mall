@@ -8,7 +8,7 @@ const config = require("../config/auth.config");
 const Role = db.role;
 
 var jwt = require("jsonwebtoken");
-let from = `NFT-Jintech <in@gmail.com>`
+let from = `NFT-Jintech <in@gmail.com>`;
 // 중복 확인 먼저해야?
 const authentication = async (email, authCode) => {
   const mailOptions = {
@@ -183,10 +183,9 @@ exports.create = async (req, res) => {
 
 // Retrieve all User from the database.
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
 
-  User.findAll({ where: condition })
+  User.findAll()
     .then((data) => {
       res.send(data);
     })
@@ -345,10 +344,10 @@ exports.login = (req, res) => {
                 },
               });
             });
-          }else{
+          } else {
             return res
-            .status(200)
-            .send({ success: false, message: "이메일 인증을 완료해주세요." });
+              .status(200)
+              .send({ success: false, message: "이메일 인증을 완료해주세요." });
           }
         }
       }
@@ -367,11 +366,11 @@ exports.login = (req, res) => {
 
 exports.auth = (req, res) => {
   // 페이지 이동 시 마다 인증된 사람인지 토큰 인증된 사람이면 사용자 정보를 다시 넣어줌
-  console.log('control ', req.body)
+  console.log("control ", req.user);
   res.status(200).json({
     //isAdmin: req.user.role === 0 ? false : true,
-    isAdmin: req.user.auth === 'Y' ? true : false,
+    isAdmin: req.user.role === "admin" ? true : false,
     isLoggedIn: true,
     email: req.user.email,
   });
-}
+};

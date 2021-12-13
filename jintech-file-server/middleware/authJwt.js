@@ -3,23 +3,32 @@ const config = require("../config/auth.config.js");
 const db = require("../models");
 const User = db.users;
 
-verifyToken = (req, res, next) => {
+verifyToken =  (req, res, next) => {
   let token = req.body.token;
-  console.log('ver token', token)
+  console.log("ver token", token);
   if (!token) {
     return res.status(403).send({
       message: "No token provided!",
     });
   }
 
-  jwt.verify(token, config.secret, (err, decoded) => {
+  jwt.verify(token, config.secret, async(err, decoded) => {
     if (err) {
       return res.status(401).send({
         message: "Unauthorized!",
       });
     }
     req.body.userEmail = decoded.userEmail;
-    console.log('req body: ', req.body)
+
+    await User.findOne({ where: { email: decoded.userEmail } }).then((user) => {
+      console.log("user: ", user.dataValues);
+      req.user = user.dataValues;
+    });
+
+    req.token = token;
+    // req.user = user
+    //console.log("decoded: ", decoded);
+    //console.log("req body: ", req.body);
     next();
   });
 };

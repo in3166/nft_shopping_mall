@@ -12,6 +12,9 @@ const { authJwt } = require("../middleware");
 // Create 
 router.post("/", verifySignUp.checkRolesExisted, users.create);
 
+// auth 
+router.post("/auth", authJwt.verifyToken, users.auth);
+
 // Retrieve all users
 router.get("/", users.findAll);
 
@@ -31,6 +34,6 @@ router.delete("/", users.deleteAll);
 router.get("/verify", users.verify);
 
 //router.post("/login", authJwt.isModerator, users.login);
-router.post("/login", [authJwt.verifyToken],  users.login);
+router.post("/login", users.login);
 
 module.exports = router;

@@ -47,9 +47,9 @@ class MyTokens extends Component {
         const abi = ImageContract.abi;
         const address = networkData.address;
         const contract = new web3.eth.Contract(abi, address);
-        console.log("abi: ", abi);
-        console.log("address: ", address);
-        console.log("contract: ", contract);
+     //   console.log("abi: ", abi);
+      //  console.log("address: ", address);
+      //  console.log("contract: ", contract);
         // console.log(contract)
         this.setState({ contract });
         // totalSupply() : 발행된 총 토큰의 개수를 리턴함.
@@ -58,15 +58,15 @@ class MyTokens extends Component {
         // transferFrom() : _from 주소에서 _to 주소로 _value 만큼의 이더를 전송함.
         // approve() : _spender가 인출할 수 있는 한도를 지정함. (신용카드 한도같은 느낌)
         // allowance() : _owner가 _spender에게 인출을 허락한 토큰의 개수
-        console.log("totalSupply: ");
+      //  console.log("totalSupply: ");
         const totalSupply = await contract?.methods?.totalSupply()?.call();
-        console.log("totalSupply: ", totalSupply);
+       // console.log("totalSupply: ", totalSupply);
         this.setState({ totalSupply });
 
         // Load NFTs
         for (var i = 1; i <= totalSupply; i++) {
           const id = await contract.methods.images(i - 1).call();
-          console.log("id: ", id);
+       //   console.log("id: ", id);
           this.setState({
             images: [...this.state.images, id],
           });
@@ -75,7 +75,7 @@ class MyTokens extends Component {
         for (i = 1; i <= totalSupply; i++) {
           const owner = await contract.methods.ownerOf(i - 1).call();
           // console.log(owner)
-          console.log("owner: ", owner);
+        //  console.log("owner: ", owner);
           this.setState({
             owners: [...this.state.owners, owner],
           });
@@ -83,7 +83,7 @@ class MyTokens extends Component {
         // Load NFTs Data
         for (i = 1; i <= totalSupply; i++) {
           const metadata = await contract.methods.imageData(i - 1).call();
-          console.log("metadata: ", metadata);
+         // console.log("metadata: ", metadata);
           // console.log(metadata)
           this.setState({
             imageData_name: [...this.state.imageData_name, metadata.name],
@@ -97,7 +97,7 @@ class MyTokens extends Component {
       }
 
       const sale_networkData = TokenSaleContract.networks[networkId];
-      console.log("metadata: ", sale_networkData);
+     // console.log("metadata: ", sale_networkData);
       if (sale_networkData) {
         const abi = TokenSaleContract.abi;
         const address = sale_networkData.address;
@@ -109,7 +109,7 @@ class MyTokens extends Component {
           var token_price = await this.state.token_sale_contract.methods
             .tokenPrice()
             .call();
-          console.log("token_price: ", token_price);
+      //    console.log("token_price: ", token_price);
           this.setState({
             token_price: web3.utils.fromWei(token_price, "ether"),
           });

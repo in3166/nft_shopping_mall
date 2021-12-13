@@ -22,6 +22,7 @@ import Register from "./Register/Register";
 import AuthenticationSuccess from "./Register/Authentication/AuthenticationSuccess";
 import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
 import { AuthContextProvider } from "../store/auth-context";
+import Auth from "../hoc/Auth";
 
 //ipfs 서버 정보
 /*
@@ -172,7 +173,7 @@ class App extends Component {
   connectToMetamask = async () => {
     await window.ethereum.enable();
     this.setState({ metamaskConnected: true });
-    window.location.reload();
+    window.location.href = "/";
   };
 
   setMetaData = async () => {
@@ -394,14 +395,14 @@ class App extends Component {
 
                 <Route
                   path="/mytokens"
-                  render={() => (
+                  component={Auth(() => (
                     <MyTokens
                       accountAddress={this.state.accountAddress}
                       totalTokensMinted={this.state.totalTokensMinted}
                       changeTokenPrice={this.changeTokenPrice}
                       toggleForSale={this.toggleForSale}
                     />
-                  )}
+                  ))}
                 />
 
                 {/*  2021-11-21 주석처리 
@@ -419,7 +420,7 @@ class App extends Component {
                   component={UserNFTDetail}
                 />
 
-                <Route path="/login" component={Login} />
+                <Route path="/login" component={Auth(Login, false)} />
                 <Route path="/register">
                   <Register></Register>
                 </Route>

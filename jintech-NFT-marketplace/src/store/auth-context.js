@@ -23,7 +23,7 @@ const retrieveStoredToken = () => {
   const storedToken = localStorage.getItem("nft_token");
   const storedExipirationDate = localStorage.getItem("expirationTime");
   const remainingTime = calculateRemainingTime(storedExipirationDate);
-  console.log("remainingTime: ", remainingTime);
+
   if (remainingTime <= 3600) {
     localStorage.removeItem("nft_token");
     localStorage.removeItem("expirationTime");
@@ -59,7 +59,7 @@ export const AuthContextProvider = (props) => {
 
   const loginHandler = (
     token,
-    expirationTime = new Date(new Date().getTime() + 10 * 30 * 1000)
+    expirationTime = new Date(new Date().getTime() + 10 * 30 * 10000) //30분
   ) => {
     setToken(JSON.stringify(token));
     localStorage.setItem("nft_token", JSON.stringify(token));

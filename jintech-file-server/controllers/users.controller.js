@@ -364,3 +364,14 @@ exports.login = (req, res) => {
     return res.status(500).send(user);
   }
 };
+
+exports.auth = (req, res) => {
+  // 페이지 이동 시 마다 인증된 사람인지 토큰 인증된 사람이면 사용자 정보를 다시 넣어줌
+  console.log('control ', req.body)
+  res.status(200).json({
+    //isAdmin: req.user.role === 0 ? false : true,
+    isAdmin: req.user.auth === 'Y' ? true : false,
+    isLoggedIn: true,
+    email: req.user.email,
+  });
+}

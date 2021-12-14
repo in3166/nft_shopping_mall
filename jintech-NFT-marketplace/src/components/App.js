@@ -24,6 +24,7 @@ import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
 import AuthContext, { AuthContextProvider } from "../store/auth-context";
 import Auth from "../hoc/Auth";
 import UserList from "./UserList/UserList";
+import Profile from "./Profile/Profile";
 
 //ipfs 서버 정보
 /*
@@ -428,6 +429,7 @@ class App extends Component {
                   component={Auth(UserList, true, true)}
                 />
                 <Route path="/login" component={Auth(Login, false)} />
+                <Route path="/profile" component={Auth(Profile, true)} />
                 <Route path="/register">
                   <Register></Register>
                 </Route>

@@ -44,11 +44,11 @@ class Navbar extends Component {
               style={{ fontSize: "0.8rem", letterSpacing: "0.2rem" }}
               className="navbar-nav ml-auto"
             >
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/" className="nav-link">
                   Home
                 </Link>
-              </li>
+              </li> */}
               {
                 //r관리자 계정 이면 보이고 아니면 안보이는 메뉴 (update : 2021-11-15)
                 //this.props.permission && this.getToken() ? (
@@ -78,10 +78,17 @@ class Navbar extends Component {
                 </Link>
               </li>
               */}
-                 {this.context.isAdmin && (
+              {this.context.isAdmin && (
                 <li className="nav-item">
                   <Link className="nav-link" to="/userlist">
                     Users
+                  </Link>
+                </li>
+              )}
+              {this.context.isLoggedIn && (
+                <li className="nav-item">
+                  <Link to="/profile" className="nav-link">
+                    Profile
                   </Link>
                 </li>
               )}
@@ -99,7 +106,6 @@ class Navbar extends Component {
                   </Link>
                 </li>
               )}
-
             </ul>
           </div>
         </div>

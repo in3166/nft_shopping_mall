@@ -133,10 +133,11 @@ class MyTokens extends Component {
       if (this.context.isLoggedIn && this.context.isLoggedIn) {
         alert("지갑 주소가 맞지 않습니다.");
         history.replace("/");
-      } else if (!this.context.isLoggedIn) {
-        alert("로그인 하세요.");
-        history.replace("/login");
-      }
+      } 
+      // else if (!this.context.isLoggedIn) {
+      //   alert("로그인 하세요.");
+      //   history.replace("/login");
+      // }
     }
     await this?.loadBlockchainData();
   }

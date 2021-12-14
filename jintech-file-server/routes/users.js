@@ -19,7 +19,7 @@ router.post("/auth", authJwt.verifyToken, users.auth);
 router.post("/allUsers", authJwt.isAdmin, users.findAll);
 
 // Retrieve a single user with id
-router.get("/email/:email", users.findOne);
+router.get("/user/:email", users.findOne);
 
 // Update a user with id
 router.put("/:email", users.update);

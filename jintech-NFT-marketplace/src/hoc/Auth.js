@@ -38,9 +38,11 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
             alert(err);
             history.push("/login");
           });
+      } else if(!token?.accessToken && history.location.pathname !== '/login'){
+        alert("로그인 하세요.");
+        history.push("/login");
       }
     }, [history]);
-
 
     return <SpecificComponent {...props} />;
   };

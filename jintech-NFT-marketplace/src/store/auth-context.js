@@ -7,6 +7,7 @@ const AuthContext = React.createContext({
   logout: () => {},
   isAdmim: false,
   address: "",
+  email: "",
 });
 
 let logoutTimer;
@@ -48,13 +49,12 @@ export const AuthContextProvider = (props) => {
   // const isAdmin = Token
   //   ? JSON.parse(Token).address === process.env.REACT_APP_TEMP_ACCOUNT
   //   : false;
-  const isAdmin = Token
-    ? JSON.parse(Token).roles[0] === "ROLE_ADMIN"
-    : false;
-  console.log("isAdmin ", isAdmin);
+  const isAdmin = Token ? JSON.parse(Token).roles[0] === "ROLE_ADMIN" : false;
 
   const address = Token ? JSON.parse(Token).address : "";
-  console.log(address)
+
+  const email = Token ? JSON.parse(Token).email : "";
+
   const logoutHandler = useCallback(() => {
     setToken(null);
     localStorage.removeItem("nft_token");
@@ -87,6 +87,7 @@ export const AuthContextProvider = (props) => {
     isLoggedIn: userIsLoggedIn,
     isAdmin,
     address,
+    email,
     login: loginHandler,
     logout: logoutHandler,
   };

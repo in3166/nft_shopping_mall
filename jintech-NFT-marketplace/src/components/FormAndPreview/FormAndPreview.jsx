@@ -115,15 +115,20 @@ class FormAndPreview extends Component {
     //var client = create("http://jtsol.iptime.org:5001/api/v0");
     var client = create("https://ipfs.infura.io:5001/api/v0");
     //var client = create("http://127.0.0.1:5001/");
-    console.log('client: ',client)
+
+    console.log("client: ", client);
     const { cid } = await client.add(this.state.new_image);
-    console.log('cid: ',cid)
-    const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
-    // const urlStr = `http://localhost:8082/ipfs/${cid}`;
+    console.log("cid: ", cid);
+
+    //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+    const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+    //const urlStr = `http://localhost:8082/ipfs/${cid}`;
     this.setState({
       new_url: urlStr,
     });
+
     console.log("url = ", this.state.new_url);
+
     this.getBase64(this.state.new_image, (result) => {
       file = result;
       //파일의 고유 정보와 구분을 위해 해시를 추가 함 기존은 url 로 구분 되어 블록체인에 등록되지 않는 경우 발생
@@ -143,9 +148,8 @@ class FormAndPreview extends Component {
         )
         .send({ from: this.state.account })
         .once("receipt", (receipt) => {
-
           console.log("nft receipt: ", receipt);
-          console.log("nft created");
+          alert("token is created");
         });
     });
   }
@@ -224,7 +228,7 @@ class FormAndPreview extends Component {
                     />
                   </div>
                   <div className="col-6">
-                  <span className={styles["form-input-name"]}>Url</span>
+                    <span className={styles["form-input-name"]}>Url</span>
                     <input
                       type="text"
                       required
@@ -246,7 +250,7 @@ class FormAndPreview extends Component {
                   </div>
                   */}
                   <div className="col-6">
-                  <span className={styles["form-input-name"]}>Price</span>
+                    <span className={styles["form-input-name"]}>Price</span>
                     <input
                       type="text"
                       required
@@ -258,7 +262,9 @@ class FormAndPreview extends Component {
                     />
                   </div>
                   <div className="col-12">
-                  <span className={styles["form-input-name"]}>Description</span>
+                    <span className={styles["form-input-name"]}>
+                      Description
+                    </span>
                     <textarea
                       type="text"
                       required

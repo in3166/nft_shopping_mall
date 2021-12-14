@@ -6,7 +6,7 @@ import Button from "../UI/Button/Button";
 import axios from "axios";
 
 import Snackbar from "@mui/material/Snackbar";
-import { Alert } from "@mui/material";
+import { Alert, CircularProgress, LinearProgress, Stack } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import useInput from "../../hooks/useInputreduce";
 
@@ -49,7 +49,7 @@ const Register = () => {
   } = useInput(passwordValidator);
 
   const [address, setaddress] = useState("");
-
+  const [Loading, setLoading] = useState(false);
   // const emailInputRef = useRef();
   // const firstPasswordInputRef = useRef();
   // const secondPasswordInputRef = useRef();
@@ -109,46 +109,55 @@ const Register = () => {
 
   const history = useHistory();
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
+    setLoading(true);
+    console.log("lo1 :", Loading);
     event.preventDefault();
-    if (formIsValid) {
-      if (enteredFirstPassword === enteredSecondPassword) {
-        const body = {
-          email: enteredEmail,
-          password: enteredFirstPassword,
-          address: address,
-        };
+    try {
+      if (formIsValid) {
+        if (enteredFirstPassword === enteredSecondPassword) {
+          const body = {
+            email: enteredEmail,
+            password: enteredFirstPassword,
+            address: address,
+          };
 
-        axios
-          .post("/api/users", body)
-          .then(() => {
-            snackbarHandler(
-              true,
-              "success",
-              "가입을 완료했습니다.\n이메일 인증을 완료하세요."
-            );
-            setTimeout(() => {
-              history.push("/login");
-            }, 2500);
-          })
-          .catch((err) => {
-            console.log(err.response.data);
-            emailInputRef.current.focus();
-            snackbarHandler(true, "error", err.response.data.message);
-          });
+          await axios
+            .post("/api/users", body)
+            .then(() => {
+              snackbarHandler(
+                true,
+                "success",
+                "가입을 완료했습니다.\n이메일 인증을 완료하세요."
+              );
+              setTimeout(() => {
+                history.push("/login");
+              }, 2500);
+            })
+            .catch((err) => {
+              console.log(err.response.data);
+              emailInputRef.current.focus();
+              snackbarHandler(true, "error", err.response.data.message);
+            });
+        } else {
+          snackbarHandler(true, "warning", "비밀번호가 다릅니다.");
+          secondPasswordInputRef.current.focus();
+        }
+      } else if (!emailIsValid) {
+        emailInputRef.current.focus();
+        snackbarHandler(true, "warning", "E-Mail을 입력하세요.");
+      } else if (!firstPasswordIsValid) {
+        firstPasswordInputRef.current.focus();
+        snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
       } else {
-        snackbarHandler(true, "warning", "비밀번호가 다릅니다.");
         secondPasswordInputRef.current.focus();
+        snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
       }
-    } else if (!emailIsValid) {
-      emailInputRef.current.focus();
-      snackbarHandler(true, "warning", "E-Mail을 입력하세요.");
-    } else if (!firstPasswordIsValid) {
-      firstPasswordInputRef.current.focus();
-      snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
-    } else {
-      secondPasswordInputRef.current.focus();
-      snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
+    } catch (error) {
+      snackbarHandler(true, "error", error.response.data.message);
+    } finally {
+      setLoading(false);
+      console.log("lo2 :", Loading);
     }
   };
 
@@ -174,6 +183,13 @@ const Register = () => {
           ))}
         </Alert>
       </Snackbar>
+
+      {Loading && (
+        <Stack sx={{ width: "100%", color: "grey.500" }} spacing={2}>
+          {/* <CircularProgress color="inherit" /> */}
+          <LinearProgress color="inherit" />
+        </Stack>
+      )}
 
       <form onSubmit={submitHandler}>
         <Input

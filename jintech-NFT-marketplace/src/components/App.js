@@ -21,7 +21,7 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import AuthenticationSuccess from "./Register/Authentication/AuthenticationSuccess";
 import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
-import { AuthContextProvider } from "../store/auth-context";
+import AuthContext, { AuthContextProvider } from "../store/auth-context";
 import Auth from "../hoc/Auth";
 import UserList from "./UserList/UserList";
 
@@ -36,6 +36,7 @@ const ipfs = ipfsClient({
 */
 
 class App extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -359,6 +360,7 @@ class App extends Component {
                       ? true
                       : false
                   }
+                  history={this.props.history}
                 />
                 <Route
                   path="/"
@@ -421,7 +423,10 @@ class App extends Component {
                   component={UserNFTDetail}
                 />
 
-                <Route path="/userlist" component={Auth(UserList, true, true)} />
+                <Route
+                  path="/userlist"
+                  component={Auth(UserList, true, true)}
+                />
                 <Route path="/login" component={Auth(Login, false)} />
                 <Route path="/register">
                   <Register></Register>

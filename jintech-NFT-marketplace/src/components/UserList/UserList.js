@@ -52,7 +52,7 @@ const UserList = () => {
             return {
               id: i,
               email: v.email,
-              created: new Date(v.createdAt),
+              created: new Date(v.createdAt).toLocaleString(),
               auth: v.auth,
             };
           });

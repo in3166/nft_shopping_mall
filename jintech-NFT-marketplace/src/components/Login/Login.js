@@ -57,8 +57,8 @@ class Login extends Component {
         .then((res) => {
           console.log('res: ',res);
           if (res.data.success) {
-            alert("로그인 성공");
-            console.log(res.data.user);
+            // alert("로그인 성공");
+            // console.log(res.data.user);
             this.context.login(res.data.user);
             history.replace("/");
           } else {

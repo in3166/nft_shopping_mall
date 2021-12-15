@@ -33,10 +33,10 @@ class AllCryptoBoys extends Component {
     //super 계정의 정보를 집어 넣어야 한다.
     //this.setState({ account: account[0] })
     this.setState({ account: process.env.REACT_APP_TEMP_ACCOUNT });
-    console.log(
-      "process.env.REACT_APP_ACCOUNT: ",
-      process.env.REACT_APP_ACCOUNT
-    );
+    // console.log(
+    //   "process.env.REACT_APP_ACCOUNT: ",
+    //   process.env.REACT_APP_ACCOUNT
+    // );
     const networkId = await web3.eth.net.getId();
     const networkData = ImageContract.networks[networkId];
 
@@ -143,7 +143,7 @@ class AllCryptoBoys extends Component {
         </div>
         <div className="d-flex flex-wrap mb-2">
           {/* 이미지 들을 가져와서 화면에 출력 */}
-          {console.log("images: ", this.state.images)}
+
           {this.state.images.map((id, key) => {
             // console.log("1: ", this.state.owners[key])
             // console.log(this.state.account)

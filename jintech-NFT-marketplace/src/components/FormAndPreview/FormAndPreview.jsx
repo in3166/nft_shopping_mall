@@ -7,6 +7,7 @@ import Crypto from "crypto";
 /* 2021-11-19 ipfs 를 위한 취가 */
 import { create } from "ipfs-http-client";
 import styles from "./FormAndPreview.module.css";
+import { withRouter } from "react-router-dom";
 /* 2021-11-22 서버에서 ipfs-http-client가 안돌아가서 교체 */
 
 class FormAndPreview extends Component {
@@ -113,16 +114,17 @@ class FormAndPreview extends Component {
   async mintImage() {
     let file = "";
     //var client = create("http://jtsol.iptime.org:5001/api/v0");
-    var client = create("https://ipfs.infura.io:5001/api/v0");
-    //var client = create("http://127.0.0.1:5001/");
+    //var client = create("https://ipfs.infura.io:5001/api/v0");
+    var client = create("http://127.0.0.1:5002/");
 
     console.log("client: ", client);
+
     const { cid } = await client.add(this.state.new_image);
     console.log("cid: ", cid);
 
     //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
-    const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-    //const urlStr = `http://localhost:8082/ipfs/${cid}`;
+    //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+    const urlStr = `http://localhost:9090/ipfs/${cid}`;
     this.setState({
       new_url: urlStr,
     });
@@ -148,8 +150,10 @@ class FormAndPreview extends Component {
         )
         .send({ from: this.state.account })
         .once("receipt", (receipt) => {
-          console.log("nft receipt: ", receipt);
+          console.log("nft receipt: ");
+          console.log(receipt);
           alert("token is created");
+          this.props.history.push("/");
         });
     });
   }
@@ -293,4 +297,4 @@ class FormAndPreview extends Component {
   }
 }
 
-export default FormAndPreview;
+export default withRouter(FormAndPreview);

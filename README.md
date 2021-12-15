@@ -34,6 +34,13 @@ xxx버전 업그레이드함 xxx
   - 서버에 config 추가, controllers에 함수 추가
 - postgreSQL: ` npm install sequelize pg pg-hstore`
 
+- ipfs 설치
+  - `npm install -g ipfs`
+  - `jsipfs init`
+  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\", \"GET\"]'`
+  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]'`
+  - `jsipfs daemon`
+
 ## 기능 추가
 
 - 회원 가입

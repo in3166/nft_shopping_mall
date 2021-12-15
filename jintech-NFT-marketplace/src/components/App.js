@@ -340,7 +340,7 @@ class App extends Component {
     // );
     return (
       <AuthContextProvider>
-        <div className="container">
+        <div className="container" style={{ "@media (min-width: 768px)": { "max-width": "960px" } }}>
           {/* metamask 와 연결 되었는가? */}
           {!this.state.metamaskConnected ? (
             /* 아니면 연결 창으로 이동 */

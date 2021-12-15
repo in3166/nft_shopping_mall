@@ -8,6 +8,7 @@ import TokenSaleContract from "../../abis/TokenSaleContract.json";
 
 import { Link, withRouter } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
+import axios from "axios";
 
 class MyTokens extends Component {
   static contextType = AuthContext;
@@ -128,17 +129,21 @@ class MyTokens extends Component {
   async componentDidMount() {
     const accounts = await window.web3.eth.getAccounts();
 
-    if (accounts[0] !== this.context.address) {
-      const { history } = this.props;
-      if (this.context.isLoggedIn && this.context.isLoggedIn) {
-        alert("지갑 주소가 맞지 않습니다.");
-        history.replace("/");
-      } 
-      // else if (!this.context.isLoggedIn) {
-      //   alert("로그인 하세요.");
-      //   history.replace("/login");
-      // }
-    }
+    await axios.get(`/api/users/user/${this.context.email}`).then((res) => {
+      if (accounts[0] !== res.data.address) {
+        const { history } = this.props;
+        if (this.context.isLoggedIn) {
+          alert("지갑 주소가 맞지 않습니다.");
+          history.replace("/");
+        }
+        this.context.address = accounts[0];
+        // else if (!this.context.isLoggedIn) {
+        //   alert("로그인 하세요.");
+        //   history.replace("/login");
+        // }
+      }
+    });
+
     await this?.loadBlockchainData();
   }
 

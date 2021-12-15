@@ -264,11 +264,9 @@ class NftDetail extends Component {
         </div>
         <div className="detail-info container-fluid nft-detail-adj">
           <div className="detail-info-wrapper d-flex justify-content-around">
-            {" "}
             {/* d-flex  */}
             <div className="flex-wrap detail-adj-box">
               <div className="adj-img-wrap">
-                {" "}
                 {/* max-300 */}
                 <img
                   alt="main"

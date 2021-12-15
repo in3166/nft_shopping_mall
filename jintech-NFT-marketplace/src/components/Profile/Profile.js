@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Card from "../UI/Card/Card";
 import classes from "./Profile.module.css";
 import UserFrom from "./UserForm";
-
+import LeaveUser from "./LeaveUser";
+import SecondAuthentication from "./SecondAuthentication";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   console.log(value, index);
@@ -66,6 +67,16 @@ const Profile = () => {
             label={<span className={classes.tabLabel}>판매 이력</span>}
             {...a11yProps(2)}
           />
+          <Tab
+            value={4}
+            label={<span className={classes.tabLabel}>2차 인증</span>}
+            {...a11yProps(3)}
+          />
+          <Tab
+            value={5}
+            label={<span className={classes.tabLabel}>회원 탈퇴</span>}
+            {...a11yProps(4)}
+          />
         </Tabs>
       </Box>
       <Divider />
@@ -77,6 +88,12 @@ const Profile = () => {
       </TabPanel>
       <TabPanel value={value} index={3}>
         Item Three
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <SecondAuthentication value={value} />
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        <LeaveUser />
       </TabPanel>
     </Card>
   );

@@ -28,6 +28,7 @@ db.sequelize.sync().then(() => {
 
 app.use("/", indexRouter);
 app.use("/api/users", require("./routes/users"));
+app.use("/api/auth", require("./routes/auth"));
 //app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

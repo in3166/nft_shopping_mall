@@ -6,11 +6,10 @@
   - `npm install react@17.0.2 react-dom@17.0.2`
 
 - material ui 5.3 추가
-
   - `npm install @mui/material @emotion/react @emotion/styled`
-
-- table ui 추가
-  - `npm install @mui/x-data-grid`
+  - table ui 추가
+    - `npm install @mui/x-data-grid`
+  - `@mui/lab` 추가
 
 ```
 xxx버전 업그레이드함 xxx

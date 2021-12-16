@@ -1,4 +1,4 @@
-import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Divider, Paper, Tab, Tabs, Typography } from "@mui/material";
 
 import React, { useState } from "react";
 import Card from "../UI/Card/Card";
@@ -8,9 +8,7 @@ import LeaveUser from "./LeaveUser";
 import SecondAuthentication from "./SecondAuthentication";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  console.log(value, index);
-  console.log(+value === +index);
-  console.log(children);
+
   return (
     <div
       role="tabpanel"
@@ -21,7 +19,7 @@ function TabPanel(props) {
     >
       {+value === +index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component="div">{children}</Typography>
         </Box>
       )}
     </div>
@@ -41,6 +39,7 @@ const Profile = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  
   return (
     <Card>
       <Box sx={{ p: 2, mt: 2 }}>

@@ -68,7 +68,7 @@ class Login extends Component {
         })
         .catch((err) => {
           console.log(err.response)
-          alert(`로그인 실패: ${err.response.data}\n${err.response.data.message}`);
+          alert(`로그인 실패: ${err.response?.data}\n${err.response?.data.message}`);
         });
 
       // token = await this.loginUser({
@@ -101,13 +101,13 @@ class Login extends Component {
 
           <div>
             <Button type="submit" variant="outlined">
-              Submit
+              Sign in
             </Button>
           </div>
         </form>
 
         <Button type="button">
-          <Link to="/register">Register</Link>
+          <Link to="/register">Sign up</Link>
         </Button>
       </Card>
     );

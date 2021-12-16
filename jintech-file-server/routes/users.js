@@ -25,7 +25,9 @@ router.get("/user/:email", users.findOne);
 router.put("/:email", users.update);
 
 // Delete a Tutorial with id
-router.delete("/:email", users.delete);
+router.get("/leave/:email", users.requestDelete);
+router.post("/leave/:email", users.requestDelete);
+router.delete("/admin/:email", users.delete);
 
 // delete a all user
 router.delete("/", users.deleteAll);

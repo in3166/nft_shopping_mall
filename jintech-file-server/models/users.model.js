@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         default: "0",
       },
+      leave: {
+        type: Sequelize.STRING,
+        default: "N",
+      },
     },
     {
       hooks: {

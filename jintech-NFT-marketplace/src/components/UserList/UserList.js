@@ -11,13 +11,63 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router";
-import { CircularProgress, Stack } from "@mui/material";
+import { Button, CircularProgress, Stack } from "@mui/material";
+
+const buttonClickHandler = (e) => {
+  e.stopPropagation();
+};
 
 const columns = [
-  { field: "id", headerName: "ID", width: 70 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 70,
+    align: "center",
+    headerAlign: "center",
+  },
   { field: "email", headerName: "E-Mail", width: 230 },
-  { field: "created", headerName: "생성일", width: 250 },
-  { field: "auth", headerName: "인증", width: 130 },
+  {
+    field: "created",
+    headerName: "생성일",
+    width: 250,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "auth",
+    headerName: "이메일 인증",
+    width: 130,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "leave",
+    headerName: "탈퇴 승인",
+    width: 100,
+    sortable: false,
+    align: "center",
+    headerAlign: "center",
+    renderCell: (data) => {
+      if (data.row.leave === "Y") {
+        return (
+          <Button
+            onClick={buttonClickHandler}
+            variant="outlined"
+            size="small"
+            color="info"
+          >
+            승인
+          </Button>
+        );
+      } else {
+        return (
+          <Button variant="outlined" size="small" color="info" disabled>
+            승인
+          </Button>
+        );
+      }
+    },
+  },
   //   {
   //     field: "fullName",
   //     headerName: "Full name",
@@ -54,6 +104,7 @@ const UserList = () => {
               email: v.email,
               created: new Date(v.createdAt).toLocaleString(),
               auth: v.auth,
+              leave: v.leave,
             };
           });
           setUsers(users);
@@ -98,6 +149,7 @@ const UserList = () => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
+          // disableSelectionOnClick
           ref={gridRef}
           onSelectionModelChange={(data) => {
             onSelectedRowHandler(data);

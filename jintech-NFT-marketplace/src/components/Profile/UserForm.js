@@ -9,10 +9,12 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 const UserForm = () => {
   const authCtx = useContext(AuthContext);
   const [passwordIsTouched, setpasswordIsTouched] = useState(false);
+  const [loading, setloading] = useState(false);
   const [User, setUser] = useState({
     email: "",
     address: "",
@@ -20,6 +22,15 @@ const UserForm = () => {
     createdAt: "",
     password: "",
   });
+
+  const getCurrentWalletAccount = async () => {
+    setloading(true);
+    const accounts = await window.web3.eth.getAccounts();
+    formChangeHandler(accounts[0], "address");
+    setTimeout(() => {
+      setloading(false);
+    }, 500);
+  };
 
   const formChangeHandler = (e, type) => {
     switch (type) {
@@ -30,7 +41,7 @@ const UserForm = () => {
         break;
       case "address":
         setUser((prev) => {
-          return { ...prev, address: e.target.value };
+          return { ...prev, address: e };
         });
         break;
       case "password":
@@ -46,21 +57,24 @@ const UserForm = () => {
   };
 
   const getUserInfo = useCallback(() => {
-    axios
-      .get(`/api/users/user/${authCtx.email}`)
-      .then((res) => {
-        console.log(res);
-        setUser({
-          email: res.data.email,
-          address: res.data.address,
-          auth: res.data.auth,
-          createdAt: new Date(res.data.createdAt).toLocaleString(),
-          password: "",
+    console.log(authCtx.email);
+    if (authCtx.email) {
+      axios
+        .get(`/api/users/user/${authCtx.email}`)
+        .then((res) => {
+          console.log(res);
+          setUser({
+            email: res.data.email,
+            address: res.data.address,
+            auth: res.data.auth,
+            createdAt: new Date(res.data.createdAt).toLocaleString(),
+            password: "",
+          });
+        })
+        .catch((err) => {
+          alert(err);
         });
-      })
-      .catch((err) => {
-        alert(err);
-      });
+    }
   }, [authCtx.email]);
 
   useEffect(() => {
@@ -91,7 +105,12 @@ const UserForm = () => {
                 }}
               />
             </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+
+            <FormControl
+              fullWidth
+              sx={{ m: 1, flexDirection: "row" }}
+              variant="standard"
+            >
               <TextField
                 required
                 id="standard-required"
@@ -99,11 +118,27 @@ const UserForm = () => {
                 variant="standard"
                 error={User?.address?.length < 15 ? true : false}
                 value={User.address}
-                onChange={(e) => {
-                  formChangeHandler(e, "address");
+                sx={{ m: 0, width: "80%" }}
+                title={User.address}
+                InputProps={{
+                  readOnly: true,
                 }}
+                // onChange={(e) => {
+                //   formChangeHandler(e, "address");
+                // }}
               />
+              <LoadingButton
+                variant="outlined"
+                color="secondary"
+                sx={{ m: "5px", width: "20%" }}
+                size="small"
+                onClick={getCurrentWalletAccount}
+                loading={loading}
+              >
+                Load
+              </LoadingButton>
             </FormControl>
+
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
@@ -112,7 +147,9 @@ const UserForm = () => {
                 type="password"
                 variant="standard"
                 placeholder="비밀번호를 입력하세요."
-                error={User?.password?.length < 6 && passwordIsTouched  ? true : false}
+                error={
+                  User?.password?.length < 6 && passwordIsTouched ? true : false
+                }
                 value={User.password}
                 onChange={(e) => {
                   formChangeHandler(e, "password");

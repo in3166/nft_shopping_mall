@@ -120,24 +120,30 @@ exports.create = async (req, res) => {
         const error = await authentication(req.body.email, authCode);
         if (!error) {
           // 한 시간 뒤 auth 컬럼이 "Y"가 아니면 "N"으로 변경
-          setTimeout(async () => {
-            const user = await User.findOne({
-              where: { email: req.body.email },
-              attributes: ["auth"],
-            });
-
-            const authDBCode = user.dataValues.auth;
-            if (authDBCode !== "Y") {
-              await User.update(
-                { auth: "N" },
-                { where: { email: req.body.email } }
-              ).then(async (data) => {
-                if (data) {
-                  console.log(req.body.email, " 의 auth N");
-                }
+          try {
+            setTimeout(async () => {
+              const user = await User.findOne({
+                where: { email: req.body.email },
+                attributes: ["auth"],
               });
-            }
-          }, 60 * 60 * 1000);
+
+              const authDBCode = user.dataValues.auth;
+              if (authDBCode !== "Y") {
+                await User.update(
+                  { auth: "N" },
+                  { where: { email: req.body.email } }
+                ).then(async (data) => {
+                  if (data) {
+                    console.log(req.body.email, " 의 auth N");
+                  }
+                });
+              }
+            }, 60 * 60 * 1000);
+          } catch (error) {
+            console.log("settimeout error: ", error);
+            res.status(400).send({ error: error, message: error });
+          }
+
           User.create(user)
             .then((resUser) => {
               if (req.body.roles) {
@@ -243,6 +249,55 @@ exports.update = (req, res) => {
 };
 
 // Delete a User with the specified id in the request
+exports.requestDelete = (req, res) => {
+  const email = req.params.email;
+
+  const password = req.body.password;
+  console.log("pw: ", password);
+  if (!password) {
+    console.log('!')
+    User.update({ leave: "N" }, { where: { email: email } })
+      .then(async (data) => {
+        console.log('취소 성공: ', data)
+        res.status(200).send({ leave: "N", success: true });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).send({ message: err });
+      });
+  } else {
+    User.findOne({
+      where: {
+        email: email, // user email
+      },
+    })
+      .then(async (user) => {
+        console.log("reqdelete find: ", user);
+        const validPassword = await user.validPassword(password, user.password);
+        if (validPassword) {
+          User.update({ leave: "Y" }, { where: { email: email } })
+            .then(async (data) => {
+              console.log("success", data);
+              res
+                .status(200)
+                .send({ message: "탈퇴 신청을 완료했습니다.", success: true, leave:"Y" });
+            })
+            .catch((err) => {
+              res
+                .status(400)
+                .send({ message: "탈퇴 신청을 실패했습니다.", error: err });
+            });
+        } else {
+          res.status(400).send({ message: "비밀번호가 틀립니다." });
+        }
+      })
+      .catch((err) => {
+        console.log("reqdelete find err: ", err);
+      });
+  }
+};
+
+// Delete a User with the specified id in the request
 exports.delete = (req, res) => {
   const email = req.params.email;
 
@@ -341,6 +396,7 @@ exports.login = (req, res) => {
                   id: user.dataValues.id,
                   roles: authorities,
                   accessToken: token,
+                  leave: user.dataValues.leave,
                 },
               });
             });

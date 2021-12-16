@@ -13,10 +13,13 @@ import {
   TextField,
 } from "@mui/material";
 import useInput from "../../hooks/useInputreduce";
+import { useHistory } from "react-router-dom";
+
 const validator = (data) => {
   if (data.length > 6) return true;
   return false;
 };
+
 const UserForm = () => {
   const authCtx = useContext(AuthContext);
   const [open, setopen] = useState(false);
@@ -29,11 +32,56 @@ const UserForm = () => {
     valueBlurHandler: passwordBlurHandler,
     reset: resetPassword,
   } = useInput(validator);
+  const [leave, setLeave] = useState(authCtx.leave);
 
   const submintHandler = (e) => {
     e.preventDefault();
     console.log(password);
     setopen(true);
+    if (!passwordIsValid) {
+      alert("비밀번호를 6자 이상 입력하세요.");
+      setopen(false);
+      return;
+    }
+
+    const body = {
+      password,
+    };
+
+    axios
+      .post("/api/users/leave/" + authCtx.email, body)
+      .then((res) => {
+        if (res.data.success) {
+          authCtx.leave = res.data.leave;
+          setLeave(res.data.leave);
+          alert("신청 성공");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setopen(false);
+      });
+  };
+
+  const cancelLeaveHandler = () => {
+    axios
+      .get("/api/users/leave/" + authCtx.email)
+      .then((res) => {
+        if (res.data.success) {
+          authCtx.leave = res.data.leave;
+          setLeave(res.data.leave);
+          alert("취소 성공");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      })
+      .finally(() => {
+        setopen(false);
+      });
   };
 
   const dialog = (
@@ -63,9 +111,8 @@ const UserForm = () => {
           autoFocus
           color="primary"
           variant="contained"
-          onClick={() => {
-            setopen(false);
-          }}
+          type="submit"
+          onClick={submintHandler}
         >
           신청
         </Button>
@@ -74,7 +121,7 @@ const UserForm = () => {
   );
 
   return (
-    <form onSubmit={submintHandler}>
+    <form>
       {dialog}
       <Grid container sx={{ textAlign: "center" }} justifyContent="center">
         <Grid item xs={12} sm={9} md={6} lg={5} xl={4}>
@@ -93,14 +140,30 @@ const UserForm = () => {
               ref={passwordRef}
             />
           </FormControl>
-          <Button
-            type="submit"
-            variant="contained"
-            style={{ marginTop: "20px" }}
-            color="secondary"
-          >
-            탈퇴 신청
-          </Button>
+          {leave === "N" && (
+            <Button
+              variant="contained"
+              type="button"
+              style={{ marginTop: "20px" }}
+              color="secondary"
+              onClick={() => {
+                setopen(true);
+              }}
+            >
+              탈퇴 신청
+            </Button>
+          )}
+          {leave === "Y" && (
+            <Button
+              variant="outlined"
+              type="button"
+              style={{ marginTop: "20px" }}
+              color="secondary"
+              onClick={cancelLeaveHandler}
+            >
+              신청 취소
+            </Button>
+          )}
         </Grid>
       </Grid>
     </form>

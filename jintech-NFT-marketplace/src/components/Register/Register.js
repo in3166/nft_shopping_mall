@@ -229,7 +229,7 @@ const Register = () => {
         />
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn}>
-            Register
+            Sign Up
           </Button>
         </div>
       </form>

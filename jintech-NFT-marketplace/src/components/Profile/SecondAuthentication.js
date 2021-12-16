@@ -52,7 +52,7 @@ const SecondAuthentication = (props) => {
             />
             {url && <img src={url} alt="qrURL" />}
             <br />
-            <input
+            {/* <input
               id="code"
               onChange={(e) => {
                 setcode(e.target.value);
@@ -73,7 +73,7 @@ const SecondAuthentication = (props) => {
               }}
             >
               확인
-            </button>
+            </button> */}
           </Box>
         )}
       </Grid>

@@ -103,7 +103,7 @@ class Navbar extends Component {
               )}
               {this.context.isLoggedIn && (
                 <li className="nav-item">
-                  <Link className="nav-link" onClick={this.context.logout}>
+                  <Link className="nav-link" onClick={this.context.logout} to="">
                     Logout
                   </Link>
                 </li>

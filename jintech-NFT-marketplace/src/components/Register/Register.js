@@ -132,7 +132,7 @@ const Register = () => {
               );
               setTimeout(() => {
                 history.push("/login");
-              }, 2500);
+              }, 2000);
             })
             .catch((err) => {
               console.log(err.response.data);

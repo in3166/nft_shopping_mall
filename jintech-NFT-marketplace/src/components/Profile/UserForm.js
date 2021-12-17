@@ -94,7 +94,7 @@ const UserForm = () => {
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
-                id="standard-required"
+                id="email"
                 label="E-Mail"
                 variant="standard"
                 type="email"
@@ -113,7 +113,7 @@ const UserForm = () => {
             >
               <TextField
                 required
-                id="standard-required"
+                id="address"
                 label="Address"
                 variant="standard"
                 error={User?.address?.length < 15 ? true : false}
@@ -142,7 +142,7 @@ const UserForm = () => {
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
-                id="standard-required"
+                id="password"
                 label="Password"
                 type="password"
                 variant="standard"
@@ -158,7 +158,7 @@ const UserForm = () => {
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
-                id="standard-read-only-input"
+                id="emailauth"
                 label="이메일 인증 여부"
                 defaultValue={User.auth}
                 InputProps={{
@@ -169,7 +169,7 @@ const UserForm = () => {
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
-                id="standard-read-only-input"
+                id="created"
                 label="생성일"
                 defaultValue={User.createdAt}
                 InputProps={{

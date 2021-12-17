@@ -60,6 +60,13 @@ class Navbar extends Component {
                   </li>
                 ) : null
               }
+              {this.context.isLoggedIn && !this.context.isAdmin && (
+                <li className="nav-item">
+                  <Link to="/upload" className="nav-link">
+                    Upload
+                  </Link>
+                </li>
+              )}
               <li className="nav-item">
                 <Link to="/marketplace" className="nav-link">
                   Marketplace
@@ -95,7 +102,7 @@ class Navbar extends Component {
               {!this.context.isLoggedIn && (
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
-                    Admin Login
+                    Login
                   </Link>
                 </li>
               )}

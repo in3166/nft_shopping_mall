@@ -44,8 +44,18 @@ xxx버전 업그레이드함 xxx
 
 - 회원 가입
 - 로그인
+- JWT 인증 구현 (refresh 미구현)
 - 이메일 인증
   - `server/ verify 메서드`
+  - `/verify?email=...&code=...`
+  - 현재 쿠키로 이메일 인증을 한 후에 success/fail 페이지에 들어왔는지 확인
+  - 현재 success/fail => confirm 페이지 하나에서 비동기 요청해서 처리 하는게 나을듯..
+    - => `/confirm?code=...`
+
+- 2FA(Goole OTP) 구현
+  - 키 생성, RESERT
+  - `users` 테이블에 컬럼 추가
+  - 라이브러리: `speakeasy`, `qrcode`
 
 ### ignore
 

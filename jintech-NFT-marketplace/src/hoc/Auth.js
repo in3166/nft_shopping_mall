@@ -1,13 +1,11 @@
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router";
-import AuthContext from "../store/auth-context";
 
 // option: 1-loggedin / 0-not loggedin
 
 export default function auth(SpecificComponent, option, adminRoute = null) {
   const AuthCheck = (props) => {
-    const authCtx = useContext(AuthContext);
     const history = useHistory();
 
     // server auth 검사는 아직 적용 안함.
@@ -38,7 +36,10 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
             alert(err);
             history.push("/login");
           });
-      } else if(!token?.accessToken && history.location.pathname !== '/login'){
+      } else if (
+        !token?.accessToken &&
+        history.location.pathname !== "/login"
+      ) {
         alert("로그인 하세요.");
         history.push("/login");
       }

@@ -23,10 +23,6 @@ import {
   DialogActions,
 } from "@mui/material";
 
-const buttonLeaveClickHandler = (data) => {
-  console.log(data);
-};
-
 const columns = [
   {
     field: "id",
@@ -37,16 +33,23 @@ const columns = [
   },
   { field: "email", headerName: "E-Mail", width: 230 },
   {
-    field: "created",
-    headerName: "생성일",
-    width: 250,
+    field: "auth",
+    headerName: "이메일 인증",
+    width: 110,
     align: "center",
     headerAlign: "center",
   },
   {
-    field: "auth",
-    headerName: "이메일 인증",
-    width: 130,
+    field: "otp",
+    headerName: "OTP",
+    width: 100,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "created",
+    headerName: "생성일",
+    width: 200,
     align: "center",
     headerAlign: "center",
   },
@@ -78,6 +81,7 @@ const UserList = () => {
               created: new Date(v.createdAt).toLocaleString(),
               auth: v.auth,
               leave: v.leave,
+              otp: v.otp,
             };
           });
           setUsers(users);
@@ -94,6 +98,21 @@ const UserList = () => {
   useEffect(() => {
     getUsers();
   }, [getUsers]);
+
+  const buttonLeaveClickHandler = (data) => {
+    console.log(data);
+    axios
+      .delete("/api/users/" + data.email)
+      .then((res) => {
+        if (res.data.success) {
+          alert(res.data.message);
+        } else {
+          alert(res.data.message);
+        }
+        getUsers();
+      })
+      .catch((err) => alert(err));
+  };
 
   const [select, setSelection] = useState([]);
 

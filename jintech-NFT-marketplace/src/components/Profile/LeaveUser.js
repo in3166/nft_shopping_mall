@@ -49,7 +49,7 @@ const UserForm = () => {
     };
 
     axios
-      .post("/api/users/leave/" + authCtx.email, body)
+      .post("/api/users/" + authCtx.email, body)
       .then((res) => {
         if (res.data.success) {
           authCtx.leave = res.data.leave;
@@ -140,7 +140,7 @@ const UserForm = () => {
               ref={passwordRef}
             />
           </FormControl>
-          {leave === "N" && (
+          {leave !== "Y" && (
             <Button
               variant="contained"
               type="button"

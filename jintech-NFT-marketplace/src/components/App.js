@@ -25,6 +25,7 @@ import AuthContext, { AuthContextProvider } from "../store/auth-context";
 import Auth from "../hoc/Auth";
 import UserList from "./UserList/UserList";
 import Profile from "./Profile/Profile";
+import UserUpload from "./UserUpload/UserUpload";
 
 //ipfs 서버 정보
 /*
@@ -340,7 +341,10 @@ class App extends Component {
     // );
     return (
       <AuthContextProvider>
-        <div className="container" style={{ "@media (maxWidth: 768px)": { "min-width": "90%" } }}>
+        <div
+          className="container"
+          style={{ "@media (maxWidth: 768px)": { "min-width": "90%" } }}
+        >
           {/* metamask 와 연결 되었는가? */}
           {!this.state.metamaskConnected ? (
             /* 아니면 연결 창으로 이동 */
@@ -375,7 +379,7 @@ class App extends Component {
                 />
                 <Route
                   path="/mint"
-                  render={() => (
+                  component={Auth(() => (
                     <FormAndPreview
                       mintMyNFT={this.mintMyNFT}
                       nameIsUsed={this.state.nameIsUsed}
@@ -383,7 +387,7 @@ class App extends Component {
                       colorsUsed={this.state.colorsUsed}
                       setMintBtnTimer={this.setMintBtnTimer}
                     />
-                  )}
+                  ))}
                 />
                 <Route
                   path="/marketplace"
@@ -430,6 +434,8 @@ class App extends Component {
                 />
                 <Route path="/login" component={Auth(Login, false)} />
                 <Route path="/profile" component={Auth(Profile, true)} />
+                <Route path="/upload" component={Auth(UserUpload, true)} />
+
                 <Route path="/register">
                   <Register></Register>
                 </Route>

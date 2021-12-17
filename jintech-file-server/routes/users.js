@@ -9,10 +9,10 @@ const { authJwt } = require("../middleware");
 //   res.send('respond with a resource');
 // });
 
-// Create 
+// Create
 router.post("/", verifySignUp.checkRolesExisted, users.create);
 
-// auth 
+// auth
 router.post("/auth", authJwt.verifyToken, users.auth);
 
 // Retrieve all users
@@ -21,21 +21,21 @@ router.post("/allUsers", authJwt.isAdmin, users.findAll);
 // Retrieve a single user with id
 router.get("/user/:email", users.findOne);
 
+//router.post("/login", authJwt.isModerator, users.login);
+router.post("/login", users.login);
+
 // Update a user with id
 router.put("/:email", users.update);
 
-// Delete a Tutorial with id
-router.get("/leave/:email", users.requestDelete);
-router.post("/leave/:email", users.requestDelete);
-router.delete("/admin/:email", users.delete);
+// 탈퇴 신청
+router.post("/:email", users.requestDelete);
+// Delete a user with email
+router.delete("/:email", users.delete);
 
 // delete a all user
 router.delete("/", users.deleteAll);
 
 //router.post("/authentication", users.authentication);
 router.get("/verify", users.verify);
-
-//router.post("/login", authJwt.isModerator, users.login);
-router.post("/login", users.login);
 
 module.exports = router;

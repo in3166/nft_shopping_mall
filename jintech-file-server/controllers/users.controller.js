@@ -72,16 +72,16 @@ exports.verify = async (req, res) => {
   if (authCode === code) {
     User.update({ auth: "Y" }, { where: { email: email } })
       .then(async (data) => {
-        if (data) {
-          console.log("ver: ", data);
-        }
+        res.cookie("valid", true);
         res.redirect("/success");
       })
       .catch((err) => {
-        console.log("ver err", err);
+        res.cookie("valid", true);
         res.redirect("/fail");
       });
   } else {
+    //req.session['valid'] = true
+    res.cookie("valid", true);
     res.redirect("/fail");
   }
 };
@@ -114,6 +114,8 @@ exports.create = async (req, res) => {
           password: req.body.password,
           address: req.body.address,
           auth: authCode,
+          leave: "N",
+          otp: "N",
         };
         console.log("발송");
         // 인증메일 발송
@@ -302,22 +304,26 @@ exports.requestDelete = (req, res) => {
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
   const email = req.params.email;
-
+  console.log("delete email: ", email);
   User.destroy({
     where: { email: email },
   })
     .then((num) => {
+      console.log("num: ", num);
       if (num == 1) {
-        res.send({
+        res.status(200).send({
+          success: true,
           message: "User was deleted successfully!",
         });
       } else {
-        res.send({
+        res.status(200).send({
+          success: false,
           message: `Cannot delete User with email=${email}. Maybe User was not found!`,
         });
       }
     })
     .catch((err) => {
+      console.log("err: ", err);
       res.status(500).send({
         message: "Could not delete User with email=" + email,
       });
@@ -393,21 +399,19 @@ exports.login = (req, res) => {
               }
             });
 
-              return res.status(200).send({
-                success: true,
-                otp: true,
-                user: {
-                  email: user.dataValues.email,
-                  address: user.dataValues.address,
-                  id: user.dataValues.id,
-                  roles: authorities,
-                  accessToken: token,
-                  leave: user.dataValues.leave,
-                  otp: user.dataValues.otp,
-                },
-              });
-  
-      
+            return res.status(200).send({
+              success: true,
+              otp: true,
+              user: {
+                email: user.dataValues.email,
+                address: user.dataValues.address,
+                id: user.dataValues.id,
+                roles: authorities,
+                accessToken: token,
+                leave: user.dataValues.leave,
+                otp: user.dataValues.otp,
+              },
+            });
           } else {
             return res
               .status(200)

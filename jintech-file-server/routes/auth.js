@@ -1,39 +1,57 @@
 var express = require("express");
 var router = express.Router();
-const users = require("../controllers/users.controller");
+const otps = require("../controllers/otp.controller");
 const { verifySignUp } = require("../middleware");
 const { authJwt } = require("../middleware");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
+const db = require("../models");
 
-const secret = speakeasy.generateSecret({ name: "nft2auth" });
-router.post("/", (req, res) => {
-    
-  qrcode.toDataURL(secret.otpauth_url, (err, data) => {
-    console.log(data);
-    if (err) console.log("qrerr: ", err);
-    res.status(200).send({
-      url: data,
-      secret: secret,
+const User = db.users;
+const OTP = db.otp;
+
+// otp 새로 생성
+router.post("/", otps.create);
+
+// otp 가져오기
+router.get("/:email", otps.findOne);
+
+// otp  비활성
+router.put("/:email", (req, res) => {
+  const email = req.params.email;
+  console.log("email: ", email);
+  User.update({ otp: "N" }, { where: { email: email } })
+    .then((data) => {
+      console.log("success: ", data);
+      res.status(200).send({
+        data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send({ error: err, message: "otp put err" });
     });
-  });
 });
 
-router.post("/verify", (req, res) => {
-    console.log('??');
-    const code =req.body.code;
-    const secret =req.body.secret;
-    console.log(code);
-    console.log('??');
-    
-    console.log(secret);
+router.post("/verify", async (req, res) => {
+  const code = req.body.code;
+  const email = req.body.email;
+  console.log("-------", code, email);
 
+  const otp = await OTP.findOne({ where: { email: email } });
+  if (otp) {
+    console.log("otp 찾음");
+    console.log(otp);
     const verify = speakeasy.totp.verify({
-        secret: secret,
-        encoding: 'base32',
-        token: code,
-    })
+      secret: otp.secret,
+      encoding: "base32",
+      token: code,
+    });
     console.log("verify: ", verify);
+    res.status(200).send({
+      verify,
+    });
+  }
 });
 
 module.exports = router;

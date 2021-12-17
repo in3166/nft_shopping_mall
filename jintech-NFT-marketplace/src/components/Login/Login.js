@@ -4,7 +4,15 @@ import "./Login.css";
 //session 을 위한 추가 당장은 필요 없는 듯
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import Card from "../UI/Card/Card";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
@@ -16,6 +24,9 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      tempUser: {},
+      useOtp: false,
+      otpCodeInput: "",
     };
   }
 
@@ -42,33 +53,39 @@ class Login extends Component {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      let token = localStorage.getItem('nft_token');
-      console.log('token ', token)
+      let token = localStorage.getItem("nft_token");
+      console.log("token ", token);
       token = JSON.parse(token);
 
       const body = {
         email,
         password,
-        token: token?.accessToken
+        token: token?.accessToken,
       };
 
       axios
         .post("/api/users/login", body)
         .then((res) => {
-          console.log('res: ',res);
+          console.log("res: ", res);
           if (res.data.success) {
-            // alert("로그인 성공");
-            // console.log(res.data.user);
-            this.context.login(res.data.user);
-            history.replace("/");
+            if (res.data.user.otp === "Y") {
+              this.setState({ tempUser: res.data.user, useOtp: true });
+            } else {
+              // alert("로그인 성공");
+              console.log(res.data.user);
+              this.context.login(res.data.user);
+              history.replace("/");
+            }
           } else {
             alert(`로그인 실패: ${res.data.message}`);
             console.log(res);
           }
         })
         .catch((err) => {
-          console.log(err.response)
-          alert(`로그인 실패: ${err.response?.data}\n${err.response?.data.message}`);
+          console.log(err.response);
+          alert(
+            `로그인 실패: ${err.response?.data}\n${err.response?.data.message}`
+          );
         });
 
       // token = await this.loginUser({
@@ -109,6 +126,68 @@ class Login extends Component {
         <Button type="button">
           <Link to="/register">Sign up</Link>
         </Button>
+        {this.state.useOtp && (
+          <Dialog
+            open={this.state.useOtp}
+            onClose={() => {
+              this.setState({ useOtp: false });
+            }}
+          >
+            <DialogTitle>OTP</DialogTitle>
+            <DialogContent>
+              <DialogContentText>OTP 번호 6자리를 입력하세요.</DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="code"
+                onChange={(e) => {
+                  this.setState((curState) => {
+                    return { otpCodeInput: e.target.value };
+                  });
+                }}
+                value={this.state.otpCodeInput}
+                label="OTP Code"
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  this.setState({ useOtp: false });
+                }}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={() => {
+                  const body = {
+                    code: this.state.otpCodeInput,
+                    email: this.state.tempUser.email,
+                  };
+                  console.log(body);
+                  axios
+                    .post("/api/auth/verify", body)
+                    .then((res) => {
+                      console.log(res);
+                      if (res.data.verify) {
+                        this.context.login(this.state.tempUser);
+                        history.replace("/");
+                      } else {
+                        alert("코드가 틀립니다.");
+                      }
+                    })
+                    .catch((err) => {
+                      alert(err);
+                    });
+                }}
+              >
+                확인
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
       </Card>
     );
   }

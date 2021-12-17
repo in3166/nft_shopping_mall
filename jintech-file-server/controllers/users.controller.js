@@ -255,10 +255,10 @@ exports.requestDelete = (req, res) => {
   const password = req.body.password;
   console.log("pw: ", password);
   if (!password) {
-    console.log('!')
+    console.log("!");
     User.update({ leave: "N" }, { where: { email: email } })
       .then(async (data) => {
-        console.log('취소 성공: ', data)
+        console.log("취소 성공: ", data);
         res.status(200).send({ leave: "N", success: true });
       })
       .catch((err) => {
@@ -278,9 +278,11 @@ exports.requestDelete = (req, res) => {
           User.update({ leave: "Y" }, { where: { email: email } })
             .then(async (data) => {
               console.log("success", data);
-              res
-                .status(200)
-                .send({ message: "탈퇴 신청을 완료했습니다.", success: true, leave:"Y" });
+              res.status(200).send({
+                message: "탈퇴 신청을 완료했습니다.",
+                success: true,
+                leave: "Y",
+              });
             })
             .catch((err) => {
               res
@@ -369,6 +371,7 @@ exports.login = (req, res) => {
           .status(200)
           .send({ success: false, message: "User Not found." });
       } else {
+        // user 존재
         if (
           !user.dataValues.password ||
           !(await user.validPassword(password, user.dataValues.password))
@@ -377,19 +380,22 @@ exports.login = (req, res) => {
             .status(200)
             .send({ success: false, message: "비밀번호가 틀립니다." });
         } else {
+          // 이메일 인증 완료
           if (user.dataValues.auth === "Y") {
             var token = jwt.sign({ userEmail: user.email }, config.secret, {
               expiresIn: 86400, // 24 hours
             });
 
             var authorities = [];
-            user.getRoles().then((roles) => {
+            await user.getRoles().then((roles) => {
               for (let i = 0; i < roles.length; i++) {
                 authorities.push("ROLE_" + roles[i].name.toUpperCase());
               }
+            });
 
               return res.status(200).send({
                 success: true,
+                otp: true,
                 user: {
                   email: user.dataValues.email,
                   address: user.dataValues.address,
@@ -397,9 +403,11 @@ exports.login = (req, res) => {
                   roles: authorities,
                   accessToken: token,
                   leave: user.dataValues.leave,
+                  otp: user.dataValues.otp,
                 },
               });
-            });
+  
+      
           } else {
             return res
               .status(200)
@@ -427,6 +435,8 @@ exports.auth = (req, res) => {
     //isAdmin: req.user.role === 0 ? false : true,
     isAdmin: req.user.role === "admin" ? true : false,
     isLoggedIn: true,
+    email: req.user.email,
+    email: req.user.email,
     email: req.user.email,
   });
 };

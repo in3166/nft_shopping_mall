@@ -46,7 +46,7 @@ contract ImageContract is IERC721Metadata, ERC721Full{
     md.url = _url;
     md.price = _price;
     md.token = _hash;    //hash 를 추가 함
-    
+
     //images.push(_url); //_url 로 구분하는 것을 막기 위해 주석 처리 하고 
     images.push(_hash);   //_hash 로 구분 하도록 변경 
     uint _id = images.length -1;

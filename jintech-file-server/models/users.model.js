@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         default: "N",
       },
+      otp: {
+        type: Sequelize.STRING,
+        default: "N",
+      }
     },
     {
       hooks: {

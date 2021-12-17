@@ -27,9 +27,7 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar navbar-expand-md navbar-dark bg-dark">
-        <div
-          className="container"
-        >
+        <div className="container">
           <img src={icon} alt="" />
           <Link to="/" className="navbar-brand ml-2">
             NFT's
@@ -102,10 +100,12 @@ class Navbar extends Component {
                 </li>
               )}
               {this.context.isLoggedIn && (
-                <li className="nav-item">
-                  <Link className="nav-link" onClick={this.context.logout} to="">
-                    Logout
-                  </Link>
+                <li
+                  className="nav-item nav-link"
+                  style={{ cursor: "pointer" }}
+                  onClick={this.context.logout}
+                >
+                  Logout
                 </li>
               )}
             </ul>

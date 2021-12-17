@@ -11,10 +11,20 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router";
-import { Button, CircularProgress, Stack } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Stack,
+  Popover,
+  Typography,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
 
-const buttonClickHandler = (e) => {
-  e.stopPropagation();
+const buttonLeaveClickHandler = (data) => {
+  console.log(data);
 };
 
 const columns = [
@@ -40,53 +50,16 @@ const columns = [
     align: "center",
     headerAlign: "center",
   },
-  {
-    field: "leave",
-    headerName: "탈퇴 승인",
-    width: 100,
-    sortable: false,
-    align: "center",
-    headerAlign: "center",
-    renderCell: (data) => {
-      if (data.row.leave === "Y") {
-        return (
-          <Button
-            onClick={buttonClickHandler}
-            variant="outlined"
-            size="small"
-            color="info"
-          >
-            승인
-          </Button>
-        );
-      } else {
-        return (
-          <Button variant="outlined" size="small" color="info" disabled>
-            승인
-          </Button>
-        );
-      }
-    },
-  },
-  //   {
-  //     field: "fullName",
-  //     headerName: "Full name",
-  //     description: "This column has a value getter and is not sortable.",
-  //     sortable: false,
-  //     width: 160,
-  //     valueGetter: (params) =>
-  //       `${params.getValue(params.id, "firstName") || ""} ${
-  //         params.getValue(params.id, "lastName") || ""
-  //       }`,
-  //   },
 ];
 
 const UserList = () => {
-  const [Users, setUsers] = useState([]);
   const authCtx = useContext(AuthContext);
-  const history = useHistory();
+  const [Users, setUsers] = useState([]);
+  const [PopOpen, setPopOpen] = useState(false);
   const [Loading, setLoading] = useState(false);
+  const history = useHistory();
   const gridRef = useRef();
+
   const getUsers = useCallback(() => {
     setLoading(true);
     if (authCtx.isAdmin) {
@@ -122,7 +95,86 @@ const UserList = () => {
     getUsers();
   }, [getUsers]);
 
-  const [select, setSelection] = React.useState([]);
+  const [select, setSelection] = useState([]);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
+  const leaveButtonColumn = {
+    field: "leave",
+    headerName: "탈퇴 승인",
+    width: 100,
+    sortable: false,
+    align: "center",
+    headerAlign: "center",
+    renderCell: (data) => {
+      if (data.row.leave === "Y") {
+        return (
+          <div>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setAnchorEl(e.currentTarget);
+                setPopOpen(true);
+              }}
+              aria-describedby={id}
+              variant="outlined"
+              size="small"
+              color="info"
+            >
+              승인
+            </Button>
+            <Popover
+              id={id}
+              open={PopOpen}
+              anchorEl={anchorEl}
+              onClose={() => {
+                setPopOpen(false);
+              }}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "center",
+                horizontal: "right",
+              }}
+            >
+              <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                  정말로 탈퇴시키겠습니까?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions sx={{ p: 0, m: 1 }}>
+                <Button
+                  onClick={() => {
+                    setPopOpen(false);
+                  }}
+                  sizs="small"
+                >
+                  취소
+                </Button>
+                <Button
+                  onClick={() => buttonLeaveClickHandler(data.row)}
+                  sizs="small"
+                  variant="contained"
+                >
+                  확인
+                </Button>
+              </DialogActions>
+            </Popover>
+          </div>
+        );
+      } else {
+        return (
+          <Button variant="outlined" size="small" color="info" disabled>
+            승인
+          </Button>
+        );
+      }
+    },
+  };
 
   const onSelectedRowHandler = (data) => {
     console.log(data);
@@ -144,7 +196,7 @@ const UserList = () => {
       {!Loading && (
         <DataGrid
           rows={Users}
-          columns={columns}
+          columns={[...columns, leaveButtonColumn]}
           autoHeight
           pageSize={5}
           rowsPerPageOptions={[5]}

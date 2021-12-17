@@ -1,31 +1,55 @@
 import { FormControlLabel, Grid, Switch, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import AuthContext from "../../store/auth-context";
 
 const SecondAuthentication = (props) => {
   const { value } = props;
-  const [invisible, setInvisible] = useState(false);
-  const handleBadgeVisibility = () => {
-    setInvisible((prev) => !prev);
-  };
+  const authCtx = useContext(AuthContext);
+  const [invisible, setInvisible] = useState(() => authCtx.otp === "Y");
+
   const [secret, setsecret] = useState("");
   const [url, seturl] = useState("");
   const [code, setcode] = useState("");
 
-  const getQR = () => {
-    axios.post("/api/auth").then((res) => {
+  const getQR = useCallback(() => {
+    axios.get("/api/auth/" + authCtx.email).then((res) => {
       console.log(res.data);
-      setsecret(res.data.secret.base32);
+      setsecret(res.data.secret);
       seturl(res.data.url);
     });
+  }, [authCtx.email]);
+
+  useEffect(() => {
+    if (authCtx.otp === "Y") getQR();
+    return () => {};
+  }, [authCtx.otp, getQR]);
+
+  const handleBadgeVisibility = () => {
+    if (authCtx.otp === "N") {
+      getQR();
+      authCtx.otp = "Y";
+      setInvisible((prev) => !prev);
+    } else {
+      axios
+        .put("/api/auth/" + authCtx.email)
+        .then((res) => {
+          console.log("비활성화 성공", res);
+          authCtx.otp = "N";
+          setInvisible(false);
+        })
+        .catch((err) => {
+          console.log("err: ", err);
+        });
+    }
   };
 
   useEffect(() => {
-    if (value === 4) {
+    if (authCtx.otp === "Y") {
       getQR();
     }
-  }, [value]);
+  }, [authCtx.otp, getQR]);
 
   return (
     <Grid container sx={{ textAlign: "center" }} justifyContent="center">
@@ -51,29 +75,6 @@ const SecondAuthentication = (props) => {
               }}
             />
             {url && <img src={url} alt="qrURL" />}
-            <br />
-            {/* <input
-              id="code"
-              onChange={(e) => {
-                setcode(e.target.value);
-              }}
-              value={code}
-            />
-
-            <button
-              onClick={() => {
-                const body = {
-                  code,
-                  secret,
-                };
-                console.log(body);
-                axios.post("/api/auth/verify", body).then((res) => {
-                  console.log(res);
-                });
-              }}
-            >
-              확인
-            </button> */}
           </Box>
         )}
       </Grid>

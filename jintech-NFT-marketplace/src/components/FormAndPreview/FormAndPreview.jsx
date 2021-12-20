@@ -49,7 +49,10 @@ class FormAndPreview extends Component {
   }
 
   async loadBlockchainData() {
-    const web3 = window.web3;
+    //const web3 = window.web3;
+    const Web3 = require("web3");
+    // web3 lib instance
+    const web3 = new Web3(window.ethereum);
     // Load account
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });

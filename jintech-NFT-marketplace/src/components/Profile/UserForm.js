@@ -1,20 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormGroup,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Button, FormControl, Grid, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 const UserForm = () => {
   const authCtx = useContext(AuthContext);
   const [passwordIsTouched, setpasswordIsTouched] = useState(false);
   const [loading, setloading] = useState(false);
+  const [Balance, setBalance] = useState(0);
   const [User, setUser] = useState({
     email: "",
     address: "",
@@ -30,6 +24,15 @@ const UserForm = () => {
     setTimeout(() => {
       setloading(false);
     }, 500);
+  };
+
+  const getWalletInfo = async () => {
+    const web3 = window.web3;
+    const accounts = await web3.eth.getAccounts();
+    let accountBalance = await web3.eth.getBalance(accounts[0]);
+
+    accountBalance = web3.utils.fromWei(accountBalance, "Ether");
+    setBalance(accountBalance + " Ξ");
   };
 
   const formChangeHandler = (e, type) => {
@@ -56,8 +59,9 @@ const UserForm = () => {
     }
   };
 
-  const getUserInfo = useCallback(() => {
+  const getUserInfo = useCallback(async () => {
     console.log(authCtx.email);
+    getWalletInfo();
     if (authCtx.email) {
       axios
         .get(`/api/users/user/${authCtx.email}`)
@@ -138,7 +142,17 @@ const UserForm = () => {
                 Load
               </LoadingButton>
             </FormControl>
-
+            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+              <TextField
+                id="balance"
+                label="Balance"
+                defaultValue={Balance}
+                InputProps={{
+                  readOnly: true,
+                }}
+                variant="standard"
+              />
+            </FormControl>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
@@ -167,6 +181,7 @@ const UserForm = () => {
                 variant="standard"
               />
             </FormControl>
+
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 id="created"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import classes from "./Register.module.css";
 import Card from "../UI/Card/Card";
 import Input from "../UI/Input/Input";
@@ -6,13 +6,13 @@ import Button from "../UI/Button/Button";
 import axios from "axios";
 
 import Snackbar from "@mui/material/Snackbar";
-import { Alert, CircularProgress, LinearProgress, Stack } from "@mui/material";
+import { Alert, LinearProgress, Stack } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import useInput from "../../hooks/useInputreduce";
 
 const passwordValidator = (value) => value.trim().length > 5;
 const regEmail =
-  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+  /^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
 const emailValidator = (value) => regEmail.test(value);
 
 const Register = () => {
@@ -24,7 +24,7 @@ const Register = () => {
     hasError: emailHasError,
     valueChangeHandler: emailChangeHandler,
     valueBlurHandler: emailBlurHandler,
-    reset: resetEmail,
+    //reset: resetEmail,
     inputRef: emailInputRef,
   } = useInput(emailValidator);
 
@@ -34,7 +34,7 @@ const Register = () => {
     hasError: firstPasswordHasError,
     valueChangeHandler: firstPasswordChangeHandler,
     valueBlurHandler: firstPasswordBlurHandler,
-    reset: resetFirstPassword,
+    //reset: resetFirstPassword,
     inputRef: firstPasswordInputRef,
   } = useInput(passwordValidator);
 
@@ -44,7 +44,7 @@ const Register = () => {
     hasError: secondPasswordHasError,
     valueChangeHandler: secondPasswordChangeHandler,
     valueBlurHandler: secondPasswordBlurHandler,
-    reset: resetSecondPassword,
+    //reset: resetSecondPassword,
     inputRef: secondPasswordInputRef,
   } = useInput(passwordValidator);
 

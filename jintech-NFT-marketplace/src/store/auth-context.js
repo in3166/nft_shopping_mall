@@ -46,7 +46,7 @@ export const AuthContextProvider = (props) => {
 
   const [Token, setToken] = useState(initialToken);
   const userIsLoggedIn = !!Token; // true, false 값을 true, false Boolean 값으로 변환 ex. 빈문자열 -> false
-  console.log("Token ", Token);
+  //console.log("Token ", Token);
 
   // const isAdmin = Token
   //   ? JSON.parse(Token).address === process.env.REACT_APP_TEMP_ACCOUNT
@@ -56,6 +56,7 @@ export const AuthContextProvider = (props) => {
   const email = Token ? JSON.parse(Token).email : "";
   const leave = Token ? JSON.parse(Token).leave : "N";
   const otp = Token ? JSON.parse(Token).otp : "N";
+  
   console.log('otp: ', otp)
   const logoutHandler = useCallback(() => {
     setToken(null);

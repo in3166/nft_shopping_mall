@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router";
 
 // option: 1-loggedin / 0-not loggedin
@@ -7,17 +7,17 @@ import { useHistory } from "react-router";
 export default function auth(SpecificComponent, option, adminRoute = null) {
   const AuthCheck = (props) => {
     const history = useHistory();
-
+    console.log("hoc run");
     // server auth 검사는 아직 적용 안함.
     useEffect(() => {
       const token = JSON.parse(localStorage.getItem("nft_token"));
-      console.log("hoc token: ", token);
+      // console.log("hoc token: ", token);
       if (token?.accessToken) {
         const body = { token: token.accessToken };
         axios
           .post(`/api/users/auth`, body)
           .then((res) => {
-            console.log("res: ", res);
+            // console.log("res: ", res);
             if (!res.data.isLoggedIn) {
               if (option) {
                 history.push("/login");

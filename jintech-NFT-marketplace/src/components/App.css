@@ -5,3 +5,9 @@ input::-webkit-input-placeholder {
 input[type="color"]:hover {
   cursor: pointer;
 }
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 90% !important;
+  }
+}

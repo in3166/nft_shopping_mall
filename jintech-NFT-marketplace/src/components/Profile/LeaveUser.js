@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import AuthContext from "../../store/auth-context";
 import {
@@ -13,7 +13,6 @@ import {
   TextField,
 } from "@mui/material";
 import useInput from "../../hooks/useInputreduce";
-import { useHistory } from "react-router-dom";
 
 const validator = (data) => {
   if (data.length > 6) return true;

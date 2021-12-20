@@ -27,6 +27,7 @@ db.sequelize.sync().then(() => {
 });
 
 app.use("/", indexRouter);
+app.use("/api/files", require("./routes/files"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
 //app.use('/users', usersRouter);

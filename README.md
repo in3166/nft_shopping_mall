@@ -57,6 +57,11 @@ xxx버전 업그레이드함 xxx
   - `users` 테이블에 컬럼 추가
   - 라이브러리: `speakeasy`, `qrcode`
 
+- 이미지 업로드 (`multer`)
+  - `formData` 와 `{ header: { "content-type": "multipart/form-data" }` 를 사용하여 request를 보내야 한다.
+  - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
+  - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
+
 ### ignore
 
 - \*/node_modules

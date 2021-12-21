@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 /* 신 버전 추가 */
 import ImageContract from "../../abis/ImageContract.json";
 import ImageSaleContract from "../../abis/ImageSaleContract.json";

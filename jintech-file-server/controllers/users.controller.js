@@ -253,52 +253,66 @@ exports.update = (req, res) => {
 // Delete a User with the specified id in the request
 exports.requestDelete = (req, res) => {
   const email = req.params.email;
-
   const password = req.body.password;
+  const leave = req.body.leave;
   console.log("pw: ", password);
+
   if (!password) {
-    console.log("!");
-    User.update({ leave: "N" }, { where: { email: email } })
-      .then(async (data) => {
-        console.log("취소 성공: ", data);
-        res.status(200).send({ leave: "N", success: true });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(400).send({ message: err });
-      });
-  } else {
-    User.findOne({
-      where: {
-        email: email, // user email
-      },
-    })
-      .then(async (user) => {
-        console.log("reqdelete find: ", user);
-        const validPassword = await user.validPassword(password, user.password);
-        if (validPassword) {
-          User.update({ leave: "Y" }, { where: { email: email } })
-            .then(async (data) => {
-              console.log("success", data);
-              res.status(200).send({
-                message: "탈퇴 신청을 완료했습니다.",
-                success: true,
-                leave: "Y",
-              });
-            })
-            .catch((err) => {
-              res
-                .status(400)
-                .send({ message: "탈퇴 신청을 실패했습니다.", error: err });
-            });
-        } else {
-          res.status(400).send({ message: "비밀번호가 틀립니다." });
-        }
-      })
-      .catch((err) => {
-        console.log("reqdelete find err: ", err);
-      });
+    return res
+      .status(200)
+      .send({ success: false, message: "비밀번호가 없습니다." });
   }
+
+  User.findOne({
+    where: {
+      email: email, // user email
+    },
+  })
+    .then(async (user) => {
+      console.log("reqdelete find: ", user);
+      const validPassword = await user.validPassword(password, user.password);
+      if (!validPassword) {
+        return res
+          .status(200)
+          .send({ success: false, message: "비밀번호가 틀립니다." });
+      }
+
+      if (leave !== "Y") {
+        User.update({ leave: "Y" }, { where: { email: email } })
+          .then(async (data) => {
+            console.log("success", data);
+            res.status(200).send({
+              message: "탈퇴 신청을 완료했습니다.",
+              success: true,
+              leave: "Y",
+            });
+          })
+          .catch((err) => {
+            res
+              .status(400)
+              .send({ message: "탈퇴 신청을 실패했습니다.", error: err });
+          });
+      } else {
+        User.update({ leave: "N" }, { where: { email: email } })
+          .then(async (data) => {
+            console.log("취소 성공: ", data);
+            res
+              .status(200)
+              .send({
+                leave: "N",
+                success: true,
+                message: "탈퇴 신청을 취소했습니다.",
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(400).send({ message: err });
+          });
+      }
+    })
+    .catch((err) => {
+      console.log("reqdelete find err: ", err);
+    });
 };
 
 // Delete a User with the specified id in the request

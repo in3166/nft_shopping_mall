@@ -27,10 +27,11 @@ router.post("/login", users.login);
 // Update a user with id
 router.put("/:email", users.update);
 
-// 탈퇴 신청
-router.post("/:email", users.requestDelete);
-// Delete a user with email
-router.delete("/:email", users.delete);
+// 탈퇴 신청, 취소
+router.put("/profile/:email", users.requestDelete);
+
+// 탈퇴 승인
+router.delete("/:email", authJwt.isAdmin, users.delete);
 
 // delete a all user
 router.delete("/", users.deleteAll);

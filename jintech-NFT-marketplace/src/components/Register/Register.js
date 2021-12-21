@@ -202,6 +202,7 @@ const Register = () => {
           onBlur={emailBlurHandler}
           ref={emailInputRef}
           message="이메일 형식이 아닙니다."
+          autoComplete="username"
         />
 
         <Input
@@ -214,6 +215,7 @@ const Register = () => {
           onChange={firstPasswordChangeHandler}
           onBlur={firstPasswordBlurHandler}
           message="비밀번호를 6자리 이상 입력하세요."
+          autoComplete="new-password"
         />
 
         <Input
@@ -226,6 +228,7 @@ const Register = () => {
           onChange={secondPasswordChangeHandler}
           onBlur={secondPasswordBlurHandler}
           message="비밀번호를 6자리 이상 입력하세요."
+          autoComplete="new-password"
         />
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn}>

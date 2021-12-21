@@ -26,8 +26,7 @@ xxx버전 업그레이드함 xxx
 - db 추가
 - axios 설치
   @material-ui/core@4.12.3 @material-ui/icons@4.11.2 @material-ui/lab@4.0.0-alpha.60 @material-ui/x-grid@4.0.0-alpha.20
-- if(this.state.token_sale_contract){} 추가 in MyTokens.jsx, AllCry...
-  // - mytoken.jsx, allcrt..에 local 메서드 생성자에 추가 (에러 때문)
+
 
 - 메일 인증 라이브러리: `npm install nodemailer`
   - 서버에 config 추가, controllers에 함수 추가
@@ -62,6 +61,18 @@ xxx버전 업그레이드함 xxx
   - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
   - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
 
+## Warning
+- `Can't perform a React state update on an unmounted component.`
+  - unmount 된 컴포넌트에서 state 업데이트가 발생할 경우 
+  - `useEffect`에서 `isMounted` 변수(or state)를 clean-up 해준다.
+  - 클래스 컴포넌트의 경우 `componenetWillUnmount` 에서 수정!
+
+- `Unhandled Rejection (TypeError): Cannot read properties of null (reading 'methods')`
+  - if(this.state.token_sale_contract){} 추가 in MyTokens.jsx, AllCry..., UserNFTDetail.js
+  // - mytoken.jsx, allcrt..에 local 메서드 생성자에 추가 (에러 때문)
+
+- `Manifest: Line: 1, column: 1, Syntax error.`
+  - `index.html` manifest link 삭제
 ### ignore
 
 - \*/node_modules

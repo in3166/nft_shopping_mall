@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./Login.css";
 
 //session 을 위한 추가 당장은 필요 없는 듯
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -46,7 +45,7 @@ class Login extends Component {
   // }
 
   render() {
-    var token = this.props.setToken;
+    //var token = this.props.setToken;
     var email = this.state.email;
     var password = this.state.password;
     const { history } = this.props;
@@ -107,12 +106,14 @@ class Login extends Component {
           <label>Username</label>
           <input
             type="text"
+            autoComplete="username"
             onChange={(e) => this.setState({ email: e.target.value })}
           />
           <br />
           <label>Password</label>
           <input
             type="password"
+            autoComplete="current-password"
             onChange={(e) => this.setState({ password: e.target.value })}
           ></input>
 
@@ -135,7 +136,9 @@ class Login extends Component {
           >
             <DialogTitle>OTP</DialogTitle>
             <DialogContent>
-              <DialogContentText>OTP 번호 6자리를 입력하세요.</DialogContentText>
+              <DialogContentText>
+                OTP 번호 6자리를 입력하세요.
+              </DialogContentText>
               <TextField
                 autoFocus
                 margin="dense"

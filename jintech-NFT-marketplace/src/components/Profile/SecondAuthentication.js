@@ -1,11 +1,9 @@
-import { LoadingButton } from "@mui/lab";
 import {
   Backdrop,
   Button,
   CircularProgress,
   FormControlLabel,
   Grid,
-  Stack,
   Switch,
   TextField,
 } from "@mui/material";
@@ -93,7 +91,7 @@ const SecondAuthentication = (props) => {
           />
         </div>
         {invisible && (
-          <Box sx={{ p: 4, border: "1px solid grey", position: "relative" }}>
+          <Box sx={{ p: 3, border: "1px solid grey", position: "relative" }}>
             <TextField
               id="outlined-read-only-input"
               label="Secret Key"
@@ -102,6 +100,7 @@ const SecondAuthentication = (props) => {
               InputProps={{
                 readOnly: true,
               }}
+              title={secret}
             />
             {url && <img src={url} alt="qrURL" />}
             <br />

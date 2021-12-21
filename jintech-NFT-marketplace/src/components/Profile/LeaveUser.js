@@ -29,9 +29,12 @@ const UserForm = () => {
     inputRef: passwordRef,
     valueChangeHandler: passwordChangeHandler,
     valueBlurHandler: passwordBlurHandler,
-    reset: resetPassword,
+    // reset: resetPassword,
   } = useInput(validator);
+
   const [leave, setLeave] = useState(authCtx.leave);
+  console.log("state leave: ", leave);
+  console.log("authCtx leave: ", authCtx.leave);
 
   const submintHandler = (e) => {
     e.preventDefault();
@@ -45,33 +48,19 @@ const UserForm = () => {
 
     const body = {
       password,
+      leave,
     };
 
     axios
-      .post("/api/users/" + authCtx.email, body)
+      .put("/api/users/profile/" + authCtx.email, body)
       .then((res) => {
         if (res.data.success) {
           authCtx.leave = res.data.leave;
+          authCtx.updateToken({ leave: res.data.leave });
           setLeave(res.data.leave);
-          alert("신청 성공");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setopen(false);
-      });
-  };
-
-  const cancelLeaveHandler = () => {
-    axios
-      .get("/api/users/leave/" + authCtx.email)
-      .then((res) => {
-        if (res.data.success) {
-          authCtx.leave = res.data.leave;
-          setLeave(res.data.leave);
-          alert("취소 성공");
+          alert(res.data.message);
+        } else {
+          alert(res.data.message);
         }
       })
       .catch((err) => {
@@ -137,32 +126,21 @@ const UserForm = () => {
               onChange={passwordChangeHandler}
               onBlur={passwordBlurHandler}
               ref={passwordRef}
+              autoComplete="current-password"
             />
           </FormControl>
-          {leave !== "Y" && (
-            <Button
-              variant="contained"
-              type="button"
-              style={{ marginTop: "20px" }}
-              color="secondary"
-              onClick={() => {
-                setopen(true);
-              }}
-            >
-              탈퇴 신청
-            </Button>
-          )}
-          {leave === "Y" && (
-            <Button
-              variant="outlined"
-              type="button"
-              style={{ marginTop: "20px" }}
-              color="secondary"
-              onClick={cancelLeaveHandler}
-            >
-              신청 취소
-            </Button>
-          )}
+
+          <Button
+            variant={leave !== "Y" ? "contained" : "outlined"}
+            type="button"
+            style={{ marginTop: "20px" }}
+            color="secondary"
+            onClick={() => {
+              setopen(true);
+            }}
+          >
+            {leave !== "Y" ? "탈퇴 신청" : "신청 취소"}
+          </Button>
         </Grid>
       </Grid>
     </form>

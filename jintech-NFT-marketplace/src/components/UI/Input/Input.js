@@ -29,6 +29,7 @@ const Input = React.forwardRef((props, ref) => {
           //value={enteredEmail}
           onChange={props.onChange}
           onBlur={props.onBlur}
+          autoComplete={props.autoComplete}
         />
         {props.isValid && props.message && (
           <p className={classes.errorText}>{props.message}</p>

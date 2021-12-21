@@ -129,32 +129,36 @@ class NftDetail extends Component {
     }
 
     const token_networkData = TokenContract.networks[networkId];
-    if (token_networkData) {
-      const abi = TokenContract.abi;
-      const address = token_networkData.address;
-      const token_contract = new web3.eth.Contract(abi, address);
-      this.setState({ token_contract });
-      // console.log(await token_contract.methods.totalSupply().call())
-    } else {
-      window.alert("Smart contract not deployed to detected network.");
-    }
+    if (this.state.token_sale_contract) {
+      if (token_networkData) {
+        const abi = TokenContract.abi;
+        const address = token_networkData.address;
+        const token_contract = new web3.eth.Contract(abi, address);
+        this.setState({ token_contract });
+        // console.log(await token_contract.methods.totalSupply().call())
+      } else {
+        window.alert("Smart contract not deployed to detected network.");
+      }
 
-    const token_sale_networkData = TokenSaleContract.networks[networkId];
-    if (token_sale_networkData) {
-      const abi = TokenSaleContract.abi;
-      const address = token_sale_networkData.address;
-      const token_sale_contract = new web3.eth.Contract(abi, address);
-      this.setState({ token_sale_contract });
-      // console.log(token_sale_contract)
+      const token_sale_networkData = TokenSaleContract.networks[networkId];
+      if (token_sale_networkData) {
+        const abi = TokenSaleContract.abi;
+        const address = token_sale_networkData.address;
+        const token_sale_contract = new web3.eth.Contract(abi, address);
+        this.setState({ token_sale_contract });
+        // console.log(token_sale_contract)
 
-      var token_price = await this.state.token_sale_contract.methods
-        .tokenPrice()
-        .call();
-      this.setState({ token_price: web3.utils.fromWei(token_price, "ether") });
-    } else {
-      window.alert("Smart contract not deployed to detected network.");
+        var token_price = await this.state.token_sale_contract.methods
+          .tokenPrice()
+          .call();
+        this.setState({
+          token_price: web3.utils.fromWei(token_price, "ether"),
+        });
+      } else {
+        window.alert("Smart contract not deployed to detected network.");
+      }
+      console.log("this state image token = ", this.state.imageData_token[0]);
     }
-    console.log("this state image token = ", this.state.imageData_token[0]);
   }
 
   buyEth = (key) => {
@@ -249,12 +253,12 @@ class NftDetail extends Component {
   };
 
   render() {
-      const nft_id_path = window.location.pathname.split("/");
-      const key = nft_id_path[nft_id_path.length - 1];
-      
-      console.log("key: ", key);
-      console.log("owner: ", this.state.owners[key]);
-      console.log("url : ", this.state.imageData_url[key]);
+    const nft_id_path = window.location.pathname.split("/");
+    const key = nft_id_path[nft_id_path.length - 1];
+
+    console.log("key: ", key);
+    console.log("owner: ", this.state.owners[key]);
+    console.log("url : ", this.state.imageData_url[key]);
     return (
       <div className={`contents ${styles.contents}`}>
         <div className="card page-head">

@@ -5,6 +5,7 @@ const AuthContext = React.createContext({
   isLoggedIn: false,
   login: (token) => {},
   logout: () => {},
+  updateToken: (data) => {},
   isAdmim: false,
   address: "",
   email: "",
@@ -46,18 +47,19 @@ export const AuthContextProvider = (props) => {
 
   const [Token, setToken] = useState(initialToken);
   const userIsLoggedIn = !!Token; // true, false 값을 true, false Boolean 값으로 변환 ex. 빈문자열 -> false
-  //console.log("Token ", Token);
+  console.log("Token ", Token);
 
   // const isAdmin = Token
   //   ? JSON.parse(Token).address === process.env.REACT_APP_TEMP_ACCOUNT
   //   : false;
-  const isAdmin = Token ? JSON.parse(Token).roles[0] === "ROLE_ADMIN" : false;
-  const address = Token ? JSON.parse(Token).address : "";
-  const email = Token ? JSON.parse(Token).email : "";
-  const leave = Token ? JSON.parse(Token).leave : "N";
-  const otp = Token ? JSON.parse(Token).otp : "N";
-  
-  console.log('otp: ', otp)
+  const isAdmin = Token ? JSON.parse(Token)?.roles[0] === "ROLE_ADMIN" : false;
+  const address = Token ? JSON.parse(Token)?.address : "";
+  const email = Token ? JSON.parse(Token)?.email : "";
+  const leave = Token ? JSON.parse(Token)?.leave : "N";
+  const otp = Token ? JSON.parse(Token)?.otp : "N";
+
+  console.log("otp: ", otp);
+
   const logoutHandler = useCallback(() => {
     setToken(null);
     localStorage.removeItem("nft_token");
@@ -79,6 +81,13 @@ export const AuthContextProvider = (props) => {
     logoutTimer = setTimeout(logoutHandler, remainingTime);
   };
 
+  const updateTokenHandler = (data) => {
+    let token = JSON.parse(Token);
+
+    token = { ...token, ...data };
+    localStorage.setItem("nft_token", JSON.stringify(token));
+  };
+
   useEffect(() => {
     if (tokenData) {
       logoutTimer = setTimeout(logoutHandler, tokenData.duration);
@@ -95,6 +104,7 @@ export const AuthContextProvider = (props) => {
     otp,
     login: loginHandler,
     logout: logoutHandler,
+    updateToken: updateTokenHandler,
   };
   return (
     <AuthContext.Provider value={contextValue}>

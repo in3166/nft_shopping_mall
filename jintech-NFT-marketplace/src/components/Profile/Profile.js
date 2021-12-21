@@ -1,4 +1,4 @@
-import { Box, Divider, Paper, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
 
 import React, { useState } from "react";
 import Card from "../UI/Card/Card";
@@ -39,10 +39,10 @@ const Profile = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  
+
   return (
     <Card>
-      <Box sx={{ p: 2, mt: 2 }}>
+      <Box sx={{ p: 2, mt: 0 }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -50,6 +50,8 @@ const Profile = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
           defaultChecked="1"
+          variant="scrollable"
+          scrollButtons="auto"
         >
           <Tab
             value={1}

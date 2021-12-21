@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 
 const initialInputState = {
   value: "",
@@ -24,12 +24,12 @@ const useInput = (validator) => {
     initialInputState
   );
   const inputRef = useRef();
-    
+
   const valueIsValid = validator(inputState.value);
   const hasError = !valueIsValid && inputState.isTouched;
 
   const valueChangeHandler = (e) => {
-    dispatch({ type: "INPUT", value: e.target.value});
+    dispatch({ type: "INPUT", value: e.target.value });
   };
 
   const valueBlurHandler = () => {

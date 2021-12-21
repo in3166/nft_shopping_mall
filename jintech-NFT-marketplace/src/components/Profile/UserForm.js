@@ -16,24 +16,26 @@ const UserForm = () => {
     createdAt: "",
     password: "",
   });
+  const [isMounted, setIsMounted] = useState(true);
 
   const getCurrentWalletAccount = async () => {
     setloading(true);
     const accounts = await window.web3.eth.getAccounts();
     formChangeHandler(accounts[0], "address");
+
     setTimeout(() => {
-      setloading(false);
+      if (isMounted) setloading(false);
     }, 500);
   };
 
-  const getWalletInfo = async () => {
+  const getWalletInfo = useCallback(async () => {
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     let accountBalance = await web3.eth.getBalance(accounts[0]);
 
     accountBalance = web3.utils.fromWei(accountBalance, "Ether");
-    setBalance(accountBalance + " Ξ");
-  };
+    if (isMounted) setBalance(accountBalance + " Ξ");
+  }, [isMounted]);
 
   const formChangeHandler = (e, type) => {
     switch (type) {
@@ -60,30 +62,35 @@ const UserForm = () => {
   };
 
   const getUserInfo = useCallback(async () => {
-    console.log(authCtx.email);
-    getWalletInfo();
     if (authCtx.email) {
       axios
         .get(`/api/users/user/${authCtx.email}`)
         .then((res) => {
           console.log(res);
-          setUser({
-            email: res.data.email,
-            address: res.data.address,
-            auth: res.data.auth,
-            createdAt: new Date(res.data.createdAt).toLocaleString(),
-            password: "",
-          });
+          if (isMounted) {
+            setUser({
+              email: res.data.email,
+              address: res.data.address,
+              auth: res.data.auth,
+              createdAt: new Date(res.data.createdAt).toLocaleString(),
+              password: "",
+            });
+          }
         })
         .catch((err) => {
           alert(err);
         });
     }
-  }, [authCtx.email]);
+  }, [authCtx.email, isMounted]);
 
   useEffect(() => {
     getUserInfo();
-  }, [getUserInfo]);
+    getWalletInfo();
+    return () => {
+      // clean up
+      setIsMounted(false);
+    };
+  }, [getUserInfo, getWalletInfo]);
 
   const submintHandler = (e) => {
     e.preventDefault();
@@ -107,6 +114,7 @@ const UserForm = () => {
                 onChange={(e) => {
                   formChangeHandler(e, "email");
                 }}
+                autoComplete="username"
               />
             </FormControl>
 
@@ -168,6 +176,7 @@ const UserForm = () => {
                 onChange={(e) => {
                   formChangeHandler(e, "password");
                 }}
+                autoComplete="current-password"
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">

@@ -5,13 +5,13 @@
 import React, { Component } from "react";
 import ImageContract from "../../abis/ImageContract.json";
 import TokenSaleContract from "../../abis/TokenSaleContract.json";
-
+import * as actions from "../../store/actions/user-action";
 import { Link, withRouter } from "react-router-dom";
-import AuthContext from "../../store/auth-context";
+
 import axios from "axios";
+import { connect } from "react-redux";
 
 class MyTokens extends Component {
-  static contextType = AuthContext;
   /**
    *  @update 2021-11-15 hash 부분 추가
    * @param {@} props
@@ -19,6 +19,7 @@ class MyTokens extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isMount: true,
       account: "",
       contract: null,
       totalSupply: 0,
@@ -39,13 +40,14 @@ class MyTokens extends Component {
       // Load account
       const accounts = await web3.eth.getAccounts();
       //일반 사용자의 계정 정보를 집어 넣어야 한다.
-      this.setState({ account: accounts[0] });
-
+      console.log(1);
+      console.log(this.state.isMount)
+      this.state.isMount && this.setState({ account: accounts[0] });
       const networkId = await web3.eth.net.getId();
       const networkData = ImageContract.networks[networkId];
-      console.log("accout[0]: ", accounts[0]);
-      console.log("networkId: ", networkId);
-      console.log("networkData: ", networkData);
+      // console.log("accout[0]: ", accounts[0]);
+      // console.log("networkId: ", networkId);
+      // console.log("networkData: ", networkData);
       if (networkData) {
         const abi = ImageContract.abi;
         const address = networkData.address;
@@ -54,7 +56,8 @@ class MyTokens extends Component {
         //  console.log("address: ", address);
         //  console.log("contract: ", contract);
         // console.log(contract)
-        this.setState({ contract });
+        console.log(2);
+        this.state.isMount && this.setState({ contract });
         // totalSupply() : 발행된 총 토큰의 개수를 리턴함.
         // balanceOf() : _owner가 가진 계좌 잔고를 리턴함.
         // transfer() : _to 주소로 _value 만큼의 이더를 전송함.
@@ -64,36 +67,43 @@ class MyTokens extends Component {
         //  console.log("totalSupply: ");
         const totalSupply = await contract?.methods?.totalSupply()?.call();
         // console.log("totalSupply: ", totalSupply);
-        this.setState({ totalSupply });
+        console.log(3);
+        this.state.isMount && this.setState({ totalSupply });
 
         // Load NFTs
         for (var i = 1; i <= totalSupply; i++) {
           const id = await contract.methods.images(i - 1).call();
           //   console.log("id: ", id);
-          this.setState({
-            images: [...this.state.images, id],
-          });
+          console.log(4);
+          this.state.isMount &&
+            this.setState({
+              images: [...this.state.images, id],
+            });
         }
         // Load Owner
         for (i = 1; i <= totalSupply; i++) {
           const owner = await contract.methods.ownerOf(i - 1).call();
           // console.log(owner)
           //  console.log("owner: ", owner);
-          this.setState({
-            owners: [...this.state.owners, owner],
-          });
+          console.log(5);
+          this.state.isMount &&
+            this.setState({
+              owners: [...this.state.owners, owner],
+            });
         }
         // Load NFTs Data
         for (i = 1; i <= totalSupply; i++) {
           const metadata = await contract.methods.imageData(i - 1).call();
           // console.log("metadata: ", metadata);
           // console.log(metadata)
-          this.setState({
-            imageData_name: [...this.state.imageData_name, metadata.name],
-            imageData_price: [...this.state.imageData_price, metadata.price],
-            imageData_token: [...this.state.imageData_token, metadata.token],
-            imageData_url: [...this.state.imageData_url, metadata.url],
-          });
+          console.log(6);
+          this.state.isMount &&
+            this.setState({
+              imageData_name: [...this.state.imageData_name, metadata.name],
+              imageData_price: [...this.state.imageData_price, metadata.price],
+              imageData_token: [...this.state.imageData_token, metadata.token],
+              imageData_url: [...this.state.imageData_url, metadata.url],
+            });
         }
       } else {
         window.alert("Smart contract not deployed to detected network.");
@@ -105,7 +115,8 @@ class MyTokens extends Component {
         const abi = TokenSaleContract.abi;
         const address = sale_networkData.address;
         const token_sale_contract = new web3.eth.Contract(abi, address);
-        this.setState({ token_sale_contract });
+        console.log(7);
+        this.state.isMount && this.setState({ token_sale_contract });
         // console.log(token_sale_contract)
 
         if (this.state.token_sale_contract) {
@@ -113,9 +124,11 @@ class MyTokens extends Component {
             .tokenPrice()
             .call();
           //    console.log("token_price: ", token_price);
-          this.setState({
-            token_price: web3.utils.fromWei(token_price, "ether"),
-          });
+          console.log(8);
+          this.state.isMount &&
+            this.setState({
+              token_price: web3.utils.fromWei(token_price, "ether"),
+            });
         }
       } else {
         window.alert("Smart contract not deployed to detected network.");
@@ -127,24 +140,33 @@ class MyTokens extends Component {
   }
 
   async componentDidMount() {
-    const accounts = await window.web3.eth.getAccounts();
+    const accounts = await window?.web3?.eth?.getAccounts();
+    const { user } = this.props;
+    console.log("prop user", user);
 
-    await axios.get(`/api/users/user/${this.context.email}`).then((res) => {
-      if (accounts[0] !== res.data.address) {
-        const { history } = this.props;
-        if (this.context.isLoggedIn) {
-          alert("지갑 주소가 맞지 않습니다.");
-          history.replace("/");
+    if (user && user.email !== "") {
+      await axios.get(`/api/users/user/${user?.email}`).then((res) => {
+        if (accounts[0] !== res.data.address) {
+          const { history } = this.props;
+          if (user.isLoggedIn) {
+            alert("지갑 주소가 맞지 않습니다.");
+            history.replace("/");
+          }
+          //user.address = accounts[0];
+          // else if (!this.context.isLoggedIn) {
+          //   alert("로그인 하세요.");
+          //   history.replace("/login");
+          // }
         }
-        this.context.address = accounts[0];
-        // else if (!this.context.isLoggedIn) {
-        //   alert("로그인 하세요.");
-        //   history.replace("/login");
-        // }
-      }
-    });
+      });
 
-    await this?.loadBlockchainData();
+      await this?.loadBlockchainData();
+    }
+  }
+
+  componentWillUnmount() {
+    console.log("unmount");
+    this.setState({ ismount: false });
   }
 
   /*
@@ -242,4 +264,16 @@ class MyTokens extends Component {
   }
 }
 
-export default withRouter(MyTokens);
+const mapStateToProps = (state) => ({
+  user: state.user.user,
+  token: state.user.token,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(actions.logoutAction()),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(MyTokens));

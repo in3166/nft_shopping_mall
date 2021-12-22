@@ -1,29 +1,32 @@
 import axios from "axios";
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { authCheckAction } from "../store/actions/user-action";
+import { userAction } from "../store/reducers/user-slice";
 
 // option: 1-loggedin / 0-not loggedin
 
 export default function auth(SpecificComponent, option, adminRoute = null) {
   const AuthCheck = (props) => {
+    const user = useSelector((state) => state.user);
     const history = useHistory();
     console.log("hoc run");
+    const dispatch = useDispatch();
     // server auth 검사는 아직 적용 안함.
     useEffect(() => {
       const token = JSON.parse(localStorage.getItem("nft_token"));
       // console.log("hoc token: ", token);
-      if (token?.accessToken) {
-        const body = { token: token.accessToken };
-        axios
-          .post(`/api/users/auth`, body)
+      if (token) {
+        dispatch(authCheckAction(token))
           .then((res) => {
-            // console.log("res: ", res);
-            if (!res.data.isLoggedIn) {
+            console.log("hoc res: ", res);
+            if (!res.isLoggedIn) {
               if (option) {
                 history.push("/login");
               }
               // Loggined in Status
-            } else if (adminRoute && !res.data.isAdmin) {
+            } else if (adminRoute && !res.isAdmin) {
               // supposed to be Admin page, but not admin person wants to go inside
               history.push("/");
             } else if (option === false) {
@@ -33,19 +36,16 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
           })
           .catch((err) => {
             console.log(err);
-            alert(err);
+            alert("!: ", err);
             history.push("/login");
           });
-      } else if (
-        !token?.accessToken &&
-        history.location.pathname !== "/login"
-      ) {
+      } else if (!token && history.location.pathname !== "/login") {
         alert("로그인 하세요.");
         history.push("/login");
       }
-    }, [history]);
+    }, [history, dispatch]);
 
-    return <SpecificComponent {...props} />;
+    return <SpecificComponent {...props} user={user} />;
   };
   return AuthCheck;
 }

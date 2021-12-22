@@ -20,7 +20,7 @@ router.get("/:email", otps.findOne);
 router.put("/:email", (req, res) => {
   const email = req.params.email;
   console.log("email: ", email);
-  User.update({ otp: "N" }, { where: { email: email } })
+  User.update({ otp: false }, { where: { email: email } })
     .then((data) => {
       console.log("success: ", data);
       res.status(200).send({
@@ -49,6 +49,7 @@ router.post("/verify", async (req, res) => {
     });
     console.log("verify: ", verify);
     res.status(200).send({
+      success: true,
       verify,
     });
   }

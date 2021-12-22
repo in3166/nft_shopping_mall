@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
 import {
   Button,
   Dialog,
@@ -13,15 +12,18 @@ import {
   TextField,
 } from "@mui/material";
 import useInput from "../../hooks/useInputreduce";
+import { useDispatch } from "react-redux";
+import { userAction } from "../../store/reducers/user-slice";
 
 const validator = (data) => {
   if (data.length > 6) return true;
   return false;
 };
 
-const UserForm = () => {
-  const authCtx = useContext(AuthContext);
+const UserForm = (props) => {
+  const { user } = props.user;
   const [open, setopen] = useState(false);
+
   const {
     value: password,
     valueIsValid: passwordIsValid,
@@ -32,9 +34,9 @@ const UserForm = () => {
     // reset: resetPassword,
   } = useInput(validator);
 
-  const [leave, setLeave] = useState(authCtx.leave);
-  console.log("state leave: ", leave);
-  console.log("authCtx leave: ", authCtx.leave);
+  const [leave, setLeave] = useState(user.leave);
+
+  const dispatch = useDispatch();
 
   const submintHandler = (e) => {
     e.preventDefault();
@@ -52,11 +54,14 @@ const UserForm = () => {
     };
 
     axios
-      .put("/api/users/profile/" + authCtx.email, body)
+      .put("/api/users/profile/" + user.email, body)
       .then((res) => {
         if (res.data.success) {
-          authCtx.leave = res.data.leave;
-          authCtx.updateToken({ leave: res.data.leave });
+          dispatch(
+            userAction.replaceUserInfo({
+              user: { ...user, leave: res.data.leave },
+            })
+          );
           setLeave(res.data.leave);
           alert(res.data.message);
         } else {
@@ -131,7 +136,7 @@ const UserForm = () => {
           </FormControl>
 
           <Button
-            variant={leave !== "Y" ? "contained" : "outlined"}
+            variant={!leave ? "contained" : "outlined"}
             type="button"
             style={{ marginTop: "20px" }}
             color="secondary"
@@ -139,7 +144,7 @@ const UserForm = () => {
               setopen(true);
             }}
           >
-            {leave !== "Y" ? "탈퇴 신청" : "신청 취소"}
+            {!leave ? "탈퇴 신청" : "신청 취소"}
           </Button>
         </Grid>
       </Grid>

@@ -1,26 +1,23 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
+
 import { Button, FormControl, Grid, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useSelector } from "react-redux";
 
-const UserForm = () => {
-  const authCtx = useContext(AuthContext);
+const UserForm = (props) => {
   const [passwordIsTouched, setpasswordIsTouched] = useState(false);
   const [loading, setloading] = useState(false);
   const [Balance, setBalance] = useState(0);
-  const [User, setUser] = useState({
-    email: "",
-    address: "",
-    auth: "",
-    createdAt: "",
-    password: "",
-  });
+  console.log("====================================");
+
   const [isMounted, setIsMounted] = useState(true);
 
+  // 현재 지갑 address load
   const getCurrentWalletAccount = async () => {
     setloading(true);
     const accounts = await window.web3.eth.getAccounts();
+    console.log(accounts[0], "address")
     formChangeHandler(accounts[0], "address");
 
     setTimeout(() => {
@@ -32,10 +29,30 @@ const UserForm = () => {
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     let accountBalance = await web3.eth.getBalance(accounts[0]);
-
+    console.log("getwallert");
     accountBalance = web3.utils.fromWei(accountBalance, "Ether");
     if (isMounted) setBalance(accountBalance + " Ξ");
   }, [isMounted]);
+
+  useEffect(() => {
+    // getUserInfo();
+    //setIsMounted(true);
+    getWalletInfo();
+
+    return () => {
+      setIsMounted(false);
+    };
+  }, [getWalletInfo]);
+
+  // const reduxUser = useSelector((state) => state?.user?.user);
+  const { user: users } = props.user;
+  const [User, setUser] = useState({
+    email: users?.email,
+    address: users?.userAddress,
+    auth: users?.email_verification,
+    createdAt: users?.createdAt && new Date(users?.createdAt).toLocaleString(),
+    password: "",
+  });
 
   const formChangeHandler = (e, type) => {
     switch (type) {
@@ -61,42 +78,32 @@ const UserForm = () => {
     }
   };
 
-  const getUserInfo = useCallback(async () => {
-    if (authCtx.email) {
-      axios
-        .get(`/api/users/user/${authCtx.email}`)
-        .then((res) => {
-          console.log(res);
-          if (isMounted) {
-            setUser({
-              email: res.data.email,
-              address: res.data.address,
-              auth: res.data.auth,
-              createdAt: new Date(res.data.createdAt).toLocaleString(),
-              password: "",
-            });
-          }
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    }
-  }, [authCtx.email, isMounted]);
-
-  useEffect(() => {
-    getUserInfo();
-    getWalletInfo();
-    return () => {
-      // clean up
-      setIsMounted(false);
-    };
-  }, [getUserInfo, getWalletInfo]);
+  // const getUserInfo = useCallback(async () => {
+  //   if (reduxUser.email) {
+  //     axios
+  //       .get(`/api/users/user/${reduxUser.email}`)
+  //       .then((res) => {
+  //         console.log(res);
+  //         if (isMounted) {
+  //           setUser({
+  //             email: res.data.email,
+  //             address: res.data.address,
+  //             auth: res.data.email_verification,
+  //             createdAt: new Date(res.data.createdAt).toLocaleString(),
+  //             password: "",
+  //           });
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         alert(err);
+  //       });
+  //   }
+  // }, [reduxUser.email, isMounted]);
 
   const submintHandler = (e) => {
     e.preventDefault();
     console.log(User);
   };
-
   return (
     <form onSubmit={submintHandler}>
       <Grid container sx={{ textAlign: "center" }} justifyContent="center">
@@ -154,7 +161,7 @@ const UserForm = () => {
               <TextField
                 id="balance"
                 label="Balance"
-                defaultValue={Balance}
+                value={Balance}
                 InputProps={{
                   readOnly: true,
                 }}

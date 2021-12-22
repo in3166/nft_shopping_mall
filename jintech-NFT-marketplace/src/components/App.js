@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from "../store/actions/user-action";
 import "./App.css";
 import Web3 from "web3";
 
@@ -62,10 +64,13 @@ class App extends Component {
   }
 
   componentDidMount = async () => {
+    const { token, getLocalToken, user } = this.props;
+    await getLocalToken();
     await this.loadWeb3();
     await this.loadBlockchainData();
     await this.setMetaData();
     await this.setMintBtnTimer();
+    // console.log("token: ", token, user);
   };
 
   setMintBtnTimer = () => {
@@ -364,7 +369,6 @@ class App extends Component {
       });
   };
   */
-
   render() {
     /* 로그인 버튼으로 로그인 했을때만 mint nft 메뉴가 보이도록 전환 하기 위해  일단 주석처리 update 2015-11-15
     if(!this.state.token){
@@ -380,78 +384,80 @@ class App extends Component {
     // console.log(this.state);
     // console.log("this.state.metamaskConnected: ", this.state.metamaskConnected);
     return (
-      <AuthContextProvider>
-        <div className="container">
-          {/* metamask 와 연결 되었는가? */}
-          {this.state.metamaskConnected !== undefined &&
-          !this.state.metamaskConnected ? (
-            /* 아니면 연결 창으로 이동 */
-            <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
-          ) : (
-            /*
+      <div className="container">
+        {/* metamask 와 연결 되었는가? */}
+        {this.state.metamaskConnected !== undefined &&
+        !this.state.metamaskConnected ? (
+          /* 아니면 연결 창으로 이동 */
+          <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
+        ) : (
+          /*
         ) : !this.state.contractDetected ? (
           <Loading />
         ) : this.state.loading ? (
           <Loading />
           */
-            <>
-              <BrowserRouter>
-                {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
-                <Navbar
-                  permission={
-                    this.state.account === process.env.REACT_APP_TEMP_ACCOUNT
-                      ? true
-                      : false
-                  }
-                  history={this.props.history}
-                />
-                <Route
-                  path="/"
-                  exact
-                  render={() => (
-                    <AccountDetails
-                      accountAddress={this.state.accountAddress}
-                      accountBalance={this.state.accountBalance}
-                    />
-                  )}
-                />
-                <Route
-                  path="/mint"
-                  component={Auth(() => (
-                    <FormAndPreview
-                      mintMyNFT={this.mintMyNFT}
-                      nameIsUsed={this.state.nameIsUsed}
-                      colorIsUsed={this.state.colorIsUsed}
-                      colorsUsed={this.state.colorsUsed}
-                      setMintBtnTimer={this.setMintBtnTimer}
-                    />
-                  ))}
-                />
-                <Route
-                  path="/marketplace"
-                  render={() => (
-                    <AllCryptoBoys
-                      accountAddress={this.state.accountAddress}
-                      totalTokensMinted={this.state.totalTokensMinted}
-                      changeTokenPrice={this.changeTokenPrice}
-                      toggleForSale={this.toggleForSale}
-                    />
-                  )}
-                />
+          <>
+            <BrowserRouter>
+              {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
+              <Navbar
+                permission={
+                  this.state.account === process.env.REACT_APP_TEMP_ACCOUNT
+                    ? true
+                    : false
+                }
+                history={this.props.history}
+              />
+              <Route
+                path="/"
+                exact
+                render={() => (
+                  <AccountDetails
+                    accountAddress={this.state.accountAddress}
+                    accountBalance={this.state.accountBalance}
+                  />
+                )}
+              />
+              <Route
+                path="/mint"
+                component={Auth(() => (
+                  <FormAndPreview
+                    mintMyNFT={this.mintMyNFT}
+                    nameIsUsed={this.state.nameIsUsed}
+                    colorIsUsed={this.state.colorIsUsed}
+                    colorsUsed={this.state.colorsUsed}
+                    setMintBtnTimer={this.setMintBtnTimer}
+                  />
+                ))}
+              />
+              <Route
+                path="/marketplace"
+                render={() => (
+                  <AllCryptoBoys
+                    accountAddress={this.state.accountAddress}
+                    totalTokensMinted={this.state.totalTokensMinted}
+                    changeTokenPrice={this.changeTokenPrice}
+                    toggleForSale={this.toggleForSale}
+                  />
+                )}
+              />
 
-                <Route
-                  path="/mytokens"
-                  component={Auth(() => (
+              <Route
+                path="/mytokens"
+                component={Auth(
+                  () => (
                     <MyTokens
                       accountAddress={this.state.accountAddress}
                       totalTokensMinted={this.state.totalTokensMinted}
                       changeTokenPrice={this.changeTokenPrice}
                       toggleForSale={this.toggleForSale}
                     />
-                  ))}
-                />
+                  ),
+                  true
+                )}
+              />
 
-                {/*  2021-11-21 주석처리 
+              {/*  2021-11-21 주석처리 
               <Route
                 path="/queries"
                 render={() => (
@@ -460,37 +466,39 @@ class App extends Component {
               />
                 */}
 
-                <Route path="/nft-detail/:name" component={NtfDetail} />
-                <Route
-                  path="/user-nft-detail/:name"
-                  component={UserNFTDetail}
-                />
+              <Route path="/nft-detail/:name" component={NtfDetail} />
+              <Route path="/user-nft-detail/:name" component={UserNFTDetail} />
 
-                <Route
-                  path="/userlist"
-                  component={Auth(UserList, true, true)}
-                />
-                <Route path="/login" component={Auth(Login, false)} />
-                <Route path="/profile" component={Auth(Profile, true)} />
-                <Route path="/upload" component={Auth(UserUpload, true)} />
+              <Route path="/userlist" component={Auth(UserList, true, true)} />
+              <Route path="/login" component={Auth(Login, false)} />
+              <Route path="/profile" component={Auth(Profile, true)} />
+              <Route path="/upload" component={Auth(UserUpload, true)} />
 
-                <Route path="/register">
-                  <Register></Register>
-                </Route>
+              <Route path="/register">
+                <Register></Register>
+              </Route>
 
-                <Route path="/success">
-                  <AuthenticationSuccess></AuthenticationSuccess>
-                </Route>
-                <Route path="/fail">
-                  <AuthenticationFail></AuthenticationFail>
-                </Route>
-              </BrowserRouter>
-            </>
-          )}
-        </div>
-      </AuthContextProvider>
+              <Route path="/success">
+                <AuthenticationSuccess></AuthenticationSuccess>
+              </Route>
+              <Route path="/fail">
+                <AuthenticationFail></AuthenticationFail>
+              </Route>
+            </BrowserRouter>
+          </>
+        )}
+      </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  user: state.user.user,
+  token: state.user.token,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getLocalToken: () => dispatch(actions.getLocalTokenAction()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

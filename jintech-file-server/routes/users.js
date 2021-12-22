@@ -21,6 +21,9 @@ router.post("/allUsers", authJwt.isAdmin, users.findAll);
 // Retrieve a single user with id
 router.get("/user/:email", users.findOne);
 
+//router.post("/authentication", users.authentication);
+router.get("/email/:email/:code", users.verify);
+
 //router.post("/login", authJwt.isModerator, users.login);
 router.post("/login", users.login);
 
@@ -36,7 +39,6 @@ router.delete("/:email", authJwt.isAdmin, users.delete);
 // delete a all user
 router.delete("/", users.deleteAll);
 
-//router.post("/authentication", users.authentication);
-router.get("/verify", users.verify);
+
 
 module.exports = router;

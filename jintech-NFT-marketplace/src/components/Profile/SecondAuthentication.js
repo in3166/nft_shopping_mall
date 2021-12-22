@@ -9,42 +9,55 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import AuthContext from "../../store/auth-context";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authCheckAction } from "../../store/actions/user-action";
+import { userAction } from "../../store/reducers/user-slice";
 
 const SecondAuthentication = (props) => {
-  // const { value } = props;
-  const authCtx = useContext(AuthContext);
-  const [invisible, setInvisible] = useState(() => authCtx.otp === "Y");
+  const { user } = props.user;
 
+  const [invisible, setInvisible] = useState(false);
   const [secret, setsecret] = useState("");
   const [url, seturl] = useState("");
   //const [code, setcode] = useState("");
 
-  const getQR = useCallback(() => {
-    axios.get("/api/auth/" + authCtx.email).then((res) => {
-      console.log(res.data);
-      setsecret(res.data.secret);
-      seturl(res.data.url);
+  useEffect(() => {
+    axios.get("/api/users/user/" + user?.email).then((res) => {
+      setInvisible(res.data.otp);
     });
-  }, [authCtx.email]);
+  }, [user.email]);
+
+  const getQR = useCallback(() => {
+    setLoading(true);
+    axios
+      .get("/api/auth/" + user.email)
+      .then((res) => {
+        console.log(res.data);
+        setsecret(res.data.secret);
+        seturl(res.data.url);
+      })
+      .catch((err) => {
+        alert(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user.email]);
 
   useEffect(() => {
-    if (authCtx.otp === "Y") getQR();
+    if (invisible) getQR();
     return () => {};
-  }, [authCtx.otp, getQR]);
+  }, [getQR, invisible]);
 
   const handleBadgeVisibility = () => {
-    if (authCtx.otp === "N") {
+    if (!invisible) {
       getQR();
-      authCtx.otp = "Y";
       setInvisible((prev) => !prev);
     } else {
       axios
-        .put("/api/auth/" + authCtx.email)
+        .put("/api/auth/" + user.email)
         .then((res) => {
-          console.log("비활성화 성공", res);
-          authCtx.otp = "N";
           setInvisible(false);
         })
         .catch((err) => {
@@ -53,16 +66,10 @@ const SecondAuthentication = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (authCtx.otp === "Y") {
-      getQR();
-    }
-  }, [authCtx.otp, getQR]);
-
   const [loading, setLoading] = useState(false);
   const resetQRHandler = () => {
     setLoading(true);
-    const body = { email: authCtx.email };
+    const body = { email: user.email };
     axios
       .post("/api/auth/", body)
       .then((res) => {

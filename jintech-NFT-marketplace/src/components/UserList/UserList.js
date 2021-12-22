@@ -1,15 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import styles from "./UserList.module.css";
 import Card from "../UI/Card/Card";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
 import { useHistory } from "react-router";
 import {
   Button,
@@ -20,6 +13,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const columns = [
   {
@@ -29,9 +23,9 @@ const columns = [
     align: "center",
     headerAlign: "center",
   },
-  { field: "email", headerName: "E-Mail", width: 230 },
+  { field: "email", headerName: "E-Mail", width: 210 },
   {
-    field: "auth",
+    field: "email_verification",
     headerName: "이메일 인증",
     width: 110,
     align: "center",
@@ -54,7 +48,9 @@ const columns = [
 ];
 
 const UserList = () => {
-  const authCtx = useContext(AuthContext);
+  const [isMount, setisMount] = useState(true);
+  const state = useSelector((state) => state.user);
+  console.log(state);
   const [Users, setUsers] = useState([]);
   const [PopOpen, setPopOpen] = useState(false);
   const [Loading, setLoading] = useState(false);
@@ -63,38 +59,38 @@ const UserList = () => {
 
   const getUsers = useCallback(() => {
     setLoading(true);
-    if (authCtx.isAdmin) {
-      const body = {
-        token: authCtx.token,
-      };
-      axios
-        .post("api/users/allUsers", body)
-        .then((res) => {
-          console.log(res);
-          const users = res.data.map((v, i) => {
-            // 관리자 db 열 없음
-            return {
-              id: i,
-              email: v.email,
-              created: new Date(v.createdAt).toLocaleString(),
-              auth: v.auth,
-              leave: v.leave,
-              otp: v.otp,
-            };
-          });
-          setUsers(users);
-        })
-        .finally(() => {
-          setLoading(false);
+
+    const body = {
+      email: state.user.email,
+    };
+
+    axios
+      .post("api/users/allUsers", body)
+      .then((res) => {
+        console.log(res);
+        const users = res.data.map((v, i) => {
+          // 관리자 db 열 없음
+          return {
+            id: i,
+            email: v.email,
+            created: new Date(v.createdAt).toLocaleString(),
+            email_verification: v.email_verification,
+            leave: v.leave,
+            otp: v.otp ? "Y" : "N",
+          };
         });
-    } else {
-      alert("관리자 계정이 아닙니다.");
-      history.push("/");
-    }
-  }, [authCtx.isAdmin, history, authCtx.token]);
+        if (isMount) setUsers(users);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [state.user.email, isMount]);
 
   useEffect(() => {
     getUsers();
+    return () => {
+      setisMount(false);
+    };
   }, [getUsers]);
 
   const buttonLeaveClickHandler = (data) => {
@@ -126,7 +122,7 @@ const UserList = () => {
     align: "center",
     headerAlign: "center",
     renderCell: (data) => {
-      if (data.row.leave === "Y") {
+      if (data.row.leave) {
         return (
           <div>
             <Button

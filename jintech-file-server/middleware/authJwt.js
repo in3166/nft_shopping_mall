@@ -43,8 +43,7 @@ verifyToken = (req, res, next) => {
 };
 
 isAdmin = (req, res, next) => {
-
-  const email = JSON.parse(req.body.token).email;
+  const email = req.body.email;
   User.findOne({ where: { email: email } })
     .then((user) => {
       user.getRoles().then((roles) => {

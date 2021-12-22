@@ -52,13 +52,13 @@ export const AuthContextProvider = (props) => {
   // const isAdmin = Token
   //   ? JSON.parse(Token).address === process.env.REACT_APP_TEMP_ACCOUNT
   //   : false;
-  const isAdmin = Token ? JSON.parse(Token)?.roles[0] === "ROLE_ADMIN" : false;
-  const address = Token ? JSON.parse(Token)?.address : "";
-  const email = Token ? JSON.parse(Token)?.email : "";
-  const leave = Token ? JSON.parse(Token)?.leave : "N";
-  const otp = Token ? JSON.parse(Token)?.otp : "N";
+  // const isAdmin = Token ? JSON.parse(Token)?.roles[0] === "ROLE_ADMIN" : false;
+  // const address = Token ? JSON.parse(Token)?.address : "";
+  // const email = Token ? JSON.parse(Token)?.email : "";
+  // const leave = Token ? JSON.parse(Token)?.leave : "N";
+  // const otp = Token ? JSON.parse(Token)?.otp : "N";
 
-  console.log("otp: ", otp);
+  // console.log("otp: ", otp);
 
   const logoutHandler = useCallback(() => {
     setToken(null);
@@ -97,11 +97,6 @@ export const AuthContextProvider = (props) => {
   const contextValue = {
     token: Token,
     isLoggedIn: userIsLoggedIn,
-    isAdmin,
-    address,
-    email,
-    leave,
-    otp,
     login: loginHandler,
     logout: logoutHandler,
     updateToken: updateTokenHandler,

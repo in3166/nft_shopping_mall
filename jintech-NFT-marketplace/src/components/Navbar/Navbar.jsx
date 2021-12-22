@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import icon from "./favicon-32x32.png";
 import { Link } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
-
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/user-action";
 class Navbar extends Component {
   static contextType = AuthContext;
   /**
@@ -25,6 +26,9 @@ class Navbar extends Component {
   }
 
   render() {
+    const { user, logout } = this.props;
+    console.log("nav user: ", user);
+
     return (
       <nav className="navbar navbar-expand-md navbar-dark bg-dark">
         <div className="container">
@@ -52,7 +56,7 @@ class Navbar extends Component {
               {
                 //r관리자 계정 이면 보이고 아니면 안보이는 메뉴 (update : 2021-11-15)
                 //this.props.permission && this.getToken() ? (
-                this.context.isAdmin ? (
+                user.isAdmin ? (
                   <li className="nav-item">
                     <Link to="/mint" className="nav-link">
                       Mint NFT
@@ -60,7 +64,7 @@ class Navbar extends Component {
                   </li>
                 ) : null
               }
-              {this.context.isLoggedIn && !this.context.isAdmin && (
+              {user.isLoggedIn && !user.isAdmin && (
                 <li className="nav-item">
                   <Link to="/upload" className="nav-link">
                     Upload
@@ -85,32 +89,32 @@ class Navbar extends Component {
                 </Link>
               </li>
               */}
-              {this.context.isAdmin && (
+              {user.isAdmin && (
                 <li className="nav-item">
                   <Link className="nav-link" to="/userlist">
                     Users
                   </Link>
                 </li>
               )}
-              {this.context.isLoggedIn && (
+              {user.isLoggedIn && (
                 <li className="nav-item">
                   <Link to="/profile" className="nav-link">
                     Profile
                   </Link>
                 </li>
               )}
-              {!this.context.isLoggedIn && (
+              {!user.isLoggedIn && (
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
                     Login
                   </Link>
                 </li>
               )}
-              {this.context.isLoggedIn && (
+              {user.isLoggedIn && (
                 <li
                   className="nav-item nav-link"
                   style={{ cursor: "pointer" }}
-                  onClick={this.context.logout}
+                  onClick={logout}
                 >
                   Logout
                 </li>
@@ -123,4 +127,13 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+const mapStateToProps = (state) => ({
+  user: state.user.user,
+  token: state.user.token,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(actions.logoutAction()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

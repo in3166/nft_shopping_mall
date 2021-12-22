@@ -26,7 +26,7 @@ const authentication = async (email, authCode) => {
           <div><strong>다음의 링크를 클릭해주세요.</strong></div>
           <br/>
           <div>
-            <a href="http://localhost:15001/api/users/verify?email=${email}&code=${authCode}">이메일 인증 링크</a>
+            <a href="http://localhost:15001/api/users/email/${email}/${authCode}">이메일 인증 링크</a>
           </div>
           <br/>`,
   };
@@ -59,18 +59,23 @@ const authentication = async (email, authCode) => {
 
 // 이메일 인증
 exports.verify = async (req, res) => {
-  const email = req.query.email;
-  const code = req.query.code;
+  const email = req.params.email;
+  const code = req.params.code;
+  // const email = req.query.email;
+  // const code = req.query.code;
+  console.log("email: ", email);
+  console.log(code);
 
   const user = await User.findOne({
     where: { email: email },
-    attributes: ["auth"],
+    attributes: ["email_verification"],
   });
 
-  const authCode = user.dataValues.auth;
+  const authCode = user.dataValues.email_verification;
+  console.log(authCode);
 
   if (authCode === code) {
-    User.update({ auth: "Y" }, { where: { email: email } })
+    User.update({ email_verification: "Y" }, { where: { email: email } })
       .then(async (data) => {
         res.cookie("valid", true);
         res.redirect("/success");
@@ -113,9 +118,9 @@ exports.create = async (req, res) => {
           email: req.body.email,
           password: req.body.password,
           address: req.body.address,
-          auth: authCode,
-          leave: "N",
-          otp: "N",
+          email_verification: authCode,
+          leave: false,
+          otp: false,
         };
         console.log("발송");
         // 인증메일 발송
@@ -126,17 +131,17 @@ exports.create = async (req, res) => {
             setTimeout(async () => {
               const user = await User.findOne({
                 where: { email: req.body.email },
-                attributes: ["auth"],
+                attributes: ["email_verification"],
               });
 
-              const authDBCode = user.dataValues.auth;
+              const authDBCode = user.dataValues.email_verification;
               if (authDBCode !== "Y") {
                 await User.update(
-                  { auth: "N" },
+                  { email_verification: "N" },
                   { where: { email: req.body.email } }
                 ).then(async (data) => {
                   if (data) {
-                    console.log(req.body.email, " 의 auth N");
+                    console.log(req.body.email, " 의 email_verification N");
                   }
                 });
               }
@@ -277,14 +282,14 @@ exports.requestDelete = (req, res) => {
           .send({ success: false, message: "비밀번호가 틀립니다." });
       }
 
-      if (leave !== "Y") {
-        User.update({ leave: "Y" }, { where: { email: email } })
+      if (!leave) {
+        User.update({ leave: true }, { where: { email: email } })
           .then(async (data) => {
             console.log("success", data);
             res.status(200).send({
               message: "탈퇴 신청을 완료했습니다.",
               success: true,
-              leave: "Y",
+              leave: true,
             });
           })
           .catch((err) => {
@@ -293,16 +298,14 @@ exports.requestDelete = (req, res) => {
               .send({ message: "탈퇴 신청을 실패했습니다.", error: err });
           });
       } else {
-        User.update({ leave: "N" }, { where: { email: email } })
+        User.update({ leave: false }, { where: { email: email } })
           .then(async (data) => {
             console.log("취소 성공: ", data);
-            res
-              .status(200)
-              .send({
-                leave: "N",
-                success: true,
-                message: "탈퇴 신청을 취소했습니다.",
-              });
+            res.status(200).send({
+              leave: false,
+              success: true,
+              message: "탈퇴 신청을 취소했습니다.",
+            });
           })
           .catch((err) => {
             console.log(err);
@@ -375,6 +378,7 @@ exports.deleteAll = (req, res) => {
 
 // 로그인 시 비밀번호 암호화 비교하기
 // https://javascript.plainenglish.io/password-encryption-using-bcrypt-sequelize-and-nodejs-fb9198634ee7
+const expiresIn = 86400;
 exports.login = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -401,29 +405,36 @@ exports.login = (req, res) => {
             .send({ success: false, message: "비밀번호가 틀립니다." });
         } else {
           // 이메일 인증 완료
-          if (user.dataValues.auth === "Y") {
+          if (user.dataValues.email_verification === "Y") {
             var token = jwt.sign({ userEmail: user.email }, config.secret, {
-              expiresIn: 86400, // 24 hours
+              expiresIn: expiresIn, // 24 hours
             });
 
             var authorities = [];
             await user.getRoles().then((roles) => {
               for (let i = 0; i < roles.length; i++) {
-                authorities.push("ROLE_" + roles[i].name.toUpperCase());
+                authorities.push(roles[i].name.toUpperCase());
               }
             });
-
+            console.log("authorities: ", authorities);
             return res.status(200).send({
               success: true,
-              otp: true,
               user: {
+                //roles: authorities,
+
+                isAdmin: authorities[0] === "ADMIN" ? true : false,
+                isLoggedIn: true,
                 email: user.dataValues.email,
-                address: user.dataValues.address,
-                id: user.dataValues.id,
-                roles: authorities,
-                accessToken: token,
-                leave: user.dataValues.leave,
+                userAddress: user.dataValues.address,
                 otp: user.dataValues.otp,
+                leave: user.dataValues.leave,
+                email_verification:
+                  user.dataValues.email_verification === "Y" ? true : false,
+                createdAt: user.dataValues.createdAt,
+              },
+              token: {
+                expireTime: expiresIn,
+                accessToken: token,
               },
             });
           } else {
@@ -454,7 +465,10 @@ exports.auth = (req, res) => {
     isAdmin: req.user.role === "admin" ? true : false,
     isLoggedIn: true,
     email: req.user.email,
-    email: req.user.email,
-    email: req.user.email,
+    userAddress: req.user.address,
+    otp: req.user.otp,
+    leave: req.user.leave,
+    createdAt: req.user.createdAt,
+    email_verification: req.user.email_verification,
   });
 };

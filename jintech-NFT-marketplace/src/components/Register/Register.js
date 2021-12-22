@@ -111,7 +111,6 @@ const Register = () => {
 
   const submitHandler = async (event) => {
     setLoading(true);
-    console.log("lo1 :", Loading);
     event.preventDefault();
     try {
       if (formIsValid) {
@@ -121,7 +120,7 @@ const Register = () => {
             password: enteredFirstPassword,
             address: address,
           };
-
+          console.log(body, "body");
           await axios
             .post("/api/users", body)
             .then(() => {
@@ -157,7 +156,6 @@ const Register = () => {
       snackbarHandler(true, "error", error.response.data.message);
     } finally {
       setLoading(false);
-      console.log("lo2 :", Loading);
     }
   };
 

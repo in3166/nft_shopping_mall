@@ -7,16 +7,16 @@ import {
   Slider,
 } from "@mui/material";
 import axios from "axios";
-import React, {  useContext, useState } from "react";
-import AuthContext from "../../../store/auth-context";
+import React, { useState } from "react";
+
 import styles from "../UserUpload.module.css";
 import useInput from "../../../hooks/useInputreduce";
 
-const UploadAuction = () => {
+const UploadAuction = (props) => {
+  const { user } = props;
   const [period, setPeriod] = useState(12);
   const [Markup, setMarkup] = useState(5);
   const [file, setfile] = useState("");
-  const authCtx = useContext(AuthContext);
 
   const {
     value: urlValue,
@@ -25,6 +25,7 @@ const UploadAuction = () => {
     valueBlurHandler: urlBlurHandler,
     reset: resetUrl,
   } = useInput((data) => data.length > 3);
+
   const {
     value: startPriceValue,
     hasError: startPriceHasError,
@@ -92,7 +93,7 @@ const UploadAuction = () => {
       formData.append(
         "body",
         JSON.stringify({
-          email: authCtx.email,
+          email: user.email,
           url: urlValue,
           startPrice: startPriceValue,
           buyout: buyoutValue,
@@ -219,7 +220,7 @@ const UploadAuction = () => {
                   ]}
                 />
               </Grid>
-              <Grid item xs={4}textAlign="center">
+              <Grid item xs={4} textAlign="center">
                 <FormControl variant="standard">
                   <InputLabel htmlFor="period">(Hour)</InputLabel>
                   <Input

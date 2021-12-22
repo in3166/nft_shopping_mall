@@ -6,7 +6,7 @@ import classes from "./Authentication.module.css";
 const AuthenticationSuccess = () => {
   const history = useHistory();
   let cookieValue = document.cookie.replace(
-    /(?:(?:^|.*;\s*)valid\s*\\=\s*([^;]*).*$)|^.*$/,
+    /(?:(?:^|.*;s*)valid\s*\=s*([^;]*).*$)|^.*$/,
     "$1"
   );
   if (!!cookieValue !== true) {

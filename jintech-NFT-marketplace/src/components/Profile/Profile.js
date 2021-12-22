@@ -6,6 +6,7 @@ import classes from "./Profile.module.css";
 import UserFrom from "./UserForm";
 import LeaveUser from "./LeaveUser";
 import SecondAuthentication from "./SecondAuthentication";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -33,9 +34,9 @@ function a11yProps(index) {
   };
 }
 
-const Profile = () => {
+const Profile = (props) => {
   const [value, setValue] = useState(1);
-
+  console.log("profile");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -82,7 +83,7 @@ const Profile = () => {
       </Box>
       <Divider />
       <TabPanel value={value} index={1}>
-        <UserFrom />
+        <UserFrom user={props.user} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Two
@@ -91,10 +92,10 @@ const Profile = () => {
         Item Three
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <SecondAuthentication value={value} />
+        <SecondAuthentication value={value} user={props.user} />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <LeaveUser />
+        <LeaveUser user={props.user} />
       </TabPanel>
     </Card>
   );

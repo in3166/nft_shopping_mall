@@ -14,18 +14,18 @@ module.exports = (sequelize, Sequelize) => {
       address: {
         type: Sequelize.STRING,
       },
-      auth: {
+      email_verification: {
         type: Sequelize.STRING,
-        default: "0",
+        default: "N",
       },
       leave: {
-        type: Sequelize.STRING,
-        default: "N",
+        type: Sequelize.BOOLEAN,
+        default: false,
       },
       otp: {
-        type: Sequelize.STRING,
-        default: "N",
-      }
+        type: Sequelize.BOOLEAN,
+        default: false,
+      },
     },
     {
       hooks: {

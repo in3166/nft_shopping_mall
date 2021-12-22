@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
   const secret = speakeasy.generateSecret({ name: "nft2auth" });
   const email = req.body.email;
 
-  const result = await User.update({ otp: "Y" }, { where: { email: email } })
+  const result = await User.update({ otp: true }, { where: { email: email } })
     .then(async (data) => {
       const otpIsExist = await OTP.findOne({ where: { email: email } });
       const url = await qrcode.toDataURL(secret.otpauth_url);
@@ -67,7 +67,7 @@ exports.create = async (req, res) => {
 // 
 exports.findOne = async (req, res) => {
   const email = req.params.email;
-  await User.update({ otp: "Y" }, { where: { email: email } });
+  await User.update({ otp: true }, { where: { email: email } });
   await OTP.findOne({ where: { email: email } })
     .then((otp) => {
       if (otp) {

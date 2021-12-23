@@ -17,7 +17,7 @@ const UserForm = (props) => {
   const getCurrentWalletAccount = async () => {
     setloading(true);
     const accounts = await window.web3.eth.getAccounts();
-    console.log(accounts[0], "address")
+    console.log(accounts[0], "address");
     formChangeHandler(accounts[0], "address");
 
     setTimeout(() => {
@@ -49,7 +49,7 @@ const UserForm = (props) => {
   const [User, setUser] = useState({
     email: users?.email,
     address: users?.userAddress,
-    auth: users?.email_verification,
+    email_verification: users?.email_verification ? "Y" : "N",
     createdAt: users?.createdAt && new Date(users?.createdAt).toLocaleString(),
     password: "",
   });
@@ -104,11 +104,12 @@ const UserForm = (props) => {
     e.preventDefault();
     console.log(User);
   };
+
   return (
-    <form onSubmit={submintHandler}>
-      <Grid container sx={{ textAlign: "center" }} justifyContent="center">
-        {User.email && (
-          <Grid item xs={12} sm={9} md={6} lg={5} xl={4}>
+    <Grid container sx={{ textAlign: "center" }} justifyContent="center">
+      {User.email && (
+        <Grid item xs={12} sm={9} md={6} lg={5} xl={4}>
+          <form onSubmit={submintHandler}>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
@@ -190,7 +191,7 @@ const UserForm = (props) => {
               <TextField
                 id="emailauth"
                 label="이메일 인증 여부"
-                defaultValue={User.auth}
+                defaultValue={User.email_verification}
                 InputProps={{
                   readOnly: true,
                 }}
@@ -217,10 +218,10 @@ const UserForm = (props) => {
             >
               저장
             </Button>
-          </Grid>
-        )}
-      </Grid>
-    </form>
+          </form>
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

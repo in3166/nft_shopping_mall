@@ -40,7 +40,6 @@ function a11yProps(index) {
 const UserUpload = (props) => {
   const history = useHistory();
   const user = useSelector((state) => state?.user?.user);
-
   const getAccount = useCallback(async () => {
     const accounts = await window.web3.eth.getAccounts();
     console.log(accounts[0]);
@@ -55,7 +54,6 @@ const UserUpload = (props) => {
               alert("지갑 주소가 맞지 않습니다.");
               history.replace("/");
             }
-
             //user.walletAddress = accounts[0];
           }
         })

@@ -56,7 +56,7 @@ class MyTokens extends Component {
         //  console.log("address: ", address);
         //  console.log("contract: ", contract);
         // console.log(contract)
-        console.log(2);
+
         this.state.isMount && this.setState({ contract });
         // totalSupply() : 발행된 총 토큰의 개수를 리턴함.
         // balanceOf() : _owner가 가진 계좌 잔고를 리턴함.
@@ -65,16 +65,17 @@ class MyTokens extends Component {
         // approve() : _spender가 인출할 수 있는 한도를 지정함. (신용카드 한도같은 느낌)
         // allowance() : _owner가 _spender에게 인출을 허락한 토큰의 개수
         //  console.log("totalSupply: ");
+
         const totalSupply = await contract?.methods?.totalSupply()?.call();
         // console.log("totalSupply: ", totalSupply);
-        console.log(3);
+
         this.state.isMount && this.setState({ totalSupply });
 
         // Load NFTs
         for (var i = 1; i <= totalSupply; i++) {
           const id = await contract.methods.images(i - 1).call();
           //   console.log("id: ", id);
-          console.log(4);
+
           this.state.isMount &&
             this.setState({
               images: [...this.state.images, id],
@@ -85,7 +86,7 @@ class MyTokens extends Component {
           const owner = await contract.methods.ownerOf(i - 1).call();
           // console.log(owner)
           //  console.log("owner: ", owner);
-          console.log(5);
+
           this.state.isMount &&
             this.setState({
               owners: [...this.state.owners, owner],
@@ -96,7 +97,7 @@ class MyTokens extends Component {
           const metadata = await contract.methods.imageData(i - 1).call();
           // console.log("metadata: ", metadata);
           // console.log(metadata)
-          console.log(6);
+
           this.state.isMount &&
             this.setState({
               imageData_name: [...this.state.imageData_name, metadata.name],
@@ -115,7 +116,7 @@ class MyTokens extends Component {
         const abi = TokenSaleContract.abi;
         const address = sale_networkData.address;
         const token_sale_contract = new web3.eth.Contract(abi, address);
-        console.log(7);
+
         this.state.isMount && this.setState({ token_sale_contract });
         // console.log(token_sale_contract)
 
@@ -233,6 +234,7 @@ class MyTokens extends Component {
                   </div>
                   <div className="m-6">
                     {"Price - " + this.state.imageData_price[key]}
+                    
                     {/*<img alt="main" className="eth-class" src="../ebizcoin.png" />*/}
                     <img
                       alt="main"
@@ -254,6 +256,7 @@ class MyTokens extends Component {
                       height="20"
                     />
                   </div>
+                  <button>재등록</button>
                 </Link>
               </div>
             ) : null;

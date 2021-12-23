@@ -287,7 +287,7 @@ const UploadAuction = (props) => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <span className={styles["form-input-name"]}>Description</span>
             <textarea
               type="text"

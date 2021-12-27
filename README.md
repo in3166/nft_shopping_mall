@@ -10,6 +10,7 @@
   - table ui 추가
     - `npm install @mui/x-data-grid`
   - `@mui/lab` 추가
+  - `@mui/icons-material`
 
 ```
 xxx버전 업그레이드함 xxx

@@ -1,0 +1,20 @@
+@media screen and (max-width: 768px) {
+  .box {
+    flex-direction: column;
+  }
+
+  .tabpanel-box {
+    margin-top: 10px;
+    padding: 3px;
+  }
+}
+
+.tabs button {
+  align-items: flex-start;
+}
+
+@media screen and (max-width: 395px) {
+  .tabs button {
+    align-items: center;
+  }
+}

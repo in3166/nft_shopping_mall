@@ -23,11 +23,14 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import AuthenticationSuccess from "./Register/Authentication/AuthenticationSuccess";
 import AuthenticationFail from "./Register/Authentication/AuthenticationFail";
-import AuthContext, { AuthContextProvider } from "../store/auth-context";
+//import AuthContext, { AuthContextProvider } from "../store/auth-context";
 import Auth from "../hoc/Auth";
 import UserList from "./UserList/UserList";
 import Profile from "./Profile/Profile";
 import UserUpload from "./UserUpload/UserUpload";
+import HomePage from "./pages/home/HomePage";
+import SettingPage from "./pages/setting/SettingPage";
+import UploadList from "./pages/UploadList/UploadList";
 
 //ipfs 서버 정보
 /*
@@ -40,7 +43,7 @@ const ipfs = ipfsClient({
 */
 
 class App extends Component {
-  static contextType = AuthContext;
+  //static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -412,10 +415,11 @@ class App extends Component {
                 path="/"
                 exact
                 render={() => (
-                  <AccountDetails
-                    accountAddress={this.state.accountAddress}
-                    accountBalance={this.state.accountBalance}
-                  />
+                  <HomePage />
+                  // <AccountDetails
+                  //   accountAddress={this.state.accountAddress}
+                  //   accountBalance={this.state.accountBalance}
+                  // />
                 )}
               />
               <Route
@@ -470,9 +474,17 @@ class App extends Component {
               <Route path="/user-nft-detail/:name" component={UserNFTDetail} />
 
               <Route path="/userlist" component={Auth(UserList, true, true)} />
+              <Route
+                path="/setting"
+                component={Auth(SettingPage, true, true)}
+              />
               <Route path="/login" component={Auth(Login, false)} />
               <Route path="/profile" component={Auth(Profile, true)} />
               <Route path="/upload" component={Auth(UserUpload, true)} />
+              <Route
+                path="/uploadList"
+                component={Auth(UploadList, true, true)}
+              />
 
               <Route path="/register">
                 <Register></Register>

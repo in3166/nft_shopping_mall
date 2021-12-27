@@ -90,11 +90,23 @@ class Navbar extends Component {
               </li>
               */}
               {user.isAdmin && (
-                <li className="nav-item">
-                  <Link className="nav-link" to="/userlist">
-                    Users
-                  </Link>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/userlist">
+                      Users
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/setting">
+                      Settings
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/uploadList">
+                      Upload List
+                    </Link>
+                  </li>
+                </>
               )}
               {user.isLoggedIn && (
                 <li className="nav-item">
@@ -112,11 +124,11 @@ class Navbar extends Component {
               )}
               {user.isLoggedIn && (
                 <li
-                  className="nav-item nav-link"
+                  className="nav-item"
                   style={{ cursor: "pointer" }}
                   onClick={logout}
                 >
-                  Logout
+                  <div className="nav-link">Logout</div>
                 </li>
               )}
             </ul>

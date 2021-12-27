@@ -8,12 +8,13 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
 import styles from "../UserUpload.module.css";
 import useInput from "../../../hooks/useInputreduce";
 
 const UploadAuction = (props) => {
-  const { user } = props;
+  // const { user } = props;
+  const user = useSelector((state) => state.user.user);
   const [period, setPeriod] = useState(12);
   const [Markup, setMarkup] = useState(5);
   const [file, setfile] = useState("");
@@ -95,18 +96,19 @@ const UploadAuction = (props) => {
         JSON.stringify({
           email: user.email,
           url: urlValue,
-          startPrice: startPriceValue,
+          price: startPriceValue,
           buyout: buyoutValue,
           period: period,
           markup: Markup,
           description: descriptionValue,
+          type: 'auction'
         })
       );
       formData.append("file", file);
       console.log(formData);
 
       axios
-        .post("/api/files/", formData, {
+        .post("/api/images/", formData, {
           header: { "content-type": "multipart/form-data" },
         })
         .then((res) => {

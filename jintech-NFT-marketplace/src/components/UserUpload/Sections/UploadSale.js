@@ -1,14 +1,22 @@
-import { Container, FormControl, Grid, Input, InputLabel, Slider } from "@mui/material";
+import {
+  Container,
+  FormControl,
+  Grid,
+  Input,
+  InputLabel,
+  Slider,
+} from "@mui/material";
 import axios from "axios";
 import React, { useContext, useState } from "react";
+import { useSelector } from "react-redux";
 import useInput from "../../../hooks/useInputreduce";
-import AuthContext from "../../../store/auth-context";
+
 import styles from "../UserUpload.module.css";
 
 const UploadSale = () => {
   const [period, setPeriod] = useState(12);
   const [file, setfile] = useState("");
-  const authCtx = useContext(AuthContext);
+  const user = useSelector((state) => state.user.user);
 
   const {
     value: urlValue,
@@ -62,18 +70,18 @@ const UploadSale = () => {
       formData.append(
         "body",
         JSON.stringify({
-          email: authCtx.email,
+          email: user.email,
           url: urlValue,
-          startPrice: startPriceValue,
+          price: startPriceValue,
           period: period,
           description: descriptionValue,
+          type: "sale",
         })
       );
       formData.append("file", file);
-      console.log(formData);
 
       axios
-        .post("/api/files/", formData, {
+        .post("/api/images/", formData, {
           header: { "content-type": "multipart/form-data" },
         })
         .then((res) => {

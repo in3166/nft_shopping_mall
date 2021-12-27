@@ -1,7 +1,19 @@
 .card {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 10px;
-  padding: 1rem;
-  margin-top: 0.8rem;
+  border-radius: 6px;
+  /* padding: 1rem; */
+  margin: 1rem 5rem 1rem 5rem;
+}
+
+@media screen and (max-width: 900px) {
+  .card {
+    margin: 1rem 2rem 1rem 2rem;
+  }
+}
+
+@media screen and (max-width: 510px) {
+  .card {
+    margin: 1rem 0.3rem 1rem 0.3rem;
+  }
 }

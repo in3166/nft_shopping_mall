@@ -1,0 +1,24 @@
+{
+  "home": {
+    "title": "환영합니다."
+  },
+  "Navbar": {
+    "mintnft": "민트",
+    "upload": "업로드",
+    "marketplace": "마켓",
+    "userlist": "사용자 목록",
+    "settings": "설정",
+    "uploadlist": "요청 목록",
+    "mytokens": "내 토큰",
+    "profile": "내 정보",
+    "login": "로그인",
+    "logout": "로그아웃"
+  },
+  "description": {
+    "part1": "파트 원 입니다",
+    "part2": "파트 투 입니다"
+  },
+  "Thanks": {
+    "1": "감사"
+  }
+}

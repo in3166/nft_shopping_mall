@@ -12,9 +12,9 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import Card from "../UI/Card/Card";
+import Card from "../../UI/Card/Card";
 import axios from "axios";
-import AuthContext from "../../store/auth-context";
+import AuthContext from "../../../store/auth-context";
 
 class Login2 extends Component {
   static contextType = AuthContext;

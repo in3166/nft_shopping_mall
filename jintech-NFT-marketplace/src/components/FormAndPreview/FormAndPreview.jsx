@@ -121,7 +121,7 @@ class FormAndPreview extends Component {
     var client = create("http://127.0.0.1:5002/");
 
     console.log("client: ", client);
-
+    
     const { cid } = await client.add(this.state.new_image);
     console.log("cid: ", cid);
 
@@ -229,8 +229,10 @@ class FormAndPreview extends Component {
                       required
                       className="form-control my-2"
                       placeholder="Choose Image"
-                      onChange={(event) =>
+                      onChange={(event) =>{
+                        console.log(event.target.files[0])
                         this.setState({ new_image: event.target.files[0] })
+                      }
                       }
                     />
                   </div>

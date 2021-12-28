@@ -12,7 +12,7 @@ router.post("/", images.create);
 
 // 모든 업로드 기록 가져오기
 router.get("/", images.findAll);
+router.get("/image", images.getFile);
 
-router.get("/:path", images.getFile);
 
 module.exports = router;

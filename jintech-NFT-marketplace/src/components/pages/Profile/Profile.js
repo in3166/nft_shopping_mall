@@ -1,7 +1,7 @@
 import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
 
 import React, { useState } from "react";
-import Card from "../UI/Card/Card";
+import Card from "../../UI/Card/Card";
 import classes from "./Profile.module.css";
 import UserFrom from "./UserForm";
 import LeaveUser from "./LeaveUser";

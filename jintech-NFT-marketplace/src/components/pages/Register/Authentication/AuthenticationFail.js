@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import Card from "../../UI/Card/Card";
+import Card from "../../../UI/Card/Card";
 import classes from "./Authentication.module.css";
 
 const AuthenticationFail = () => {

@@ -1,0 +1,10 @@
+.textField {
+  background-color: rgba(243, 243, 243, 0.61);
+}
+
+.images {
+  object-fit: contain;
+  width: 100%;
+  min-height: inherit;
+  min-width: inherit;
+}

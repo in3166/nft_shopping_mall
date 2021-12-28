@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/user-action";
+
 class Navbar extends Component {
   static contextType = AuthContext;
   /**
@@ -76,11 +77,7 @@ class Navbar extends Component {
                   Marketplace
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/mytokens" className="nav-link">
-                  My Tokens
-                </Link>
-              </li>
+
               {/* 2021-11-25 주석처리 */}
               {/*
               <li className="nav-item">
@@ -109,11 +106,18 @@ class Navbar extends Component {
                 </>
               )}
               {user.isLoggedIn && (
-                <li className="nav-item">
-                  <Link to="/profile" className="nav-link">
-                    Profile
-                  </Link>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <Link to="/mytokens" className="nav-link">
+                      My Tokens
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/profile" className="nav-link">
+                      Profile
+                    </Link>
+                  </li>
+                </>
               )}
               {!user.isLoggedIn && (
                 <li className="nav-item">

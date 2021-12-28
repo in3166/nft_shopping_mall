@@ -1,3 +1,6 @@
+.login-card {
+  margin: 2rem auto !important;
+}
 .login-form {
   display: flex;
   flex-direction: column;
@@ -37,7 +40,7 @@ select {
   cursor: pointer;
 }
 
-.login-form button[type="submit"]:hover{
+.login-form button[type="submit"]:hover {
   background-color: #474747;
 }
 
@@ -51,6 +54,6 @@ select {
   box-sizing: border-box;
 }
 
-a:hover{
-    text-decoration: none !important;
+a:hover {
+  text-decoration: none !important;
 }

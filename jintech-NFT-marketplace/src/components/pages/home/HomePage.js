@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
+import { useTranslation } from "react-i18next";
 
 const images = [
   {
@@ -35,7 +36,13 @@ const images = [
   },
 ];
 
-const HomePage = () => {
+const HomePage = (props) => {
+  const { t, i18n } = useTranslation();
+  const handleClick = (lang) => {
+    i18n.changeLanguage(lang);
+    console.log(t("title"));
+  };
+
   return (
     <div className="contents">
       {/* 2021.11.26 main img slide 추가 */}
@@ -59,6 +66,7 @@ const HomePage = () => {
               <i className="fas fa-chevron-right"></i>
             </a>
           </div>
+
           <ul className="carousel-indicators">
             <li
               className="active"
@@ -129,7 +137,7 @@ const HomePage = () => {
       <div className="card page-head">
         <div className="card-body align-items-center d-flex justify-content-center">
           <h5>
-            Total No. of Jintech's Minted On The Platform :{" "}
+            {t("home.title")}
             {/* 20211108 주석 처리 {totalTokensMinted} */}
           </h5>
         </div>
@@ -195,6 +203,11 @@ const HomePage = () => {
           Next
           <i className="fas fa-chevron-right"></i>
         </span>
+      </div>
+      <button onClick={() => handleClick("en")}>En</button>
+      <button onClick={() => handleClick("ko")}>Ko</button>
+      <div>
+        <p>{t("Thanks.1")}</p>
       </div>
     </div>
   );

@@ -1,0 +1,24 @@
+{
+  "home": {
+    "title": "Total No. of Jintech's Minted On The Platform"
+  },
+  "Navbar": {
+    "mintnft": "Mint Nft",
+    "upload": "Uploads",
+    "marketplace": "Marketplace",
+    "userlist": "User List",
+    "settings": "Settings",
+    "uploadlist": "Upload List",
+    "mytokens": "My Tokens",
+    "profile": "Profile",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "description": {
+    "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
+    "part2": "Switch language between english and german using buttons above."
+  },
+  "Thanks": {
+    "1": "Thank"
+  }
+}

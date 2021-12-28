@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import styles from "./UserList.module.css";
-import Card from "../UI/Card/Card";
+import Card from "../../UI/Card/Card";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useHistory } from "react-router";

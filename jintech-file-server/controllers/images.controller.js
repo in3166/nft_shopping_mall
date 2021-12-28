@@ -58,12 +58,21 @@ exports.create = async (req, res) => {
 
 //
 exports.findOne = async (req, res) => {};
+var path = require('path');
 
-exports.getFile = async (req, res) => {
-  const path = req.params.path;
-  console.log('path: ',path);
-  fs.readFile
-  res.sendFile("/" + path);
+exports.getFile = (req, res) => {
+  const url = req.query.path;
+  const path2 = url.replaceAll(/\\/g, "/").trim();
+  console.log("1path: ", path2);
+  try {
+    res.sendFile(path.resolve(path2));
+  } catch (error) {
+    console.log(error);
+  }
+  // fs.readFile("/" + path2, (err, data) => {
+  //   console.log('err: ',err);
+  //   console.log(data);
+  // });
 };
 
 // Retrieve all User from the database.

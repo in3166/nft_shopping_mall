@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import classes from "./Register.module.css";
-import Card from "../UI/Card/Card";
-import Input from "../UI/Input/Input";
-import Button from "../UI/Button/Button";
+import Card from "../../UI/Card/Card";
+import Input from "../../UI/Input/Input";
+import Button from "../../UI/Button/Button";
 import axios from "axios";
 
 import Snackbar from "@mui/material/Snackbar";
 import { Alert, LinearProgress, Stack } from "@mui/material";
 import { useHistory } from "react-router-dom";
-import useInput from "../../hooks/useInputreduce";
+import useInput from "../../../hooks/useInputreduce";
 
 const passwordValidator = (value) => value.trim().length > 5;
 const regEmail =

@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import Card from "../UI/Card/Card";
+import Card from "../../UI/Card/Card";
 import styles from "./UserUpload.module.css";
 import UploadAuction from "./Sections/UploadAuction";
 import UploadSale from "./Sections/UploadSale";

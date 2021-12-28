@@ -28,7 +28,6 @@ xxx버전 업그레이드함 xxx
 - axios 설치
   @material-ui/core@4.12.3 @material-ui/icons@4.11.2 @material-ui/lab@4.0.0-alpha.60 @material-ui/x-grid@4.0.0-alpha.20
 
-
 - 메일 인증 라이브러리: `npm install nodemailer`
   - 서버에 config 추가, controllers에 함수 추가
 - postgreSQL: ` npm install sequelize pg pg-hstore`
@@ -40,12 +39,18 @@ xxx버전 업그레이드함 xxx
   - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]'`
   - `jsipfs daemon`
 
+- 다국어 기능 추가
+  - `i18next` 라이브러리 사용
+  - `npm install react-i18next i18next --save`
+  - `npm install i18next-http-backend i18next-browser-languagedetector --save`
+  - (i18next 참고)[https://react.i18next.com/latest/using-with-hooks]
 ## 기능 추가
 
 - 회원 가입
 - 로그인
 - JWT 인증 구현 (refresh 미구현)
 - 이메일 인증
+
   - `server/ verify 메서드`
   - `/verify?email=...&code=...`
   - 현재 쿠키로 이메일 인증을 한 후에 success/fail 페이지에 들어왔는지 확인
@@ -53,6 +58,7 @@ xxx버전 업그레이드함 xxx
     - => `/confirm?code=...`
 
 - 2FA(Goole OTP) 구현
+
   - 키 생성, RESERT
   - `users` 테이블에 컬럼 추가
   - 라이브러리: `speakeasy`, `qrcode`
@@ -63,17 +69,27 @@ xxx버전 업그레이드함 xxx
   - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
 
 ## Warning
+
 - `Can't perform a React state update on an unmounted component.`
-  - unmount 된 컴포넌트에서 state 업데이트가 발생할 경우 
+
+  - unmount 된 컴포넌트에서 state 업데이트가 발생할 경우
   - `useEffect`에서 `isMounted` 변수(or state)를 clean-up 해준다.
   - 클래스 컴포넌트의 경우 `componenetWillUnmount` 에서 수정!
 
 - `Unhandled Rejection (TypeError): Cannot read properties of null (reading 'methods')`
+
   - if(this.state.token_sale_contract){} 추가 in MyTokens.jsx, AllCry..., UserNFTDetail.js
-  // - mytoken.jsx, allcrt..에 local 메서드 생성자에 추가 (에러 때문)
+    // - mytoken.jsx, allcrt..에 local 메서드 생성자에 추가 (에러 때문)
 
 - `Manifest: Line: 1, column: 1, Syntax error.`
+
   - `index.html` manifest link 삭제
+
+- express `res.sendfile()` 404
+  - `app.use("/uploads", express.static(path.join(__dirname, "/uploads")));`: 최상위 upload 폴더에서 파일 보내기
+  - `res.sendFile(path.resolve(path))`;
+  - path는 앞에 '/'를 붙이지 않는다. ('uplaods/filename)
+
 ### ignore
 
 - \*/node_modules

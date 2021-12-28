@@ -12,10 +12,10 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import Card from "../UI/Card/Card";
+import Card from "../../UI/Card/Card";
 import { useDispatch } from "react-redux";
-import { loginAction, otpConfirmAction } from "../../store/actions/user-action";
-import { userAction } from "../../store/reducers/user-slice";
+import { loginAction, otpConfirmAction } from "../../../store/actions/user-action";
+import { userAction } from "../../../store/reducers/user-slice";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -74,7 +74,7 @@ const Login = (props) => {
         alert(res.message);
         return;
       }
-      
+
       if (res?.success) {
         history.replace("/");
       } else {

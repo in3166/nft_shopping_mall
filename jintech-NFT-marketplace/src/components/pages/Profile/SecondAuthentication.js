@@ -11,8 +11,8 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authCheckAction } from "../../store/actions/user-action";
-import { userAction } from "../../store/reducers/user-slice";
+import { authCheckAction } from "../../../store/actions/user-action";
+import { userAction } from "../../../store/reducers/user-slice";
 
 const SecondAuthentication = (props) => {
   const { user } = props.user;

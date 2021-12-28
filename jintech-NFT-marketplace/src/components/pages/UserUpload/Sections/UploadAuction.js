@@ -10,7 +10,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "../UserUpload.module.css";
-import useInput from "../../../hooks/useInputreduce";
+import useInput from "../../../../hooks/useInputreduce";
+
+import Crypto from "crypto";
+/* 2021-11-19 ipfs 를 위한 취가 */
+import { create } from "ipfs-http-client";
 
 const UploadAuction = (props) => {
   // const { user } = props;
@@ -81,7 +85,7 @@ const UploadAuction = (props) => {
     }
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
     if (
       !urlHasError &&
@@ -90,12 +94,23 @@ const UploadAuction = (props) => {
       !descriptionHasError &&
       file.filename !== ""
     ) {
+
+      var client = create("http://127.0.0.1:5002/");
+      const { cid } = await client.add(file);
+
+      console.log("cid: ", cid);
+
+      //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+      //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+      const urlStr = `http://localhost:9090/ipfs/${cid}`;
+
       const formData = new FormData();
+
       formData.append(
         "body",
         JSON.stringify({
           email: user.email,
-          url: urlValue,
+          url: urlStr,
           price: startPriceValue,
           buyout: buyoutValue,
           period: period,
@@ -106,6 +121,8 @@ const UploadAuction = (props) => {
       );
       formData.append("file", file);
       console.log(formData);
+
+   
 
       axios
         .post("/api/images/", formData, {

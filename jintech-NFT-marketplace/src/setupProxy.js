@@ -10,6 +10,14 @@ module.exports = function (app) {
     }),
   );
 
+  app.use(
+    '/uploads',
+    createProxyMiddleware({
+      target: `${CONFIG.IP}:15000`,
+      changeOrigin: true,
+    }),
+  );
+
   // app.use(
   //   '/userManage',
   //   createProxyMiddleware({

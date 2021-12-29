@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Login.css";
+// import "./Login.css";
 
 //session 을 위한 추가 당장은 필요 없는 듯
 import { Link, useHistory } from "react-router-dom";
@@ -14,8 +14,12 @@ import {
 } from "@mui/material";
 import Card from "../../UI/Card/Card";
 import { useDispatch } from "react-redux";
-import { loginAction, otpConfirmAction } from "../../../store/actions/user-action";
-import { userAction } from "../../../store/reducers/user-slice";
+import {
+  loginAction,
+  otpConfirmAction,
+} from "../../../store/actions/user-action";
+import { useTranslation } from "react-i18next";
+import styles from "./Login.module.css";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -26,6 +30,7 @@ const Login = (props) => {
   const [otpCodeInput, setOtpCodeInput] = useState("");
   const history = useHistory();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +59,8 @@ const Login = (props) => {
           setUseOtp(true);
         }
       } else {
-        alert(res.message);
+        // console.log(res)
+        alert(t("Login.alert"));
       }
     });
   };
@@ -84,17 +90,17 @@ const Login = (props) => {
   };
 
   return (
-    <Card className="login-card">
+    <Card className={styles["login-card"]}>
       <h1>Log in</h1>
-      <form onSubmit={handleSubmit} className="login-form">
-        <label>E-Mail</label>
+      <form onSubmit={handleSubmit} className={styles["login-form"]}>
+        <label>{t("Login.email")}</label>
         <input
           type="text"
           autoComplete="username"
           onChange={(e) => setEmail(e.target.value)}
         />
         <br />
-        <label>Password</label>
+        <label>{t("Login.password")}</label>
         <input
           type="password"
           autoComplete="current-password"
@@ -103,14 +109,16 @@ const Login = (props) => {
 
         <div>
           <Button type="submit" variant="outlined">
-            Sign in
+            {t("Login.signin")}
           </Button>
         </div>
       </form>
 
-      <Button type="button">
-        <Link to="/register">Sign up</Link>
-      </Button>
+      <Link to="/register" className={styles.register}>
+        {" "}
+        {t("Login.signup")}
+      </Link>
+
       {useOtp && (
         <Dialog
           open={useOtp}
@@ -120,7 +128,7 @@ const Login = (props) => {
         >
           <DialogTitle>OTP</DialogTitle>
           <DialogContent>
-            <DialogContentText>OTP 번호 6자리를 입력하세요.</DialogContentText>
+            <DialogContentText>{t("Login.otp")}</DialogContentText>
             <TextField
               autoFocus
               margin="dense"
@@ -141,9 +149,9 @@ const Login = (props) => {
                 setUseOtp(false);
               }}
             >
-              취소
+              {t("Login.cancel")}
             </Button>
-            <Button onClick={otpConfrimHandler}>확인</Button>
+            <Button onClick={otpConfrimHandler}>{t("Login.ok")}</Button>
           </DialogActions>
         </Dialog>
       )}

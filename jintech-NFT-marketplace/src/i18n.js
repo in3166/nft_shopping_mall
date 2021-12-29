@@ -21,7 +21,7 @@ i18n
   .init({
     //resources: { kr, en },
     resources,
-    fallbackLng: "ko",
+    fallbackLng: "en",
     whitelist: Languages,
     interpolation: { escapeValue: false },
     detection: { order: ["path", "navigator"] },

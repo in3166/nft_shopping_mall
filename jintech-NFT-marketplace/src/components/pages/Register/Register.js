@@ -9,6 +9,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { Alert, LinearProgress, Stack } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import useInput from "../../../hooks/useInputreduce";
+import { useTranslation } from "react-i18next";
 
 const passwordValidator = (value) => value.trim().length > 5;
 const regEmail =
@@ -17,7 +18,7 @@ const emailValidator = (value) => regEmail.test(value);
 
 const Register = () => {
   //const [formIsValid, setFormIsValid] = useState(false);
-
+  const { t } = useTranslation();
   const {
     value: enteredEmail,
     valueIsValid: emailIsValid,
@@ -124,11 +125,7 @@ const Register = () => {
           await axios
             .post("/api/users", body)
             .then(() => {
-              snackbarHandler(
-                true,
-                "success",
-                "가입을 완료했습니다.\n이메일 인증을 완료하세요."
-              );
+              snackbarHandler(true, "success", t("Register.message-success"));
               setTimeout(() => {
                 history.push("/login");
               }, 2000);
@@ -139,18 +136,22 @@ const Register = () => {
               snackbarHandler(true, "error", err.response.data.message);
             });
         } else {
-          snackbarHandler(true, "warning", "비밀번호가 다릅니다.");
+          snackbarHandler(
+            true,
+            "warning",
+            t("Register.message-different-password")
+          );
           secondPasswordInputRef.current.focus();
         }
       } else if (!emailIsValid) {
         emailInputRef.current.focus();
-        snackbarHandler(true, "warning", "E-Mail을 입력하세요.");
+        snackbarHandler(true, "warning", t("Register.message-valid-email"));
       } else if (!firstPasswordIsValid) {
         firstPasswordInputRef.current.focus();
-        snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
+        snackbarHandler(true, "warning", t("Register.message-valid-password"));
       } else {
         secondPasswordInputRef.current.focus();
-        snackbarHandler(true, "warning", "비밀번호를 6글자 이상 입력하세요.");
+        snackbarHandler(true, "warning", t("Register.message-valid-password"));
       }
     } catch (error) {
       snackbarHandler(true, "error", error.response.data.message);
@@ -192,45 +193,45 @@ const Register = () => {
       <form onSubmit={submitHandler}>
         <Input
           id="email"
-          label="E-Mail"
+          label={t("Register.email")}
           type="email"
           isValid={emailHasError}
           value={enteredEmail}
           onChange={emailChangeHandler}
           onBlur={emailBlurHandler}
           ref={emailInputRef}
-          message="이메일 형식이 아닙니다."
+          message={t("Register.input-message-email")}
           autoComplete="username"
         />
 
         <Input
           ref={firstPasswordInputRef}
           id="password"
-          label="Password"
+          label={t("Register.password")}
           type="password"
           isValid={firstPasswordHasError}
           value={enteredFirstPassword}
           onChange={firstPasswordChangeHandler}
           onBlur={firstPasswordBlurHandler}
-          message="비밀번호를 6자리 이상 입력하세요."
+          message={t("Register.input-message-password")}
           autoComplete="new-password"
         />
 
         <Input
           ref={secondPasswordInputRef}
           id="password2"
-          label="Check Password"
+          label={t("Register.check-password")}
           type="password"
           isValid={secondPasswordHasError}
           value={enteredSecondPassword}
           onChange={secondPasswordChangeHandler}
           onBlur={secondPasswordBlurHandler}
-          message="비밀번호를 6자리 이상 입력하세요."
+          message={t("Register.input-message-password")}
           autoComplete="new-password"
         />
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn}>
-            Sign Up
+            {t("Register.signup")}
           </Button>
         </div>
       </form>

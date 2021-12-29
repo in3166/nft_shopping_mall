@@ -1,0 +1,20 @@
+.checkbox span {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.checkbox svg {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+}
+
+.checkbox input {
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.checkbox input:active {
+  border-radius: 0;
+}

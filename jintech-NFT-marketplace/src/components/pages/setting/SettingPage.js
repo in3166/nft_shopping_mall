@@ -9,6 +9,7 @@ import SecurityIcon from "@mui/icons-material/Security";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CategoryIcon from "@mui/icons-material/Category";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import Banner from "./Banner/Banner";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,6 +48,18 @@ const SettingPage = () => {
     setValue(newValue);
   };
 
+  const tabsStyle = mediumViewport
+    ? {
+        borderRight: 1,
+        borderColor: "divider",
+        minWidth: "185px",
+      }
+    : {
+        borderBottom: 1,
+        borderColor: "divider",
+        minWidth: "185px",
+      };
+
   return (
     <Card>
       <Box
@@ -66,13 +79,7 @@ const SettingPage = () => {
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs example"
-          sx={
-            mediumViewport && {
-              borderRight: 1,
-              borderColor: "divider",
-              minWidth: "185px",
-            }
-          }
+          sx={tabsStyle}
         >
           <Tab
             label={
@@ -80,7 +87,7 @@ const SettingPage = () => {
                 <HomeIcon style={{ verticalAlign: "middle" }} /> Home
               </div>
             }
-            {...a11yProps(1, 0)}
+            {...a11yProps(0)}
           />
 
           <Tab
@@ -89,7 +96,7 @@ const SettingPage = () => {
                 <AnalyticsIcon style={{ verticalAlign: "middle" }} /> Analysis
               </div>
             }
-            {...a11yProps(1, 1)}
+            {...a11yProps(1)}
           />
           <Tab
             label={
@@ -97,7 +104,7 @@ const SettingPage = () => {
                 <SecurityIcon style={{ verticalAlign: "middle" }} /> 2FA Manager
               </div>
             }
-            {...a11yProps(1, 2)}
+            {...a11yProps(2)}
           />
           <Tab
             label={
@@ -106,7 +113,7 @@ const SettingPage = () => {
                 Admin Manager
               </div>
             }
-            {...a11yProps(1, 3)}
+            {...a11yProps(3)}
           />
           <Tab
             label={
@@ -115,7 +122,7 @@ const SettingPage = () => {
                 Category
               </div>
             }
-            {...a11yProps(1, 4)}
+            {...a11yProps(4)}
           />
           <Tab
             label={
@@ -124,7 +131,7 @@ const SettingPage = () => {
                 Banner
               </div>
             }
-            {...a11yProps(1, 5)}
+            {...a11yProps(5)}
           />
         </Tabs>
         <TabPanel value={value} index={0}>
@@ -147,8 +154,7 @@ const SettingPage = () => {
           <Category />
         </TabPanel>
         <TabPanel value={value} index={5}>
-          <h4>Banner</h4>
-          Item Five
+          <Banner />
         </TabPanel>
       </Box>
     </Card>

@@ -1,0 +1,43 @@
+.ul {
+  font-size: 0.8rem;
+  letter-spacing: 0.2rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.nav-item {
+  cursor: default !important;
+}
+
+.nav-li {
+  padding: 0% !important;
+}
+
+.nav-li button {
+  padding: 0;
+  margin: 0;
+}
+
+.lang {
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* @media screen and (max-width: 1110px) {
+  .nav-li {
+    padding: 0.8rem !important;
+  }
+}
+@media screen and (max-width: 960px) {
+  .nav-li {
+    padding: 0.4rem !important;
+  }
+} */
+
+@media screen and (max-width: 768px) {
+  .ul {
+    align-items: flex-start !important;
+  }
+}

@@ -10,15 +10,34 @@
     "settings": "Settings",
     "uploadlist": "Upload List",
     "mytokens": "My Tokens",
-    "profile": "Profile",
+    "profile": "My Account",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "lang": {
+      "en": "English",
+      "ko": "Korean"
+    }
   },
-  "description": {
-    "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
-    "part2": "Switch language between english and german using buttons above."
+  "Login": {
+    "signin": "SIGN IN",
+    "signup": "SIGN UP",
+    "email": "E-Mail",
+    "password": "Password",
+    "otp": "Enter 6 OTP numbers.",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "alert": "Check the E-Mail or Password."
   },
-  "Thanks": {
-    "1": "Thank"
+  "Register": {
+    "email": "E-Mail",
+    "password": "Password",
+    "check-password": "Check Password",
+    "signup": "SIGN UP",
+    "message-success": "You have successfully signed up. \nPlease complete email verification.",
+    "message-different-password": "The entered passwords are different.",
+    "message-valid-email": "Enter a e-mail.",
+    "message-valid-password": "Password must be at least 6 characters.",
+    "input-message-email": "It doesn't match the email format.",
+    "input-message-password": "Password must be at least 6 characters."
   }
 }

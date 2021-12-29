@@ -1,8 +1,8 @@
 # 추가사항
 
 - `<meta name="viewport" content="initial-scale=1, width=device-width" />`
-- react version 17.0.2로 업그레이드
 
+- react version 17.0.2로 업그레이드
   - `npm install react@17.0.2 react-dom@17.0.2`
 
 - material ui 5.3 추가
@@ -90,6 +90,10 @@ xxx버전 업그레이드함 xxx
   - `res.sendFile(path.resolve(path))`;
   - path는 앞에 '/'를 붙이지 않는다. ('uplaods/filename)
 
+# 참고
+- `err.response.data.message` 서버에서 받은 에러메세지
+
+<br><br><br>
 ### ignore
 
 - \*/node_modules

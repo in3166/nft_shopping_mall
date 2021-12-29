@@ -387,7 +387,7 @@ class App extends Component {
     // console.log(this.state);
     // console.log("this.state.metamaskConnected: ", this.state.metamaskConnected);
     return (
-      <div className="container">
+      <div className="container-d" style={{ paddingBottom: "1px" }}>
         {/* metamask 와 연결 되었는가? */}
         {this.state.metamaskConnected !== undefined &&
         !this.state.metamaskConnected ? (

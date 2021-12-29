@@ -57,3 +57,13 @@ select {
 a:hover {
   text-decoration: none !important;
 }
+
+.register {
+  color: rgb(185, 185, 185);
+  padding: 0.3rem 0.6rem;
+}
+
+.register:hover {
+  background-color: rgb(236, 236, 236);
+  color: rgb(97, 97, 97);
+}

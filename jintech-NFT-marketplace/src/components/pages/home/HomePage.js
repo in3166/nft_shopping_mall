@@ -37,11 +37,7 @@ const images = [
 ];
 
 const HomePage = (props) => {
-  const { t, i18n } = useTranslation();
-  const handleClick = (lang) => {
-    i18n.changeLanguage(lang);
-    console.log(t("title"));
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="contents">
@@ -203,11 +199,6 @@ const HomePage = (props) => {
           Next
           <i className="fas fa-chevron-right"></i>
         </span>
-      </div>
-      <button onClick={() => handleClick("en")}>En</button>
-      <button onClick={() => handleClick("ko")}>Ko</button>
-      <div>
-        <p>{t("Thanks.1")}</p>
       </div>
     </div>
   );

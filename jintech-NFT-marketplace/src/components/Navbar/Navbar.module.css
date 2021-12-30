@@ -2,8 +2,15 @@
   font-size: 0.8rem;
   letter-spacing: 0.2rem;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  /* width: 100%; */
+}
+
+.ul_left {
+  justify-content: flex-start;
+}
+
+.ul_right {
+  justify-content: flex-end;
 }
 
 .nav-item {
@@ -25,6 +32,18 @@
   margin: 0 !important;
 }
 
+.lang-menu ul {
+  background-color: rgb(112, 112, 112);
+  color: white;
+}
+
+.selected-lang {
+  background-color: rgba(93, 158, 223, 0.651) !important;
+}
+
+.selected-lang:hover {
+  background-color: rgba(92, 160, 228, 0.822) !important;
+}
 /* @media screen and (max-width: 1110px) {
   .nav-li {
     padding: 0.8rem !important;

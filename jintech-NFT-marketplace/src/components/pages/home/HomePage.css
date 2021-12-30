@@ -56,7 +56,6 @@
 
 /* slide control-bottom */
 .carousel-indicators {
-
   align-items: center;
 }
 /* style */
@@ -251,4 +250,9 @@
   .token-box {
     height: 28em;
   }
+}
+
+/* pagination */
+.MuiPagination-ul .Mui-selected {
+  background-color: #5c9ccc !important;
 }

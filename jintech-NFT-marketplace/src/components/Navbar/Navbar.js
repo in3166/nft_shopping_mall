@@ -69,7 +69,7 @@ const Navbar = () => {
     lang.includes("ko") ? 1 : 0
   );
 
-  const open2 = Boolean(LanguageAnchor);
+  const openLanguage = Boolean(LanguageAnchor);
 
   const handleClickLanguage = (event) => {
     setLanguageAnchor(event.currentTarget);
@@ -99,13 +99,13 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div id="navbarNav" className="collapse navbar-collapse">
-          <ul className={`navbar-nav ${styles.ul}`}>
-            {/* <li className="nav-item">
-              <Link to="/" className="nav-link">
-                Home
-              </Link>
-            </li> */}
+
+        <div
+          id="navbarNav"
+          className="collapse navbar-collapse"
+          style={{ justifyContent: "space-between" }}
+        >
+          <ul className={`navbar-nav ${styles.ul} ${styles["ul_left"]}`}>
             <li className={`nav-item ${styles["nav-li"]}`}>
               <Link to="/marketplace" className="nav-link">
                 {t("Navbar.marketplace")}
@@ -118,6 +118,8 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
+          </ul>
+          <ul className={`navbar-nav ${styles.ul} ${styles["ul_right"]}`}>
             {
               //r관리자 계정 이면 보이고 아니면 안보이는 메뉴 (update : 2021-11-15)
               //this.props.permission && this.getToken() ? (
@@ -218,6 +220,11 @@ const Navbar = () => {
                         transform: "translateY(-50%) rotate(45deg)",
                         zIndex: 0,
                       },
+                      "@media (max-width: 767px)": {
+                        "&:before": {
+                          left: 11,
+                        },
+                      },
                     },
                   }}
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -269,8 +276,9 @@ const Navbar = () => {
               <Menu
                 id="lock-menu"
                 anchorEl={LanguageAnchor}
-                open={open2}
+                open={openLanguage}
                 onClose={handleCloseLanguage}
+                className={styles["lang-menu"]}
                 MenuListProps={{
                   "aria-labelledby": "lock-button",
                   role: "listbox",
@@ -281,6 +289,9 @@ const Navbar = () => {
                     key={option}
                     selected={index === selectedLanguage}
                     onClick={(event) => handleMenuItemClick(event, index)}
+                    className={
+                      index === selectedLanguage && styles["selected-lang"]
+                    }
                   >
                     {option}
                   </MenuItem>

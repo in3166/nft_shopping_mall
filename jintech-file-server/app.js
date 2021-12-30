@@ -21,11 +21,21 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 console.log(__dirname);
 const db = require("./models");
+const { throws } = require("assert");
 //db.sequelize.sync();
+
 const Role = db.role;
-db.sequelize.sync().then(() => {
-  initial();
-});
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("DB CONNECTED");
+    initial();
+  })
+  .catch((err) => {
+    console.log("DB CONNECTION FAIL");
+    console.log("err: ", err);
+    // throws(() => new Error("DB connection ERR: \n", err));
+  });
 
 app.use("/", indexRouter);
 app.use("/api/images", require("./routes/images"));
@@ -46,7 +56,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("[error]: ", err);
 });
 
 function initial() {

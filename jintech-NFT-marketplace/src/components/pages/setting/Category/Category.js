@@ -9,6 +9,8 @@ import {
   Checkbox,
   ListItem,
   ListItemText,
+  Popover,
+  Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useState } from "react";
@@ -41,6 +43,19 @@ const Category = (props) => {
     setAllChecked((prev) => !prev);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <>
       <h4 className={styles["head-text"]}>Category</h4>
@@ -63,7 +78,11 @@ const Category = (props) => {
               <ListItem
                 key={value}
                 secondaryAction={
-                  <IconButton edge="end" aria-label="comments">
+                  <IconButton
+                    edge="end"
+                    aria-label="comments"
+                    onClick={handleClick}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 }
@@ -91,6 +110,26 @@ const Category = (props) => {
               </ListItem>
             );
           })}
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <Typography sx={{ p: 2 }}>정말 삭제하시겠습니까?</Typography>
+            <div style={{ float: "right" }}>
+              <Button>취소</Button>
+              <Button>삭제</Button>
+            </div>
+          </Popover>
         </List>
       </Paper>
     </>

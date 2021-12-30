@@ -1,43 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
 import { useTranslation } from "react-i18next";
-
-const images = [
-  {
-    imageData_token: "toeken11111",
-    imageData_price: 121,
-    imageData_name: "image1",
-    imageData_url: "/url1",
-  },
-  {
-    imageData_token: "toeken22",
-    imageData_price: 222,
-    imageData_name: "image2",
-    imageData_url: "/url2",
-  },
-  {
-    imageData_token: "toeken33",
-    imageData_price: 333,
-    imageData_name: "image3",
-    imageData_url: "/url3",
-  },
-  {
-    imageData_token: "toeken4",
-    imageData_price: 444,
-    imageData_name: "image4",
-    imageData_url: "/url4",
-  },
-  {
-    imageData_token: "toeken5",
-    imageData_price: 555,
-    imageData_name: "image5",
-    imageData_url: "/url5",
-  },
-];
+import ImageContract from "../../../abis/ImageContract.json";
+import TokenSaleContract from "../../../abis/TokenSaleContract.json";
+import { Pagination } from "@mui/material";
+import usePagination from "../../../hooks/usePagination";
 
 const HomePage = (props) => {
   const { t } = useTranslation();
+  const [Images, setImages] = useState([]);
+  const [TokenPrice, setTokenPrice] = useState(0);
+
+  const PER_PAGE = 6;
+  const _DATA = usePagination(Images, PER_PAGE);
+  const [page, setPage] = useState(1);
+
+  const handlePageChange = (e, page) => {
+    setPage(page);
+    _DATA.jump(page);
+  };
+
+  const getAllImages = async () => {
+    const web3 = window.web3;
+    // Load account
+    const accounts = await web3.eth.getAccounts();
+    const networkId = await web3.eth.net.getId();
+    const networkData = ImageContract.networks[networkId];
+
+    if (networkData) {
+      const abi = ImageContract.abi;
+      const address = networkData.address;
+      const contract = new web3.eth.Contract(abi, address);
+      const totalSupply = await contract.methods.totalSupply().call();
+
+      let temp = [];
+      // Load NFTs
+      for (var i = 1; i <= totalSupply; i++) {
+        const id = await contract.methods.images(i - 1).call();
+        const owner = await contract.methods.ownerOf(i - 1).call();
+        const metadata = await contract.methods.imageData(i - 1).call();
+        temp = [
+          ...temp,
+          {
+            id,
+            owner,
+            name: metadata.name,
+            price: metadata.price,
+            token: metadata.token,
+            url: metadata.url,
+          },
+        ];
+      }
+      setImages(temp);
+    } else {
+      window.alert("Smart contract not deployed to detected network.");
+    }
+
+    const sale_networkData = TokenSaleContract.networks[networkId];
+    if (sale_networkData) {
+      const abi = TokenSaleContract.abi;
+      const address = sale_networkData.address;
+      const token_sale_contract = new web3.eth.Contract(abi, address);
+      if (token_sale_contract) {
+        var token_price = await token_sale_contract.methods.tokenPrice().call();
+        setTokenPrice(web3.utils.fromWei(token_price, "ether"));
+      }
+    } else {
+      window.alert("Smart contract not deployed to detected network.");
+    }
+  };
+
+  useEffect(() => {
+    getAllImages();
+  }, []);
+  console.log(Images.length);
 
   return (
     <div className="contents">
@@ -139,7 +176,7 @@ const HomePage = (props) => {
         </div>
       </div>
       <div className="product-page flex-wrap">
-        {images.map((val, key) => (
+        {_DATA.currentData().map((val, key) => (
           <div key={key} className="product-pages-list flex-wrap">
             <div className="card-wrap flex-row card">
               {/* 2021.11.26 스타일 이동(div로 한 번 더 묶음 */}
@@ -152,30 +189,22 @@ const HomePage = (props) => {
                 <div className="token-box col-auto">
                   {" "}
                   {/* 2021.11.26 텍스트 구분 */}
-                  <img
-                    alt="token"
-                    className="token"
-                    src={images[key].imageData_url}
-                  />
+                  <img alt="token" className="token" src={Images[key].url} />
                 </div>
                 <div className="token-box-info token-name">
                   Name
-                  <span className="token-data">
-                    {images[key].imageData_name}
-                  </span>
+                  <span className="token-data">{Images[key].name}</span>
                 </div>
                 <div className="token-box-info token-price">
                   Price
                   <span className="token-data">
-                    {images[key].imageData_price}
+                    {Images[key].price * TokenPrice}
                     <span className="token-eth">ETH</span>
                   </span>
                 </div>
                 <div className="token-box-info token-id">
                   Token ID
-                  <span className="token-data">
-                    {images[key].imageData_token}
-                  </span>
+                  <span className="token-data">{Images[key].token}</span>
                 </div>
               </Link>
             </div>
@@ -185,20 +214,15 @@ const HomePage = (props) => {
 
       {/* 21.11.26 페이지 넘기는 부분 */}
       <div className="market-pager d-flex">
-        <span className="page-control-btn page-arrow flex-wrap">
-          <i className="fas fa-chevron-left"></i>Prev
-        </span>
-        <span className="page-control-btn flex-wrap">
-          <span className="page-number select-page nft-primary">1</span>
-          {/* 선택된 페이지 */}
-          {/* 임시 */}
-          <span className="page-number another-page">2</span>
-          <span className="page-number another-page">3</span>
-        </span>
-        <span className="page-control-btn page-arrow flex-wrap">
-          Next
-          <i className="fas fa-chevron-right"></i>
-        </span>
+        <Pagination
+          //count={10}
+          color="primary"
+          page={page}
+          siblingCount={1}
+          boundaryCount={1}
+          count={Math.ceil(Images.length / PER_PAGE)}
+          onChange={handlePageChange}
+        />
       </div>
     </div>
   );

@@ -1,19 +1,24 @@
-import { Box, Stack, CircularProgress } from "@mui/material";
+import { Box, Button, Card, CircularProgress, Stack } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Card from "../../UI/Card/Card";
-import InfoModal from "./Section/InfoModal";
-import styles from "./UploadList.module.css";
+
+import styles from "./UserUploadList.module.css";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   maximumSignificantDigits: 3,
 });
 
 const columns = [
-  { field: "id", headerName: "ID", width: 50 },
-  { field: "email", headerName: "E-Mail", width: 130 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 50,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  //   { field: "email", headerName: "E-Mail", width: 130 },
   {
     field: "filename",
     headerName: "File name",
@@ -23,15 +28,14 @@ const columns = [
   {
     field: "type",
     headerName: "Type",
-
     width: 90,
   },
 
   {
     field: "price",
     headerName: "가격",
+    width: 100,
     type: "number",
-    width: 90,
     valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
   },
   {
@@ -43,62 +47,43 @@ const columns = [
   {
     field: "buyout",
     headerName: "Buyout",
-    width: 90,
-    type: "number",
+    width: 100,
     valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
   },
-  {
-    field: "markup",
-    headerName: "Markup",
-    width: 90,
-    type: "number",
-    valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
-  },
+  { field: "markup", headerName: "Markup", width: 90 },
   { field: "description", headerName: "설명", width: 90 },
   { field: "approval", headerName: "승인", width: 90 },
   { field: "onMarket", headerName: "onMarket", width: 90 },
-  {
-    field: "createdAt",
-    headerName: "등록일",
-    width: 200,
-    renderCell: (params) => (
-      <div>{new Date(params.value).toLocaleString()}</div>
-    ),
-  },
-  {
-    field: "url",
-    headerName: "URL",
-    width: 190,
-    renderCell: (params) => <div title={params.value}>{params.value}</div>,
-  },
-  {
-    field: "path",
-    headerName: "Path",
-    width: 140,
-  },
+  //   {
+  //     field: "createdAt",
+  //     headerName: "등록일",
+  //     width: 200,
+  //     renderCell: (params) => (
+  //       <div>{new Date(params.value).toLocaleString()}</div>
+  //     ),
+  //   },
 ];
 
-const UploadList = () => {
+const UserUploadList = () => {
   const [rows, setRows] = useState([]);
   const [selectedData, setSelectedData] = useState({});
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [isMount, setisMount] = useState(true);
   const [Loading, setLoading] = useState(false);
-
+  const user = useSelector((state) => state.user.user);
   const handleClose = () => {
     setOpen(false);
   };
-  const user = useSelector((state) => state.user.user);
 
   const getAllUploadImages = useCallback(() => {
     setLoading(true);
-    console.log("getgtrega aal all", user.email);
+    const email = user.email;
     axios
-      .get("/api/images/", {
-        headers: { email: user.email },
+      .get("/api/images/" + email, {
+        headers: { token: localStorage.getItem("nft_token") },
       })
       .then((res) => {
-        console.log(res.data);
+          console.log(res.data)
         if (isMount) setRows(res.data);
       })
       .catch((err) => {
@@ -114,6 +99,7 @@ const UploadList = () => {
     getAllUploadImages();
     return () => {
       setisMount(false);
+      setOpen(false);
     };
   }, [getAllUploadImages]);
 
@@ -134,7 +120,15 @@ const UploadList = () => {
 
   return (
     <Box className={styles.box}>
-      <Card>
+      <div className={styles.buttonDiv}>
+        <Button variant="outlined" className={styles.button}>
+          수정
+        </Button>
+        <Button variant="outlined" className={styles.button}>
+          삭제
+        </Button>
+      </div>
+      <Card className={styles.card}>
         {Loading && (
           <Stack
             sx={{
@@ -165,15 +159,15 @@ const UploadList = () => {
         )}
       </Card>
 
-      {open && (
+      {/* {open && (
         <InfoModal
           open={open}
           handleClose={handleClose}
           selectedData={selectedData}
         />
-      )}
+      )} */}
     </Box>
   );
 };
 
-export default UploadList;
+export default UserUploadList;

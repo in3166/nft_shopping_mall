@@ -56,9 +56,7 @@ exports.create = async (req, res) => {
   });
 };
 
-//
-exports.findOne = async (req, res) => {};
-var path = require('path');
+var path = require("path");
 
 exports.getFile = (req, res) => {
   const url = req.query.path;
@@ -75,10 +73,27 @@ exports.getFile = (req, res) => {
   // });
 };
 
+exports.findOne = async (req, res) => {
+  const email = req.params.email;
+  console.log("findone", email);
+
+  IMAGE.findAll({
+    where: { email: email },
+  })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
 // Retrieve all User from the database.
 exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-
+  console.log("findall");
   IMAGE.findAll()
     .then((data) => {
       res.status(200).send(data);

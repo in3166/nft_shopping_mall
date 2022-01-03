@@ -12,7 +12,7 @@ const HomePage = (props) => {
   const [Images, setImages] = useState([]);
   const [TokenPrice, setTokenPrice] = useState(0);
 
-  const PER_PAGE = 6;
+  const PER_PAGE = 8;
   const _DATA = usePagination(Images, PER_PAGE);
   const [page, setPage] = useState(1);
 

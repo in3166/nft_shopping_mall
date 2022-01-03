@@ -4,7 +4,7 @@
   },
   "Navbar": {
     "mintnft": "Mint",
-    "upload": "Upload",
+    "upload": "업로드",
     "marketplace": "Marketplace",
     "userlist": "사용자 목록",
     "settings": "설정",
@@ -35,7 +35,7 @@
     "signup": "회원가입",
     "message-success": "가입을 완료했습니다.\n이메일 인증을 완료하세요.",
     "message-different-password": "비밀번호가 다릅니다.",
-    "message-valid-email": "E-Mail을 입력하세요.",
+    "message-valid-email": "이메일을 입력하세요.",
     "message-valid-password": "비밀번호를 6글자 이상 입력하세요.",
     "input-message-email": "이메일 형식이 아닙니다.",
     "input-message-password": "비밀번호를 6자리 이상 입력하세요."

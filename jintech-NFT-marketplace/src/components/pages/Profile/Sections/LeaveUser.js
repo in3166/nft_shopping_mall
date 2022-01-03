@@ -11,9 +11,9 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import useInput from "../../../hooks/useInputreduce";
+import useInput from "../../../../hooks/useInputreduce";
 import { useDispatch } from "react-redux";
-import { userAction } from "../../../store/reducers/user-slice";
+import { userAction } from "../../../../store/reducers/user-slice";
 
 const validator = (data) => {
   if (data.length > 6) return true;

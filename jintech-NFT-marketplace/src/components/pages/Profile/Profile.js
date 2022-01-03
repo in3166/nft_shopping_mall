@@ -3,9 +3,10 @@ import { Box, Divider, Tab, Tabs, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Card from "../../UI/Card/Card";
 import classes from "./Profile.module.css";
-import UserFrom from "./UserForm";
-import LeaveUser from "./LeaveUser";
-import SecondAuthentication from "./SecondAuthentication";
+import UserFrom from "./Sections/UserForm";
+import LeaveUser from "./Sections/LeaveUser";
+import SecondAuthentication from "./Sections/SecondAuthentication";
+import UserUploadList from "./Sections/UserUploadList";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,23 +62,28 @@ const Profile = (props) => {
           />
           <Tab
             value={2}
-            label={<span className={classes.tabLabel}>구매 이력</span>}
+            label={<span className={classes.tabLabel}>요청 목록</span>}
             {...a11yProps(1)}
           />
           <Tab
             value={3}
-            label={<span className={classes.tabLabel}>판매 이력</span>}
+            label={<span className={classes.tabLabel}>구매 이력</span>}
             {...a11yProps(2)}
           />
           <Tab
             value={4}
-            label={<span className={classes.tabLabel}>2차 인증</span>}
+            label={<span className={classes.tabLabel}>판매 이력</span>}
             {...a11yProps(3)}
           />
           <Tab
             value={5}
-            label={<span className={classes.tabLabel}>회원 탈퇴</span>}
+            label={<span className={classes.tabLabel}>2차 인증</span>}
             {...a11yProps(4)}
+          />
+          <Tab
+            value={6}
+            label={<span className={classes.tabLabel}>회원 탈퇴</span>}
+            {...a11yProps(5)}
           />
         </Tabs>
       </Box>
@@ -86,15 +92,18 @@ const Profile = (props) => {
         <UserFrom user={props.user} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Two
+        <UserUploadList />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Three
+        Item Two
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <SecondAuthentication value={value} user={props.user} />
+        Item Three
       </TabPanel>
       <TabPanel value={value} index={5}>
+        <SecondAuthentication value={value} user={props.user} />
+      </TabPanel>
+      <TabPanel value={value} index={6}>
         <LeaveUser user={props.user} />
       </TabPanel>
     </Card>

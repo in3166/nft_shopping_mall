@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Jintech NFT Marketplace",
   "author": "devpavan04",
-  "homepage": "https://devpavan04.github.io/jintech-nft-marketplace",
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",

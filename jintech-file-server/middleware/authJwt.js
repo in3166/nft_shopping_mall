@@ -4,8 +4,8 @@ const db = require("../models");
 const User = db.users;
 
 verifyToken = (req, res, next) => {
-  let token = req.body.token;
-  console.log("ver token", token);
+  let token = req?.body?.token;
+  if (!token) token = JSON.parse(req.get("token"));
   if (!token) {
     return res.status(403).send({
       message: "No token provided!",
@@ -43,7 +43,13 @@ verifyToken = (req, res, next) => {
 };
 
 isAdmin = (req, res, next) => {
-  const email = req.body.email;
+  let email = req?.body?.email;
+  if (!email) email = req.get("email");
+  if (!email) {
+    return res.status(403).send({
+      message: "No email provided!",
+    });
+  }
   User.findOne({ where: { email: email } })
     .then((user) => {
       user.getRoles().then((roles) => {
@@ -62,6 +68,10 @@ isAdmin = (req, res, next) => {
     })
     .catch((err) => {
       console.log("isAdmin find err: ", err);
+      res.status(400).send({
+        message: err,
+        error: err,
+      });
     });
 };
 

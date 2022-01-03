@@ -11,6 +11,12 @@ import {
   ListItemText,
   Popover,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useState } from "react";
@@ -45,16 +51,26 @@ const Category = (props) => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
+  const handleDeleteClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleDeleteClose = () => {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const deleteOpen = Boolean(anchorEl);
+  const id = deleteOpen ? "simple-popover" : undefined;
+
+  const [addOpen, setAddOpen] = useState(false);
+
+  const handleClickAddOpen = () => {
+    setAddOpen(true);
+  };
+
+  const handleAddClose = () => {
+    setAddOpen(false);
+  };
 
   return (
     <>
@@ -64,9 +80,9 @@ const Category = (props) => {
         <div className={styles["header"]}>
           <Button onClick={checkAllHandler}>All</Button>
           <div className={styles["btn-div"]}>
-            <Button>Edit</Button>
-            <Button>Add</Button>
-            <Button>Delete</Button>
+            <Button onClick={handleClickAddOpen}>Edit</Button>
+            <Button onClick={handleClickAddOpen}>Add</Button>
+            <Button onClick={handleDeleteClick}>Delete</Button>
           </div>
         </div>
 
@@ -81,7 +97,7 @@ const Category = (props) => {
                   <IconButton
                     edge="end"
                     aria-label="comments"
-                    onClick={handleClick}
+                    onClick={handleDeleteClick}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -112,9 +128,9 @@ const Category = (props) => {
           })}
           <Popover
             id={id}
-            open={open}
+            open={deleteOpen}
             anchorEl={anchorEl}
-            onClose={handleClose}
+            onClose={handleDeleteClose}
             anchorOrigin={{
               vertical: "top",
               horizontal: "left",
@@ -132,6 +148,28 @@ const Category = (props) => {
           </Popover>
         </List>
       </Paper>
+
+      <Dialog open={addOpen} onClose={handleAddClose}>
+        <DialogTitle>Add Category</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            추가할 카테고리 이름을 입력하세요.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="category"
+            label="Category"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddClose}>취소</Button>
+          <Button onClick={handleAddClose}>추가</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

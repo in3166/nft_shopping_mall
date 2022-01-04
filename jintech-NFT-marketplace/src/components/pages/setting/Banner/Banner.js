@@ -19,12 +19,143 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Banner.module.css";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
+import Web3 from "web3";
+
+import ImageContract from "../../../../abis/ImageContract.json";
+import ImageSaleContract from "../../../../abis/ImageSaleContract.json";
+import TokenContract from "../../../../abis/TokenContract.json";
+import TokenSaleContract from "../../../../abis/TokenSaleContract.json";
+import axios from "axios";
 
 const Banner = () => {
+  let web3 = window.web3;
+  if (!web3.eth) {
+    web3 = new Web3(window.web3.currentProvider);
+    window.web3 = web3;
+  }
+  const [Images, setImages] = useState([]);
+  const [TokenPrice, setTokenPrice] = useState(0);
+  const [Banners, setBanners] = useState([]);
+  const [checked, setChecked] = useState([]);
+  console.log("sel: ", checked);
+  const getAllBanners = () => {
+    axios
+      .get("/api/banners")
+      .then((res) => {
+        console.log("배너 가져오기: ", res.data.banners);
+        if (res.data.success) {
+          setBanners(res.data.banners);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  const getImagesFromEth = useCallback(async () => {
+    const accounts = await web3.eth.getAccounts();
+    const networkId = await web3.eth.net.getId();
+    const networkData = ImageContract.networks[networkId];
+    const abi = ImageContract.abi;
+    const address = networkData.address;
+    const contract = new web3.eth.Contract(abi, address);
+    const totalSupply = await contract.methods.totalSupply().call();
+
+    const tempImages = [];
+    for (var i = 1; i <= totalSupply; i++) {
+      const id = await contract.methods.images(i - 1).call();
+      const owner = await contract.methods.ownerOf(i - 1).call();
+      const metadata = await contract.methods.imageData(i - 1).call();
+      const body = {
+        id,
+        owner,
+        name: metadata.name,
+        price: metadata.price,
+        token: metadata.token,
+        url: metadata.url,
+        key: i - 1,
+      };
+      tempImages.push(body);
+    }
+    setImages(tempImages);
+
+    const sale_networkData = TokenSaleContract.networks[networkId];
+    const tokenSaleAbi = TokenSaleContract.abi;
+    const saleAddress = sale_networkData.address;
+    const token_sale_contract = new web3.eth.Contract(
+      tokenSaleAbi,
+      saleAddress
+    );
+
+    let token_price = await token_sale_contract.methods.tokenPrice().call();
+    token_price = web3.utils.fromWei(token_price, "ether");
+    setTokenPrice(token_price);
+  }, [web3.eth, web3.utils]);
+
+  useEffect(() => {
+    getImagesFromEth();
+    getAllBanners();
+  }, [getImagesFromEth]);
+
+  const handleCheck = (value) => {
+    console.log("check value", value);
+    const currentIndex = checked.findIndex((i) => i.id === value.id);
+    console.log("check currentIndex", currentIndex);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const handleAddBanners = () => {
+    console.log(checked);
+    if (checked.length < 1) {
+      alert("하나 이상 선택하세요.");
+      return;
+    } else if (checked.length > 5) {
+      alert("5개 이하의 배너만 추가할 수 있습니다.");
+      return;
+    }
+
+    axios
+      .post("/api/banners/", checked)
+      .then((res) => {
+        if (res.data.success) {
+          alert("배너 추가 성공");
+          getAllBanners();
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  const handleRemoveBanner = (value) => {
+    console.log(value);
+    axios
+      .delete("/api/banners", { data: value })
+      .then((res) => {
+        console.log(res.data);
+        getAllBanners();
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
   return (
     <>
       <Container sx={{ overflow: "hidden", display: "grid" }}>
@@ -39,36 +170,59 @@ const Banner = () => {
             border: "1px solid gainsboro",
           }}
         >
-          {[0, 1, 2, 3, 4, 5, 6].map(() => (
-            <ListItem>
-              <Card
-                sx={{
-                  maxWidth: 200,
-                  maxHeight: 250,
-                  width: 150,
-                  height: 190,
-                  position: "relative",
-                }}
-              >
-                <CardHeader
-                  action={
-                    <IconButton aria-label="settings" size="small">
-                      <CloseIcon />
-                    </IconButton>
-                  }
-                  // title="Shrimp"
-                  subheader="September"
-                  sx={{ padding: "10px" }}
-                />
-                <Checkbox className={styles.checkbox} disableRipple />
-                <img src="http://via.placeholder.com/640x360" alt="temp" />
-              </Card>
-            </ListItem>
-          ))}
+          {Banners.length < 1 ? (
+            <p>No Banners.</p>
+          ) : (
+            Banners.map((value, index) => (
+              <ListItem className={styles.bannerItem}>
+                <Card
+                  sx={{
+                    maxWidth: 200,
+                    maxHeight: 250,
+                    width: 150,
+                    height: 190,
+                    position: "relative",
+                  }}
+                >
+                  <CardHeader
+                    action={
+                      <IconButton
+                        aria-label="settings"
+                        size="small"
+                        onClick={() => handleRemoveBanner(value)}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    }
+                    // title="Shrimp"
+                    subheader={value.name}
+                    sx={{ padding: "10px" }}
+                  />
+                  {/* <Checkbox className={styles.checkbox} disableRipple /> */}
+                  <img
+                    src={value.url}
+                    alt="temp"
+                    style={{
+                      display: "block",
+                      WebkitBackgroundSize: "cover",
+                      backgroundSize: "cover",
+                      WebkitMaskPosition: "no-repeat",
+                      backgroundPosition: "center",
+                      width: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Card>
+              </ListItem>
+            ))
+          )}
         </List>
         <br />
         <h5 style={{ float: "left" }}>Select IMAGES</h5>
-        <Box sx={{ border: "1px solid gainsboro" }} padding={2}>
+        <Box
+          sx={{ border: "1px solid gainsboro", overflow: "hidden" }}
+          padding={2}
+        >
           <div
             style={{
               display: "flex",
@@ -78,7 +232,7 @@ const Banner = () => {
             }}
           >
             <div>
-              <Button variant="outlined">
+              <Button variant="outlined" onClick={handleAddBanners}>
                 <AddIcon />
               </Button>
             </div>
@@ -111,24 +265,52 @@ const Banner = () => {
             </div>
           </div>
           <Grid container columns={18} spacing={2}>
-            {[0, 1, 2, 3, 4, 5].map(() => {
+            {Images.map((value, index) => {
               return (
                 <Grid item xs={18} sm={9} md={6} lg={4.5}>
                   <Card>
                     <CardActionArea>
-                      <Checkbox className={styles.checkbox} disableRipple />
+                      <Checkbox
+                        checked={
+                          checked.findIndex((i) => i.id === value.id) !== -1
+                        }
+                        tabIndex={-1}
+                        className={styles.checkbox}
+                        disableRipple
+                        onClick={() => handleCheck(value)}
+                      />
                       <CardMedia
                         component="img"
                         height="140"
-                        image="http://via.placeholder.com/640x360"
-                        alt="green iguana"
+                        src={value.url}
+                        //image="http://via.placeholder.com/640x360"
+                        alt={"images" + index}
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          Lizard
+                        <Typography gutterBottom variant="h6" component="div">
+                          {value.name}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Lizards are a widespread
+                        <Typography
+                          component="div"
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            overflow: "hidden",
+                            display: "block",
+                            lineHeight: "1.39",
+                            wordWrap: "break-word",
+                          }}
+                        >
+                          <p>
+                            <strong>Owner</strong> {value.owner}
+                          </p>
+                          <p>
+                            <strong>Token</strong> {value.token}
+                          </p>
+                          <p>
+                            <strong>Price</strong> {value.price * TokenPrice}{" "}
+                            ETH
+                          </p>
                         </Typography>
                       </CardContent>
                     </CardActionArea>

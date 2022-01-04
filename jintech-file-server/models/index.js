@@ -24,6 +24,7 @@ db.role = require("../models/role.model.js")(sequelize, Sequelize);
 db.otp = require("../models/otp.model.js")(sequelize, Sequelize);
 db.image = require("../models/image.model.js")(sequelize, Sequelize);
 db.category = require("../models/categories.model.js")(sequelize, Sequelize);
+db.banner = require("../models/banners.model.js")(sequelize, Sequelize);
 
 // db.otp.hasOne(db.users, {
 //   as: "email",

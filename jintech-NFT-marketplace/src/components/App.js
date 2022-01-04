@@ -5,7 +5,7 @@ import * as actions from "../store/actions/user-action";
 import "./App.css";
 import Web3 from "web3";
 
-import CryptoBoys from "../abis/CryptoBoys.json";
+// import CryptoBoys from "../abis/CryptoBoys.json";
 
 import FormAndPreview from "../components/FormAndPreview/FormAndPreview";
 import AllCryptoBoys from "./AllCryptoBoys/AllCryptoBoys";
@@ -71,7 +71,7 @@ class App extends Component {
     await getLocalToken();
     await this.loadWeb3();
     await this.loadBlockchainData();
-    await this.setMetaData();
+    // await this.setMetaData();
     await this.setMintBtnTimer();
     // console.log("token: ", token, user);
   };
@@ -157,65 +157,67 @@ class App extends Component {
       body.accountBalance = accountBalance;
       body.loading = false;
       const networkId = await web3.eth.net.getId();
-      const networkData = CryptoBoys.networks[networkId];
 
-      if (networkData) {
-        this.setState({ loading: true });
-        //body.loading = true;
+      //   const networkData = CryptoBoys.networks[networkId];
 
-        const cryptoBoysContract = new web3.eth.Contract(
-          CryptoBoys.abi,
-          networkData.address
-        );
+      //   if (networkData) {
+      //     this.setState({ loading: true });
+      //     //body.loading = true;
 
-        // this.setState({ cryptoBoysContract });
-        // this.setState({ contractDetected: true });
-        body.cryptoBoysContract = cryptoBoysContract;
-        body.contractDetected = true;
+      //     const cryptoBoysContract = new web3.eth.Contract(
+      //       CryptoBoys.abi,
+      //       networkData.address
+      //     );
 
-        const cryptoBoysCount = await cryptoBoysContract.methods
-          .cryptoBoyCounter()
-          .call();
+      //     // this.setState({ cryptoBoysContract });
+      //     // this.setState({ contractDetected: true });
+      //     body.cryptoBoysContract = cryptoBoysContract;
+      //     body.contractDetected = true;
 
-        //this.setState({ cryptoBoysCount });
-        body.cryptoBoysCount = cryptoBoysCount;
+      //     const cryptoBoysCount = await cryptoBoysContract.methods
+      //       .cryptoBoyCounter()
+      //       .call();
 
-        for (var i = 1; i <= cryptoBoysCount; i++) {
-          const cryptoBoy = await cryptoBoysContract.methods
-            .allCryptoBoys(i)
-            .call();
+      //     //this.setState({ cryptoBoysCount });
+      //     body.cryptoBoysCount = cryptoBoysCount;
 
-          // this.setState({
-          //   cryptoBoys: [...this.state.cryptoBoys, cryptoBoy],
-          // });
+      //     for (var i = 1; i <= cryptoBoysCount; i++) {
+      //       const cryptoBoy = await cryptoBoysContract.methods
+      //         .allCryptoBoys(i)
+      //         .call();
 
-          body.cryptoBoys = [...this.state.cryptoBoys, cryptoBoy];
-        }
+      //       // this.setState({
+      //       //   cryptoBoys: [...this.state.cryptoBoys, cryptoBoy],
+      //       // });
 
-        let totalTokensMinted = await cryptoBoysContract.methods
-          .getNumberOfTokensMinted()
-          .call();
-        totalTokensMinted = totalTokensMinted.toNumber();
+      //       body.cryptoBoys = [...this.state.cryptoBoys, cryptoBoy];
+      //     }
 
-        this.setState({ totalTokensMinted });
-        body.totalTokensMinted = totalTokensMinted;
+      //     let totalTokensMinted = await cryptoBoysContract.methods
+      //       .getNumberOfTokensMinted()
+      //       .call();
+      //     totalTokensMinted = totalTokensMinted.toNumber();
 
-        let totalTokensOwnedByAccount = await cryptoBoysContract.methods
-          .getTotalNumberOfTokensOwnedByAnAddress(this.state.accountAddress)
-          .call();
-        totalTokensOwnedByAccount = totalTokensOwnedByAccount.toNumber();
+      //     this.setState({ totalTokensMinted });
+      //     body.totalTokensMinted = totalTokensMinted;
 
-        this.setState({ totalTokensOwnedByAccount });
-        this.setState({ loading: false });
-        body.totalTokensOwnedByAccount = totalTokensOwnedByAccount;
-        body.loading = false;
-      } else {
-        this.setState({ contractDetected: false });
-        body.contractDetected = false;
-      }
+      //     let totalTokensOwnedByAccount = await cryptoBoysContract.methods
+      //       .getTotalNumberOfTokensOwnedByAnAddress(this.state.accountAddress)
+      //       .call();
+      //     totalTokensOwnedByAccount = totalTokensOwnedByAccount.toNumber();
+
+      //     this.setState({ totalTokensOwnedByAccount });
+      //     this.setState({ loading: false });
+      //     body.totalTokensOwnedByAccount = totalTokensOwnedByAccount;
+      //     body.loading = false;
+      //   } else {
+      //     this.setState({ contractDetected: false });
+      //     body.contractDetected = false;
+      //   }
+      // }
+      this.setState({ ...body });
+      console.log("loadblock 2");
     }
-    this.setState({ ...body });
-    console.log("loadblock 2");
   };
 
   //metamask 와 연결 확인

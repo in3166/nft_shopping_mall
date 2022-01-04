@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Web3 from "web3";
 import ImageContract from "../../abis/ImageContract.json";
 import ImageSaleContract from "../../abis/ImageSaleContract.json";
 import TokenContract from "../../abis/TokenContract.json";
@@ -35,7 +36,13 @@ class UserNFTDetail extends Component {
   }
 
   async loadBlockchainData() {
-    const web3 = window.web3;
+    let web3 = window.web3;
+    console.log("web3: ", web3.eth);
+    if (!web3.eth) {
+      web3 = new Web3(window.web3.currentProvider);
+      window.web3 = web3;
+    }
+
     // Load account
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });

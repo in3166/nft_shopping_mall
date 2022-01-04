@@ -14,9 +14,5 @@ module.exports = (sequelize, Sequelize) => {
     },
   });
 
-  Categories.prototype.validPassword = async (password, hash) => {
-    return await bcrypt.compareSync(password, hash);
-  };
-
   return Categories;
 };

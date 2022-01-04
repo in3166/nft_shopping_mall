@@ -121,44 +121,51 @@ class FormAndPreview extends Component {
     var client = create("http://127.0.0.1:5002/");
 
     console.log("client: ", client);
-    
-    const { cid } = await client.add(this.state.new_image);
-    console.log("cid: ", cid);
+    try {
+      const { cid } = await client.add(this.state.new_image);
+      console.log("cid: ", cid);
 
-    //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
-    //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-    const urlStr = `http://localhost:9090/ipfs/${cid}`;
-    this.setState({
-      new_url: urlStr,
-    });
-
-    console.log("url = ", this.state.new_url);
-
-    this.getBase64(this.state.new_image, (result) => {
-      file = result;
-      //파일의 고유 정보와 구분을 위해 해시를 추가 함 기존은 url 로 구분 되어 블록체인에 등록되지 않는 경우 발생
-      const hash = Crypto.createHash("sha256").update(file).digest("base64");
+      //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+      //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+      const urlStr = `http://localhost:9090/ipfs/${cid}`;
       this.setState({
-        new_token: hash,
+        new_url: urlStr,
       });
 
-      // this.state.new_hash 를 파일 구분을 위해 추가 함
-      this.state.contract.methods
-        .mint(
-          this.state.new_name,
-          this.state.new_des,
-          this.state.new_url,
-          this.state.new_price,
-          this.state.new_token
-        )
-        .send({ from: this.state.account })
-        .once("receipt", (receipt) => {
-          console.log("nft receipt: ");
-          console.log(receipt);
-          alert("token is created");
-          this.props.history.push("/");
+      console.log("url = ", this.state.new_url);
+
+      this.getBase64(this.state.new_image, (result) => {
+        file = result;
+        //파일의 고유 정보와 구분을 위해 해시를 추가 함 기존은 url 로 구분 되어 블록체인에 등록되지 않는 경우 발생
+        const hash = Crypto.createHash("sha256").update(file).digest("base64");
+        this.setState({
+          new_token: hash,
         });
-    });
+
+        // this.state.new_hash 를 파일 구분을 위해 추가 함
+        this.state.contract.methods
+          .mint(
+            this.state.new_name,
+            this.state.new_des,
+            this.state.new_url,
+            this.state.new_price,
+            this.state.new_token
+          )
+          .send({ from: this.state.account })
+          .once("receipt", (receipt) => {
+            console.log("nft receipt: ");
+            console.log(receipt);
+            alert("token is created");
+            this.props.history.push("/");
+          })
+          .catch(err=>{
+            console.log("catch ", err.message)
+            alert(err.message)
+          });
+      });
+    } catch (error) {
+      alert(error);
+    }
   }
 
   /*
@@ -229,11 +236,10 @@ class FormAndPreview extends Component {
                       required
                       className="form-control my-2"
                       placeholder="Choose Image"
-                      onChange={(event) =>{
-                        console.log(event.target.files[0])
-                        this.setState({ new_image: event.target.files[0] })
-                      }
-                      }
+                      onChange={(event) => {
+                        console.log(event.target.files[0]);
+                        this.setState({ new_image: event.target.files[0] });
+                      }}
                     />
                   </div>
                   <div className="col-6">

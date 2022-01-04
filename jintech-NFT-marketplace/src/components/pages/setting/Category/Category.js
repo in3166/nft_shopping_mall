@@ -1,7 +1,6 @@
 import {
   Button,
   Paper,
-  Box,
   List,
   IconButton,
   ListItemButton,
@@ -19,12 +18,35 @@ import {
   DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useState } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import React, { useEffect, useState } from "react";
 import styles from "./Category.module.css";
+import axios from "axios";
 
 const Category = (props) => {
-  const [checked, setChecked] = React.useState([0]);
+  const [checked, setChecked] = useState([]);
   const [AllChecked, setAllChecked] = useState(false);
+  const [Categories, setCategories] = useState([]);
+
+  const getAllCategories = () => {
+    axios
+      .get("/api/categories/")
+      .then((res) => {
+        if (res.data.success) {
+          setCategories(res.data.categories);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -41,35 +63,107 @@ const Category = (props) => {
   const checkAllHandler = () => {
     const allCheck = [];
     if (!AllChecked) {
-      for (let i = 0; i < 4; i++) {
-        allCheck.push(i);
-      }
+      Categories.forEach((v) => {
+        allCheck.push(v.id);
+      });
     }
     setChecked(allCheck);
     setAllChecked((prev) => !prev);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleDeleteClick = (event) => {
+  const [DeletedCategoriesId, setDeletedCategoriesId] = useState([]);
+  const handleDeleteClick = (event, value) => {
     setAnchorEl(event.currentTarget);
+    if (!!value) {
+      setDeletedCategoriesId([value.id]);
+    } else {
+      setDeletedCategoriesId(checked);
+    }
   };
-
   const handleDeleteClose = () => {
     setAnchorEl(null);
+    setDeletedCategoriesId([]);
+  };
+  const handleDeleteSubmit = async () => {
+    if (DeletedCategoriesId.length < 1) {
+      alert("하나 이상의 항목을 선택하세요.");
+      handleDeleteClose();
+      return;
+    }
+
+    try {
+      const response = await axios.delete("/api/categories/", {
+        data: {
+          id: DeletedCategoriesId,
+        },
+      });
+      if (response.data.success) {
+        alert("카테고리를 삭제하였습니다.");
+        getAllCategories();
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      alert(error);
+    } finally {
+      handleDeleteClose();
+    }
   };
 
   const deleteOpen = Boolean(anchorEl);
   const id = deleteOpen ? "simple-popover" : undefined;
 
+  const [isAdd, setIsAdd] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
-
   const handleClickAddOpen = () => {
     setAddOpen(true);
+    setIsAdd(true);
   };
-
+  const handleClickEditOpen = (data) => {
+    setEnteredCategory({ id: data.id, name: data.name });
+    setIsAdd(false);
+    setAddOpen(true);
+  };
   const handleAddClose = () => {
     setAddOpen(false);
+    setEnteredCategory({});
+  };
+
+  const [EnteredCategory, setEnteredCategory] = useState({});
+  const handleAddSubmit = async () => {
+    let response;
+    try {
+      if (isAdd) {
+        response = await axios.post("/api/categories/", EnteredCategory);
+        if (response.data.success) {
+          alert("카테고리를 추가하였습니다.");
+          getAllCategories();
+          // setCategories((prev) => {
+          //   return [...prev, EnteredCategory];
+          // });
+        }
+      } else {
+        response = await axios.put("/api/categories/", EnteredCategory);
+        if (response.data.success) {
+          alert("카테고리를 수정하였습니다.");
+          getAllCategories();
+          // const objIndex = Categories.findIndex(
+          //   (obj) => obj.id === EnteredCategory.id
+          // );
+          // const tmepCategories = Categories.slice();
+          // tmepCategories[objIndex].name = EnteredCategory.name;
+          // setCategories(tmepCategories);
+        }
+      }
+      if (!response.data.success) {
+        alert(response.data.message);
+      }
+      handleAddClose();
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (
@@ -80,52 +174,60 @@ const Category = (props) => {
         <div className={styles["header"]}>
           <Button onClick={checkAllHandler}>All</Button>
           <div className={styles["btn-div"]}>
-            <Button onClick={handleClickAddOpen}>Edit</Button>
+            {/* <Button onClick={handleClickEditOpen}>Edit</Button> */}
             <Button onClick={handleClickAddOpen}>Add</Button>
             <Button onClick={handleDeleteClick}>Delete</Button>
           </div>
         </div>
 
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-          {[0, 1, 2, 3].map((value) => {
-            const labelId = `checkbox-list-label-${value}`;
+          {Categories.length > 0 &&
+            Categories.map((value) => {
+              const labelId = `checkbox-list-label-${value.name}`;
 
-            return (
-              <ListItem
-                key={value}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    onClick={handleDeleteClick}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                }
-                disablePadding
-              >
-                <ListItemButton
-                  role={undefined}
-                  onClick={handleToggle(value)}
-                  dense
+              return (
+                <ListItem
+                  key={value.id}
+                  secondaryAction={
+                    <>
+                      <IconButton
+                        edge="end"
+                        aria-label="comments"
+                        onClick={() => handleClickEditOpen(value)}
+                        sx={{ marginRight: 0.1 }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        edge="end"
+                        aria-label="comments"
+                        onClick={(e) => handleDeleteClick(e, value)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  }
+                  disablePadding
                 >
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      checked={checked.indexOf(value) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ "aria-labelledby": labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    id={labelId}
-                    primary={`Line item ${value + 1}`}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
+                  <ListItemButton
+                    role={undefined}
+                    onClick={handleToggle(value.id)}
+                    dense
+                  >
+                    <ListItemIcon>
+                      <Checkbox
+                        edge="start"
+                        checked={checked.indexOf(value.id) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{ "aria-labelledby": labelId }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText id={labelId} primary={`${value.name}`} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           <Popover
             id={id}
             open={deleteOpen}
@@ -142,18 +244,18 @@ const Category = (props) => {
           >
             <Typography sx={{ p: 2 }}>정말 삭제하시겠습니까?</Typography>
             <div style={{ float: "right" }}>
-              <Button>취소</Button>
-              <Button>삭제</Button>
+              <Button onClick={handleDeleteClose}>취소</Button>
+              <Button onClick={handleDeleteSubmit}>삭제</Button>
             </div>
           </Popover>
         </List>
       </Paper>
 
       <Dialog open={addOpen} onClose={handleAddClose}>
-        <DialogTitle>Add Category</DialogTitle>
+        <DialogTitle>{isAdd ? "Add" : "Edit"} Category</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            추가할 카테고리 이름을 입력하세요.
+            {isAdd ? "추가" : "수정"}할 카테고리 이름을 입력하세요.
           </DialogContentText>
           <TextField
             autoFocus
@@ -163,11 +265,17 @@ const Category = (props) => {
             type="text"
             fullWidth
             variant="standard"
+            value={EnteredCategory.name || ""}
+            onChange={(e) =>
+              setEnteredCategory((prev) => {
+                return { ...prev, name: e.target.value };
+              })
+            }
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleAddClose}>취소</Button>
-          <Button onClick={handleAddClose}>추가</Button>
+          <Button onClick={handleAddSubmit}>{isAdd ? "추가" : "수정"}</Button>
         </DialogActions>
       </Dialog>
     </>

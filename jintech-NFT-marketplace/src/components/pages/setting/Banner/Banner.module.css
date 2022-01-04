@@ -19,3 +19,7 @@
 .checkbox input:active {
   border-radius: 0;
 }
+
+.bannerItem {
+  width: max-content;
+}

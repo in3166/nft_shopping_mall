@@ -42,7 +42,8 @@ class NftDetail extends Component {
   async loadBlockchainData() {
     const web3 = window.web3;
     // Load account
-    const accounts = await web3.eth.getAccounts();
+    const accounts = await web3?.eth?.getAccounts();
+    console.log('accounts: ',accounts)
     this.setState({ account: accounts[0] });
 
     const networkId = await web3.eth.net.getId();

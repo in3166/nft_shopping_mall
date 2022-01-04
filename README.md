@@ -68,6 +68,10 @@ xxx버전 업그레이드함 xxx
   - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
   - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
 
+## 수정 사항
+- 같은 이미지의 경우 mint 방지
+  - `ImageContract.sol`
+    - `require(!_imageExists[_hash], "ERC721: token already minted");` 추가
 ## Warning
 
 - `Can't perform a React state update on an unmounted component.`
@@ -92,6 +96,10 @@ xxx버전 업그레이드함 xxx
 
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지
+- 컨트랙스 수정 후 재실행
+  - `truffle compile`
+  - `truffle migrate --reset`
+
 
 <br><br><br>
 ### ignore

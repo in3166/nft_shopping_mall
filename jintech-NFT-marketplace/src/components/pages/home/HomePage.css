@@ -2,13 +2,14 @@
 
 /*** marketplace - main slide ***/
 .slide-contents {
-  height: 44em;
+  height: max-content;
   overflow: hidden;
   text-align: center;
+  position: relative;
 }
 /* slide control-inner */
 .slide-control-inner {
-  z-index: 9;
+  /* z-index: 9; */
   display: flex;
   position: absolute;
   top: 0;
@@ -19,6 +20,8 @@
   width: 100%;
 }
 .control-btn {
+  z-index: 9;
+  cursor: pointer;
   display: inline-block;
   width: 3.2em;
   line-height: 3.2em;

@@ -9,6 +9,7 @@ import { create } from "ipfs-http-client";
 import styles from "./FormAndPreview.module.css";
 import { withRouter } from "react-router-dom";
 /* 2021-11-22 서버에서 ipfs-http-client가 안돌아가서 교체 */
+import IP from "../../ipconfig.json";
 
 class FormAndPreview extends Component {
   constructor(props) {
@@ -118,7 +119,7 @@ class FormAndPreview extends Component {
     let file = "";
     //var client = create("http://jtsol.iptime.org:5001/api/v0");
     //var client = create("https://ipfs.infura.io:5001/api/v0");
-    var client = create("http://127.0.0.1:5002/");
+    var client = create(IP.IPFS_CREATE_CLIENT_URL);
 
     console.log("client: ", client);
     try {
@@ -127,14 +128,14 @@ class FormAndPreview extends Component {
 
       //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
       //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-      const urlStr = `http://localhost:9090/ipfs/${cid}`;
+      const urlStr = `${IP.IPFS_SAVE_URL}/${cid}`;
       this.setState({
         new_url: urlStr,
       });
 
       console.log("url = ", this.state.new_url);
-
       this.getBase64(this.state.new_image, (result) => {
+        console.log("result: ", result);
         file = result;
         //파일의 고유 정보와 구분을 위해 해시를 추가 함 기존은 url 로 구분 되어 블록체인에 등록되지 않는 경우 발생
         const hash = Crypto.createHash("sha256").update(file).digest("base64");
@@ -158,9 +159,9 @@ class FormAndPreview extends Component {
             alert("token is created");
             this.props.history.push("/");
           })
-          .catch(err=>{
-            console.log("catch ", err.message)
-            alert(err.message)
+          .catch((err) => {
+            console.log("catch ", err.message);
+            alert(err.message);
           });
       });
     } catch (error) {
@@ -199,6 +200,8 @@ class FormAndPreview extends Component {
   */
 
   getBase64(file, cb) {
+    console.log("file: ");
+    console.log(file);
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {

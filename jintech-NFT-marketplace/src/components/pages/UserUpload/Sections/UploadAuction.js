@@ -85,7 +85,7 @@ const UploadAuction = (props) => {
     }
   };
 
-  const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     if (
       !urlHasError &&
@@ -94,7 +94,6 @@ const UploadAuction = (props) => {
       !descriptionHasError &&
       file.filename !== ""
     ) {
-
       var client = create("http://127.0.0.1:5002/");
       const { cid } = await client.add(file);
 
@@ -116,13 +115,12 @@ const UploadAuction = (props) => {
           period: period,
           markup: Markup,
           description: descriptionValue,
-          type: 'auction'
+          type: "auction",
+          address: user.userAddress,
         })
       );
       formData.append("file", file);
       console.log(formData);
-
-   
 
       axios
         .post("/api/images/", formData, {

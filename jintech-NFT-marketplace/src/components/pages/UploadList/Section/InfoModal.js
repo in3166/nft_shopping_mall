@@ -15,11 +15,99 @@ import {
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import styles from "./InfoModal.module.css";
+import { create } from "ipfs-http-client";
+import IP from "../../../../ipconfig.json";
+import axios from "axios";
+import ImageContract from "../../../../abis/ImageContract.json";
+import { useSelector } from "react-redux";
+import Crypto from "crypto";
 
 const InfoModal = (props) => {
   const { open, handleClose, selectedData } = props;
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const user = useSelector((state) => state.user.user);
+
+  const getBase64 = (file, cb) => {
+    // console.log("file: ");
+    // console.log(file);
+
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      cb(reader.result);
+    };
+    reader.onerror = function (error) {
+      console.log("Error: ", error);
+    };
+  };
+
+  const handleMintSubmit = async () => {
+    console.log(selectedData);
+    const Web3 = require("web3");
+    // web3 lib instance
+    const web3 = new Web3(window.ethereum);
+    // Load account
+    const accounts = await web3.eth.getAccounts();
+    //this.setState({ account: accounts[0] });
+
+    const networkId = await web3.eth.net.getId();
+    const networkData = ImageContract.networks[networkId];
+    const abi = ImageContract.abi;
+    const address = networkData.address;
+    const contract = new web3.eth.Contract(abi, address); // ImageContract 주소
+
+    axios
+      .get(selectedData.url, { responseType: "blob" })
+      .then((res) => {
+        console.log(res.data);
+        let file = new File([res.data], selectedData.filename);
+        // file: name(생성시간 포함), size, type만 존재
+        // formandpreview에선 lastModified, lastModifiedDate, webkitRelativePath 포함되어서 mint
+        console.log(file);
+
+        getBase64(file, (result) => {
+          //console.log("result: ", result);
+          file = result;
+          //파일의 고유 정보와 구분을 위해 해시를 추가 함 기존은 url 로 구분 되어 블록체인에 등록되지 않는 경우 발생
+          const hash = Crypto.createHash("sha256")
+            .update(file)
+            .digest("base64");
+          // this.setState({
+          //   new_token: hash,
+          // });
+          console.log("hash: ", hash);
+          console.log("selectedData: ", selectedData);
+          console.log("address: ", selectedData.address);
+          // this.state.new_hash 를 파일 구분을 위해 추가 함
+          contract.methods
+            .mint(
+              selectedData.filename,
+              selectedData.description,
+              selectedData.url,
+              selectedData.price,
+              hash
+            )
+            .send({ from: selectedData.address })
+            .once("receipt", (receipt) => {
+              console.log("nft receipt: ");
+              console.log(receipt);
+              alert("token is created");
+              this.props.history.push("/");
+            })
+            .catch((err) => {
+              console.log("catch ", err.message);
+              alert(err.message);
+            })
+            .finally(() => {
+              handleClose();
+            });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Dialog
@@ -193,7 +281,7 @@ const InfoModal = (props) => {
         <Button autoFocus onClick={handleClose}>
           Cancel
         </Button>
-        <Button onClick={handleClose} autoFocus>
+        <Button onClick={handleMintSubmit} autoFocus>
           MINT
         </Button>
       </DialogActions>

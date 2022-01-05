@@ -161,6 +161,7 @@ const UploadList = () => {
             autoHeight={true}
             onRowClick={(data) => infoHandler(data.row)}
             disableSelectionOnClick
+            className={styles.table}
           />
         )}
       </Card>

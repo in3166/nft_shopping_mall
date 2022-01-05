@@ -17,6 +17,8 @@ import {
   NativeSelect,
   TextField,
   Typography,
+  CircularProgress,
+  Stack,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useCallback, useEffect, useState } from "react";
@@ -41,12 +43,14 @@ const Banner = () => {
   const [TokenPrice, setTokenPrice] = useState(0);
   const [Banners, setBanners] = useState([]);
   const [checked, setChecked] = useState([]);
-  console.log("sel: ", checked);
+  const [LoadingBanner, setLoadingBanner] = useState(false);
+  const [LoadingItems, setLoadingItems] = useState(false);
+
   const getAllBanners = () => {
+    setLoadingBanner(true);
     axios
       .get("/api/banners")
       .then((res) => {
-        console.log("배너 가져오기: ", res.data.banners);
         if (res.data.success) {
           setBanners(res.data.banners);
         } else {
@@ -55,47 +59,57 @@ const Banner = () => {
       })
       .catch((err) => {
         alert(err);
+      })
+      .finally(() => {
+        setLoadingBanner(false);
       });
   };
 
   const getImagesFromEth = useCallback(async () => {
-    const accounts = await web3.eth.getAccounts();
-    const networkId = await web3.eth.net.getId();
-    const networkData = ImageContract.networks[networkId];
-    const abi = ImageContract.abi;
-    const address = networkData.address;
-    const contract = new web3.eth.Contract(abi, address);
-    const totalSupply = await contract.methods.totalSupply().call();
+    try {
+      setLoadingItems(true);
+      const accounts = await web3.eth.getAccounts();
+      const networkId = await web3.eth.net.getId();
+      const networkData = ImageContract.networks[networkId];
+      const abi = ImageContract.abi;
+      const address = networkData.address;
+      const contract = new web3.eth.Contract(abi, address);
+      const totalSupply = await contract.methods.totalSupply().call();
 
-    const tempImages = [];
-    for (var i = 1; i <= totalSupply; i++) {
-      const id = await contract.methods.images(i - 1).call();
-      const owner = await contract.methods.ownerOf(i - 1).call();
-      const metadata = await contract.methods.imageData(i - 1).call();
-      const body = {
-        id,
-        owner,
-        name: metadata.name,
-        price: metadata.price,
-        token: metadata.token,
-        url: metadata.url,
-        key: i - 1,
-      };
-      tempImages.push(body);
+      const tempImages = [];
+      for (var i = 1; i <= totalSupply; i++) {
+        const id = await contract.methods.images(i - 1).call();
+        const owner = await contract.methods.ownerOf(i - 1).call();
+        const metadata = await contract.methods.imageData(i - 1).call();
+        const body = {
+          id,
+          owner,
+          name: metadata.name,
+          price: metadata.price,
+          token: metadata.token,
+          url: metadata.url,
+          key: i - 1,
+        };
+        tempImages.push(body);
+      }
+      setImages(tempImages);
+
+      const sale_networkData = TokenSaleContract.networks[networkId];
+      const tokenSaleAbi = TokenSaleContract.abi;
+      const saleAddress = sale_networkData.address;
+      const token_sale_contract = new web3.eth.Contract(
+        tokenSaleAbi,
+        saleAddress
+      );
+
+      let token_price = await token_sale_contract.methods.tokenPrice().call();
+      token_price = web3.utils.fromWei(token_price, "ether");
+      setTokenPrice(token_price);
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoadingItems(false);
     }
-    setImages(tempImages);
-
-    const sale_networkData = TokenSaleContract.networks[networkId];
-    const tokenSaleAbi = TokenSaleContract.abi;
-    const saleAddress = sale_networkData.address;
-    const token_sale_contract = new web3.eth.Contract(
-      tokenSaleAbi,
-      saleAddress
-    );
-
-    let token_price = await token_sale_contract.methods.tokenPrice().call();
-    token_price = web3.utils.fromWei(token_price, "ether");
-    setTokenPrice(token_price);
   }, [web3.eth, web3.utils]);
 
   useEffect(() => {
@@ -137,6 +151,7 @@ const Banner = () => {
         } else {
           alert(res.data.message);
         }
+        setChecked([]);
       })
       .catch((err) => {
         alert(err);
@@ -170,11 +185,27 @@ const Banner = () => {
             border: "1px solid gainsboro",
           }}
         >
-          {Banners.length < 1 ? (
+          {LoadingBanner && Banners.length === 0 && (
+            <Stack
+              sx={{
+                color: "grey.500",
+                width: "100%",
+                minHeight: "250px",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              spacing={2}
+              direction="row"
+              //className={styles.loading}
+            >
+              <CircularProgress color="inherit" />
+            </Stack>
+          )}
+          {!LoadingBanner && Banners.length < 1 ? (
             <p>No Banners.</p>
           ) : (
             Banners.map((value, index) => (
-              <ListItem className={styles.bannerItem}>
+              <ListItem className={styles.bannerItem} key={value.key}>
                 <Card
                   sx={{
                     maxWidth: 200,
@@ -194,9 +225,26 @@ const Banner = () => {
                         <CloseIcon />
                       </IconButton>
                     }
-                    // title="Shrimp"
-                    subheader={value.name}
-                    sx={{ padding: "10px" }}
+                    // titleTypographyProps={{
+                    //   variant: "subtitle1",
+                    // }}
+                    // subHeader="Shrimp"
+                    title={
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="div"
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                        title={value.name}
+                      >
+                        {value.name}
+                      </Typography>
+                    }
+                    sx={{ padding: "7px" }}
                   />
                   {/* <Checkbox className={styles.checkbox} disableRipple /> */}
                   <img
@@ -221,7 +269,7 @@ const Banner = () => {
         <h5 style={{ float: "left" }}>Select IMAGES</h5>
         <Box
           sx={{ border: "1px solid gainsboro", overflow: "hidden" }}
-          padding={2}
+          padding={3}
         >
           <div
             style={{
@@ -265,64 +313,92 @@ const Banner = () => {
             </div>
           </div>
           <Grid container columns={18} spacing={2}>
-            {Images.map((value, index) => {
-              return (
-                <Grid item xs={18} sm={9} md={6} lg={4.5}>
-                  <Card>
-                    <CardActionArea>
-                      <Checkbox
-                        checked={
-                          checked.findIndex((i) => i.id === value.id) !== -1
-                        }
-                        tabIndex={-1}
-                        className={styles.checkbox}
-                        disableRipple
-                        onClick={() => handleCheck(value)}
-                      />
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        src={value.url}
-                        //image="http://via.placeholder.com/640x360"
-                        alt={"images" + index}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h6" component="div">
-                          {value.name}
-                        </Typography>
-                        <Typography
-                          component="div"
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{
-                            overflow: "hidden",
-                            display: "block",
-                            lineHeight: "1.39",
-                            wordWrap: "break-word",
-                          }}
-                        >
-                          <p>
-                            <strong>Owner</strong> {value.owner}
-                          </p>
-                          <p>
-                            <strong>Token</strong> {value.token}
-                          </p>
-                          <p>
-                            <strong>Price</strong> {value.price * TokenPrice}{" "}
-                            ETH
-                          </p>
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-                      <Button size="small" color="primary">
-                        Share
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              );
-            })}
+            {LoadingItems && Images.length === 0 && (
+              <Grid item xs={18}>
+                <Stack
+                  sx={{
+                    color: "grey.500",
+                    width: "100%",
+                    minHeight: "250px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  spacing={2}
+                  direction="row"
+                  //className={styles.loading}
+                >
+                  <CircularProgress color="inherit" />
+                </Stack>
+              </Grid>
+            )}
+            {!LoadingItems &&
+              Images.map((value, index) => {
+                return (
+                  <Grid item xs={18} sm={9} md={6} lg={4.5} key={value.key}>
+                    <Card title={value.name}>
+                      <CardActionArea>
+                        <Checkbox
+                          checked={
+                            checked.findIndex((i) => i.id === value.id) !== -1
+                          }
+                          tabIndex={-1}
+                          className={styles.checkbox}
+                          disableRipple
+                          onClick={() => handleCheck(value)}
+                        />
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          src={value.url}
+                          //image="http://via.placeholder.com/640x360"
+                          alt={"images" + index}
+                        />
+                        <CardContent>
+                          <Typography
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                            sx={{
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {value.name}
+                          </Typography>
+                          <Typography
+                            component="div"
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              overflow: "hidden",
+                              display: "block",
+                              lineHeight: "1.39",
+                              wordWrap: "break-word",
+                            }}
+                          >
+                            <p>
+                              <strong>Owner</strong> {value.owner}
+                            </p>
+                            <p>
+                              <strong>Token</strong> {value.token}
+                            </p>
+                            <p>
+                              <strong>Price</strong> {value.price * TokenPrice}{" "}
+                              ETH
+                            </p>
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                      <CardActions>
+                        <Button size="small" color="primary">
+                          Share
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                );
+              })}
           </Grid>
         </Box>
       </Container>

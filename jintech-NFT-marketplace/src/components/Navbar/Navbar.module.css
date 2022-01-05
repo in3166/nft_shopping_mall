@@ -30,15 +30,17 @@
   cursor: pointer;
   padding: 0 !important;
   margin: 0 !important;
+  overflow: hidden;
 }
 
 .lang-menu ul {
-  background-color: rgb(112, 112, 112);
+  background-color: rgb(139, 139, 139);
   color: white;
+  overflow: hidden;
 }
 
 .selected-lang {
-  background-color: rgba(93, 158, 223, 0.651) !important;
+  background-color: rgba(72, 146, 219, 0.651) !important;
 }
 
 .selected-lang:hover {

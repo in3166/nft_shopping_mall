@@ -63,6 +63,7 @@ class App extends Component {
       colorsUsed: [],
       lastMintTime: null,
       token: null, //사용자용 token
+      isMounted: false,
     };
   }
 
@@ -74,6 +75,7 @@ class App extends Component {
     // await this.setMetaData();
     await this.setMintBtnTimer();
     // console.log("token: ", token, user);
+    this.setState({ isMounted: true });
   };
 
   setMintBtnTimer = () => {
@@ -134,89 +136,93 @@ class App extends Component {
   loadBlockchainData = async () => {
     console.log("loadBlockchainData");
     const web3 = window.web3;
-    const accounts = await web3.eth.getAccounts();
-    let body = {};
-    // this.setState({ account: accounts[0] }); //접속한 사용자에 따라 mint nft 메뉴를 안보이게 할때 쓰는 변수 (update 2021-11-15)
-    body.account = accounts[0];
-    if (accounts.length === 0) {
-      //this.setState({ metamaskConnected: false });
-      body.metamaskConnected = false;
-    } else {
-      // this.setState({ metamaskConnected: true });
-      // this.setState({ loading: true });
-      // this.setState({ accountAddress: accounts[0] });
-      body.metamaskConnected = true;
-      body.loading = true;
-      body.accountAddress = accounts[0];
+    try {
+      const accounts = await web3.eth.getAccounts();
+      let body = {};
+      // this.setState({ account: accounts[0] }); //접속한 사용자에 따라 mint nft 메뉴를 안보이게 할때 쓰는 변수 (update 2021-11-15)
+      body.account = accounts[0];
+      if (accounts.length === 0) {
+        //this.setState({ metamaskConnected: false });
+        body.metamaskConnected = false;
+      } else {
+        // this.setState({ metamaskConnected: true });
+        // this.setState({ loading: true });
+        // this.setState({ accountAddress: accounts[0] });
+        body.metamaskConnected = true;
+        body.loading = true;
+        body.accountAddress = accounts[0];
 
-      let accountBalance = await web3.eth.getBalance(accounts[0]);
-      accountBalance = web3.utils.fromWei(accountBalance, "Ether");
+        let accountBalance = await web3.eth.getBalance(accounts[0]);
+        accountBalance = web3.utils.fromWei(accountBalance, "Ether");
 
-      // this.setState({ accountBalance });
-      // this.setState({ loading: false });
-      body.accountBalance = accountBalance;
-      body.loading = false;
-      const networkId = await web3.eth.net.getId();
+        // this.setState({ accountBalance });
+        // this.setState({ loading: false });
+        body.accountBalance = accountBalance;
+        body.loading = false;
+        const networkId = await web3.eth.net.getId();
 
-      //   const networkData = CryptoBoys.networks[networkId];
+        //   const networkData = CryptoBoys.networks[networkId];
 
-      //   if (networkData) {
-      //     this.setState({ loading: true });
-      //     //body.loading = true;
+        //   if (networkData) {
+        //     this.setState({ loading: true });
+        //     //body.loading = true;
 
-      //     const cryptoBoysContract = new web3.eth.Contract(
-      //       CryptoBoys.abi,
-      //       networkData.address
-      //     );
+        //     const cryptoBoysContract = new web3.eth.Contract(
+        //       CryptoBoys.abi,
+        //       networkData.address
+        //     );
 
-      //     // this.setState({ cryptoBoysContract });
-      //     // this.setState({ contractDetected: true });
-      //     body.cryptoBoysContract = cryptoBoysContract;
-      //     body.contractDetected = true;
+        //     // this.setState({ cryptoBoysContract });
+        //     // this.setState({ contractDetected: true });
+        //     body.cryptoBoysContract = cryptoBoysContract;
+        //     body.contractDetected = true;
 
-      //     const cryptoBoysCount = await cryptoBoysContract.methods
-      //       .cryptoBoyCounter()
-      //       .call();
+        //     const cryptoBoysCount = await cryptoBoysContract.methods
+        //       .cryptoBoyCounter()
+        //       .call();
 
-      //     //this.setState({ cryptoBoysCount });
-      //     body.cryptoBoysCount = cryptoBoysCount;
+        //     //this.setState({ cryptoBoysCount });
+        //     body.cryptoBoysCount = cryptoBoysCount;
 
-      //     for (var i = 1; i <= cryptoBoysCount; i++) {
-      //       const cryptoBoy = await cryptoBoysContract.methods
-      //         .allCryptoBoys(i)
-      //         .call();
+        //     for (var i = 1; i <= cryptoBoysCount; i++) {
+        //       const cryptoBoy = await cryptoBoysContract.methods
+        //         .allCryptoBoys(i)
+        //         .call();
 
-      //       // this.setState({
-      //       //   cryptoBoys: [...this.state.cryptoBoys, cryptoBoy],
-      //       // });
+        //       // this.setState({
+        //       //   cryptoBoys: [...this.state.cryptoBoys, cryptoBoy],
+        //       // });
 
-      //       body.cryptoBoys = [...this.state.cryptoBoys, cryptoBoy];
-      //     }
+        //       body.cryptoBoys = [...this.state.cryptoBoys, cryptoBoy];
+        //     }
 
-      //     let totalTokensMinted = await cryptoBoysContract.methods
-      //       .getNumberOfTokensMinted()
-      //       .call();
-      //     totalTokensMinted = totalTokensMinted.toNumber();
+        //     let totalTokensMinted = await cryptoBoysContract.methods
+        //       .getNumberOfTokensMinted()
+        //       .call();
+        //     totalTokensMinted = totalTokensMinted.toNumber();
 
-      //     this.setState({ totalTokensMinted });
-      //     body.totalTokensMinted = totalTokensMinted;
+        //     this.setState({ totalTokensMinted });
+        //     body.totalTokensMinted = totalTokensMinted;
 
-      //     let totalTokensOwnedByAccount = await cryptoBoysContract.methods
-      //       .getTotalNumberOfTokensOwnedByAnAddress(this.state.accountAddress)
-      //       .call();
-      //     totalTokensOwnedByAccount = totalTokensOwnedByAccount.toNumber();
+        //     let totalTokensOwnedByAccount = await cryptoBoysContract.methods
+        //       .getTotalNumberOfTokensOwnedByAnAddress(this.state.accountAddress)
+        //       .call();
+        //     totalTokensOwnedByAccount = totalTokensOwnedByAccount.toNumber();
 
-      //     this.setState({ totalTokensOwnedByAccount });
-      //     this.setState({ loading: false });
-      //     body.totalTokensOwnedByAccount = totalTokensOwnedByAccount;
-      //     body.loading = false;
-      //   } else {
-      //     this.setState({ contractDetected: false });
-      //     body.contractDetected = false;
-      //   }
-      // }
-      this.setState({ ...body });
-      console.log("loadblock 2");
+        //     this.setState({ totalTokensOwnedByAccount });
+        //     this.setState({ loading: false });
+        //     body.totalTokensOwnedByAccount = totalTokensOwnedByAccount;
+        //     body.loading = false;
+        //   } else {
+        //     this.setState({ contractDetected: false });
+        //     body.contractDetected = false;
+        //   }
+        // }
+        this.setState({ ...body });
+        console.log("loadblock 2");
+      }
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -387,12 +393,11 @@ class App extends Component {
     // );
     console.log("app run");
     // console.log(this.state);
-    // console.log("this.state.metamaskConnected: ", this.state.metamaskConnected);
+    console.log("this.state.metamaskConnected: ", this.state.metamaskConnected);
     return (
       <div className="container-d" style={{ paddingBottom: "1px" }}>
         {/* metamask 와 연결 되었는가? */}
-        {this.state.metamaskConnected !== undefined &&
-        !this.state.metamaskConnected ? (
+        {this.state.isMounted && !this.state.metamaskConnected ? (
           /* 아니면 연결 창으로 이동 */
           <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
         ) : (

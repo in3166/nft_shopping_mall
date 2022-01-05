@@ -3,3 +3,7 @@
   min-height: 300px;
   width: "100%";
 }
+
+.table > div > div > div > div > div > div {
+  cursor: pointer;
+}

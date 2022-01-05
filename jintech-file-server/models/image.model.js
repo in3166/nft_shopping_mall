@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    address: {
+      type: Sequelize.STRING,
+    },
     path: {
       type: Sequelize.STRING,
     },

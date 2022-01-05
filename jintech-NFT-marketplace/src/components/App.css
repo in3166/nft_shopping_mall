@@ -12,31 +12,52 @@ input[type="color"]:hover {
   }
 }
 
-
 /* 추가 */
 /*** header, nav, bootstrap custom, default ***/
 
 /* font */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap'); /* 본문폰트용 */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"); /* 본문폰트용 */
 
-* { margin: 0; padding: 0;}
-html, body {
-	/* overflow: hidden; */
-	height: 100%;
-	color: #616161;
-	font-family: 'roboto';
-	font-weight: 400;
-	letter-spacing: 0;
+* {
+  margin: 0;
+  padding: 0;
 }
-img { object-fit: cover; vertical-align: middle;}
-a:hover { text-decoration: none; background: transparent; }
-button { border: 0}
-button:focus { outline: none; }
+html,
+body {
+  /* overflow: hidden; */
+  height: 100%;
+  color: #616161;
+  font-family: "roboto";
+  font-weight: 400;
+  letter-spacing: 0;
+}
+img {
+  object-fit: cover;
+  vertical-align: middle;
+}
+a:hover {
+  text-decoration: none;
+  background: transparent;
+}
+button {
+  border: 0;
+}
+button:focus {
+  outline: none;
+}
 
-::placeholder { color: #aaa; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-thumb { border-radius: 6px; background: #bdbdbd; }
+::placeholder {
+  color: #aaa;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: #bdbdbd;
+}
 /******************* RESET *******************/
 
 /* bgcolor 컬러 바꿀 때 참고
@@ -45,200 +66,218 @@ strong blue - #5c9ccc; (default, primary)
 */
 
 /*** text ***/
-a, h1, h2, h3, h4, h5, h6 {
-	color: #333;
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #333;
 }
 h5 {
-	margin: 0;
+  margin: 0;
 }
-.go-link, .go-link:hover {
-	color: #5c9ccc;
+.go-link,
+.go-link:hover {
+  color: #5c9ccc;
 }
 
 /* event */
 .active {
-	background: transparent; /* reset */
+  background: transparent; /* reset */
 }
 
 /*** layout ***/
-#root, .container {
-	height: 100%;
+#root,
+.container {
+  height: 100%;
   width: 100%;
   max-width: 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 .contents {
-	position: absolute;
-	top: 61px;
-	width: 100%;
-	height: calc(100% - 61px);
-	overflow-y: auto;
+  position: absolute;
+  top: 61px;
+  width: 100%;
+  height: calc(100% - 61px);
+  overflow-y: auto;
 }
 .container {
-    padding: 0;
-    max-width: 100%;
+  padding: 0;
+  max-width: 100%;
 }
 .container-fluid {
-	display: flex;
-	padding: 0 2em;
-	max-width: 1280px;
+  display: flex;
+  padding: 0 2em;
+  max-width: 1280px;
 }
 
 .flex-wrap {
-	display: inline-flex;
-	justify-content: space-around;
+  display: inline-flex;
+  justify-content: space-around;
 }
 
 /***** NAV / MENU *****/
 .navbar {
-	z-index: 50;
-	padding: .6rem 1rem;
-    width: 100%;
-    font-family: 'Runito-sans';
+  z-index: 50;
+  padding: 0.6rem 1rem;
+  width: 100%;
+  font-family: "Runito-sans";
 }
 .navbar-nav {
-	font-size: 0.8rem;
-	letter-spacing: 0.2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.2rem;
 }
 
 .nav-item {
-	padding: 0 1.8em;
-	margin: 0; /* reset */
-	font-weight: 500;
-	letter-spacing: .1em;
+  padding: 0 1.8em;
+  margin: 0; /* reset */
+  font-weight: 500;
+  letter-spacing: 0.1em;
   margin-right: 0 !important;
 }
-.nav-item, .dropdown-item {
-	cursor: pointer;
+.nav-item,
+.dropdown-item {
+  cursor: pointer;
 }
 
 .dropdown-menu {
-	left: auto; /* reset */
-	right: -10px;
-	text-align: center;
-	border: 0
+  left: auto; /* reset */
+  right: -10px;
+  text-align: center;
+  border: 0;
 }
 .dropdown-item {
-	padding: .25rem;
+  padding: 0.25rem;
 }
 
 /***** form  *****/
 select {
-	cursor: pointer;
+  cursor: pointer;
 }
 /* chrome 사용자 에이전트 스타일 제거 */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-	/* transition: background-color 5000s ease-in-out 0s;
+  /* transition: background-color 5000s ease-in-out 0s;
 	-webkit-transition: background-color 9999s ease-out; */
-	-webkit-box-shadow: 0 0 0px 1000px #f7f7f9 inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #f7f7f9 inset !important;
 }
 .form-control {
-    padding: .5rem .75rem;
-    height: auto;
-    font-weight: 500;
-    border-radius: 2px;
+  padding: 0.5rem 0.75rem;
+  height: auto;
+  font-weight: 500;
+  border-radius: 2px;
 }
 .form-control:focus {
-	border: none;
-	box-shadow: none;
-	outline: 2px solid #d8dcee;
+  border: none;
+  box-shadow: none;
+  outline: 2px solid #d8dcee;
 }
 .form-control::placeholder {
-	color: #ccc;
+  color: #ccc;
 }
 
 .form-label {
-	margin-bottom: .2rem;
-	color: #888;
-	font-weight: 400;
+  margin-bottom: 0.2rem;
+  color: #888;
+  font-weight: 400;
 }
 .form-check-label {
-	font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .form-select {
-	cursor: pointer;
-	width: 6em;
-	line-height: 2.4em;
+  cursor: pointer;
+  width: 6em;
+  line-height: 2.4em;
 }
 .search-bar {
-	position: relative;
+  position: relative;
 }
 .fa-search {
-	position: absolute;
-	right: 4px;
-	margin: 4px;
+  position: absolute;
+  right: 4px;
+  margin: 4px;
 }
 .search-input {
-	height: 2.4em;
-	line-height: 2.4em;
+  height: 2.4em;
+  line-height: 2.4em;
 }
 
 /*** button ***/
 .btn {
-	box-shadow: none;
-    border-radius: 2px;
-	padding: .5rem 1.5rem;
+  box-shadow: none;
+  border-radius: 2px;
+  padding: 0.5rem 1.5rem;
 }
 .btn:active {
-	outline: none;
-	filter: brightness(96%);
+  outline: none;
+  filter: brightness(96%);
 }
 
 /* primary */
 .btn-primary {
-	background: #5c9ccc;
+  background: #5c9ccc;
 }
 .btn-primary:hover {
-	background: linear-gradient(rgba(92, 156, 204, 1), rgba(107, 175, 225, 1));
+  background: linear-gradient(rgba(92, 156, 204, 1), rgba(107, 175, 225, 1));
 }
-.btn-primary:active, .btn-primary:focus, .btn-primary:visited {
-	border-color: #5c9ccc;
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:visited {
+  border-color: #5c9ccc;
 }
 
 .btn-outline-primary {
-	color: #5c9ccc;
-	border-color: #5c9ccc;
+  color: #5c9ccc;
+  border-color: #5c9ccc;
 }
-.btn-outline-primary:hover, .btn-outline-primary:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
 .btn-outline-primary:visited {
-	background: #5c9ccc;
+  background: #5c9ccc;
 }
 
 /*** card ***/
 .card {
-	border: 0;
+  border: 0;
 }
 .card-title {
-	text-align: center;
+  text-align: center;
 }
 
 /*** card ***/
 .img-thumbnail {
-	border-radius: 2px;
+  border-radius: 2px;
 }
 
 /*** etc ***/
 .page-head {
-	display: block;
-	margin: .8em 0 2.8em;
-	border-bottom: 1px solid #eee;
+  display: block;
+  margin: 0.8em 0 2.8em;
+  border-bottom: 1px solid #eee;
 }
 
 /* icon */
-.fas, .fab {
-	width: inherit;
-	color: inherit;
+.fas,
+.fab {
+  width: inherit;
+  color: inherit;
 }
 
 /* MEDIA */
-@media screen and (max-width: 767px)  {
-	.contents {
-		top: 56px;
-		height: calc(100% - 56px);
-	}
-} 
+@media screen and (max-width: 767px) {
+  .contents {
+    top: 56px;
+    height: calc(100% - 56px);
+  }
+}
+
+.MuiCardHeader-content {
+  flex: 1 1 auto;
+  width: 80%;
+}

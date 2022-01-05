@@ -89,6 +89,7 @@ const UploadSale = () => {
           period: period,
           description: descriptionValue,
           type: "sale",
+          address: user.userAddress
         })
       );
       formData.append("file", file);

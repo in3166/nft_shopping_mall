@@ -55,7 +55,7 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const id = req.body.id;
-  console.log("bnaner id: ", id);
+  //console.log("bnaner id: ", id);
 
   Banner.destroy({
     where: { id },

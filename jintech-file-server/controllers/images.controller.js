@@ -35,6 +35,7 @@ exports.create = async (req, res) => {
       period: body?.period,
       markup: body?.markup,
       description: body?.description,
+      address: body?.address,
     };
 
     console.log("data: ", data);

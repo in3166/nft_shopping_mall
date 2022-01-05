@@ -7,6 +7,8 @@ import TokenSaleContract from "../../../abis/TokenSaleContract.json";
 import { Card, CircularProgress, Pagination, Stack } from "@mui/material";
 import usePagination from "../../../hooks/usePagination";
 import axios from "axios";
+import HomeBanner from "./Sections/HomeBanner";
+import ProductList from "./Sections/ProductList";
 
 const HomePage = (props) => {
   const { t } = useTranslation();
@@ -100,92 +102,7 @@ const HomePage = (props) => {
   return (
     <div className="contents">
       {/* 2021.11.26 main img slide 추가 */}
-      <div className="slide-contents">
-        <div id="slideWrap" className="carousel slide" data-ride="carousel">
-          <div className="slide-control-inner">
-            <a
-              className="control-btn prev-btn"
-              href="#slideWrap"
-              data-slide="prev"
-              type="button"
-            >
-              <i className="fas fa-chevron-left"></i>
-            </a>
-            <a
-              className="control-btn next-btn"
-              href="#slideWrap"
-              data-slide="next"
-              type="button"
-            >
-              <i className="fas fa-chevron-right"></i>
-            </a>
-          </div>
-
-          <ul className="carousel-indicators">
-            {Banners.map((value, index) => {
-              if (index === 0)
-                return (
-                  <li
-                    key={`slide-${index}`}
-                    className="active"
-                    data-target="#slideWrap"
-                    data-slide-to="0"
-                  ></li>
-                );
-              else
-                return (
-                  <li
-                    key={`slide-${index}`}
-                    data-target="#slideWrap"
-                    data-slide-to={index}
-                  ></li>
-                );
-            })}
-          </ul>
-          <ul className="carousel-inner">
-            {Banners.map((value, index) => {
-              return (
-                <li
-                  className={`carousel-item ${index === 0 && "active"}`}
-                  key={`list-${index}`}
-                >
-                  <Link to={`/nft-detail/${value.key}`}>
-                    <Card
-                      sx={{
-                        opacity: 0.5,
-                        position: "absolute",
-                        left: 30,
-                        bottom: 30,
-                        height: "max-content",
-                        textAlign: "left",
-                        padding: 3,
-                        fontWeight: 600,
-                        fontSize: "0.99rem",
-                      }}
-                    >
-                      <div>
-                        <strong>Name: {value.name}</strong>
-                      </div>
-                      <div>
-                        <strong>Owner: {value.owner}</strong>
-                      </div>
-                      <div>
-                        <strong>Price: {value.price} ETH</strong>
-                      </div>
-                    </Card>
-                    <img
-                      id="slideImg0"
-                      src={value.url}
-                      alt="slideImg0"
-                      className="w-100"
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <HomeBanner Banners={Banners} Images={Images} TokenPrice={TokenPrice} />
       {/* 2021.11.26 main img slide 끝 */}
 
       <div className="card page-head">
@@ -196,7 +113,19 @@ const HomePage = (props) => {
           </h5>
         </div>
       </div>
-      <div className="product-page flex-wrap w-100">
+
+      <div className="align-items-left d-flex justify-content-left w-100 p-5">
+        <div className="align-items-left d-flex justify-content-left">
+          <select>
+            <option>1</option>
+            <option>2</option>
+          </select>
+          <input type="text" />
+          <button>검색</button>
+        </div>
+      </div>
+
+      <div className="product-page flex-wrap w-100 p-5">
         {Loading && (
           <Stack
             sx={{
@@ -213,41 +142,9 @@ const HomePage = (props) => {
             <CircularProgress color="inherit" />
           </Stack>
         )}
-        {!Loading &&
-          _DATA.currentData().map((val, key) => (
-            <div key={key} className="product-pages-list flex-wrap">
-              <div className="card-wrap flex-row card">
-                {/* 2021.11.26 스타일 이동(div로 한 번 더 묶음 */}
-                <Link
-                  to={{
-                    pathname: `/nft-detail/${key}`,
-                    // state: {name: "vikas"}
-                  }}
-                >
-                  <div className="token-box col-auto">
-                    {" "}
-                    {/* 2021.11.26 텍스트 구분 */}
-                    <img alt="token" className="token" src={Images[key].url} />
-                  </div>
-                  <div className="token-box-info token-name">
-                    Name
-                    <span className="token-data">{Images[key].name}</span>
-                  </div>
-                  <div className="token-box-info token-price">
-                    Price
-                    <span className="token-data">
-                      {Images[key].price * TokenPrice}
-                      <span className="token-eth">ETH</span>
-                    </span>
-                  </div>
-                  <div className="token-box-info token-id">
-                    Token ID
-                    <span className="token-data">{Images[key].token}</span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          ))}
+        {!Loading && (
+          <ProductList _DATA={_DATA} Images={Images} TokenPrice={TokenPrice} />
+        )}
       </div>
 
       {/* 21.11.26 페이지 넘기는 부분 */}

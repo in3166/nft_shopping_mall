@@ -28,6 +28,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
+      //defaultScope: { where: { email: true } },
       hooks: {
         beforeCreate: async (user) => {
           if (user.password) {

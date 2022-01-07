@@ -2,67 +2,36 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const Op = db.Sequelize.Op;
 const multerFile = require("../middleware/multerFile");
-const IMAGE = db.image;
+const Marketplace = db.marketplace;
 var fs = require("fs");
 
 exports.create = async (req, res) => {
-  req.currentTime = new Date().valueOf();
+  const body = req.body;
+  console.log("body: ", body);
 
-  multerFile.upload(req, res, (err) => {
-    console.log("err: ", err);
-    if (err) {
-      return res.status(400).json({ success: false, err, message: err });
-    }
+  Marketplace.create(body)
+    .then((createData) => {
+      console.log("createData: ", createData);
 
-    // for (let i = 0; i < req.files?.length; i++) {
-    //   reqFiles.push(req.body.file[i].fileName);
-    // }
-
-    const body = JSON.parse(req.body.body);
-
-    const filename = req.file.filename;
-    const path = req.file.path;
-    const destination = req.file.destination;
-
-    const data = {
-      email: body.email,
-      type: body.type,
-      filename: filename,
-      path: path,
-      url: body?.url,
-      price: body.price,
-      buyout: body?.buyout,
-      period: body?.period,
-      markup: body?.markup,
-      description: body?.description,
-      address: body?.address,
-    };
-
-    console.log("data: ", data);
-
-    IMAGE.create(data)
-      .then((createData) => {
-        console.log("createData: ", createData);
-
-        return res.status(200).json({
-          success: true,
-          //url: res.req.file.path,
-          msg: "파일 업로드를 성공했습니다.",
-        });
-      })
-      .catch((err) => {
-        console.log("db err: ", err);
-        return res.status(400).json({ success: false, err, message: err });
+      return res.status(200).json({
+        success: true,
+        //url: res.req.file.path,
+        msg: "상품 등록을 성공했습니다.",
       });
-  });
+    })
+    .catch((err) => {
+      console.log("db err: ", err);
+      return res.status(400).json({ success: false, err, message: err });
+    });
 };
 
 var path = require("path");
+const { users, images } = require("../models");
 
 exports.getFile = (req, res) => {
   const id = req.params.id;
 
-  IMAGE.findOne({
+  Marketplace.findOne({
     where: {
       id, // user email
     },
@@ -95,7 +64,7 @@ exports.findOne = async (req, res) => {
   const email = req.params.email;
   console.log("findone", email);
 
-  IMAGE.findAll({
+  Marketplace.findAll({
     where: { email: email },
   })
     .then((data) => {
@@ -112,12 +81,30 @@ exports.findOne = async (req, res) => {
 exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
-  const Op = require('sequelize').Op;
-  IMAGE.findAll({ where: { onMarket: false } })
+
+  Marketplace.findAll({
+    where: { active: true },
+
+    include: [
+      {
+        model: users,
+        as: "owner",
+        where: { active: true },
+        attributes: ["email"],
+      },
+      {
+        model: images,
+        as: "product",
+        where: { active: true },
+        attributes: ["id"],
+      },
+    ],
+  })
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Users.",
       });
@@ -132,7 +119,7 @@ exports.update = (req, res) => {
   console.log("key: ", key);
   console.log("id: ", id);
 
-  IMAGE.update(
+  Marketplace.update(
     { key },
     {
       where: { id },

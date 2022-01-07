@@ -159,6 +159,8 @@ export const getLocalTokenAction = (user, token) => {
       });
       //console.log("user: ", user);
       //console.log("tokenData: ", tokenData);
+    } else {
+      dispatch(userAction.logout());
     }
   };
 };

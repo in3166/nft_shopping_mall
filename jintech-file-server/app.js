@@ -43,6 +43,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/images", require("./routes/images"));
 app.use("/api/categories", require("./routes/categories"));
 app.use("/api/banners", require("./routes/banners"));
+app.use("/api/marketplaces", require("./routes/marketplaces"));
 //app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

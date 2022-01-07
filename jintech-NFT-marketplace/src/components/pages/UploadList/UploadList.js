@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Card from "../../UI/Card/Card";
+import ConfirmSaleModal from "./Section/ConfirmSaleModal";
 import InfoModal from "./Section/InfoModal";
 import styles from "./UploadList.module.css";
 
@@ -57,6 +58,7 @@ const columns = [
   { field: "description", headerName: "설명", width: 90 },
   { field: "approval", headerName: "승인", width: 90 },
   { field: "onMarket", headerName: "onMarket", width: 90 },
+  { field: "token", headerName: "Token", width: 90 },
   {
     field: "createdAt",
     headerName: "등록일",
@@ -92,7 +94,7 @@ const UploadList = () => {
 
   const getAllUploadImages = useCallback(() => {
     setLoading(true);
-    console.log("getgtrega aal all", user.email);
+    console.log("getAllUploadImages all", user.email);
     axios
       .get("/api/images/", {
         headers: { email: user.email },
@@ -167,7 +169,7 @@ const UploadList = () => {
       </Card>
 
       {open && (
-        <InfoModal
+        <ConfirmSaleModal
           open={open}
           handleClose={handleClose}
           selectedData={selectedData}

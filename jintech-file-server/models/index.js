@@ -25,6 +25,7 @@ db.otp = require("../models/otp.model.js")(sequelize, Sequelize);
 db.image = require("../models/image.model.js")(sequelize, Sequelize);
 db.category = require("../models/categories.model.js")(sequelize, Sequelize);
 db.banner = require("../models/banners.model.js")(sequelize, Sequelize);
+db.marketplace = require("../models/marketplaces.model.js")(sequelize, Sequelize);
 
 // db.otp.hasOne(db.users, {
 //   as: "email",
@@ -42,6 +43,13 @@ db.users.belongsToMany(db.role, {
   foreignKey: "email",
   otherKey: "roleId",
 });
+
+db.marketplace.hasMany(db.users, {foreignKey: 'owner'});
+db.marketplace.hasMany(db.users, {foreignKey: 'buyer'});
+db.marketplace.hasMany(db.image, {foreignKey: 'product'});
+
+
+
 
 db.ROLES = ["user", "admin"];
 

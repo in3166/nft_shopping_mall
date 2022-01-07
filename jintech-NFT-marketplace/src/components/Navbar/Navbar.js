@@ -112,11 +112,18 @@ const Navbar = () => {
               </Link>
             </li>
             {user.isLoggedIn && (
-              <li className={`nav-item ${styles["nav-li"]}`}>
-                <Link to="/mytokens" className="nav-link">
-                  {t("Navbar.mytokens")}
-                </Link>
-              </li>
+              <>
+                <li className={`nav-item ${styles["nav-li"]}`}>
+                  <Link to="/mytokens" className="nav-link">
+                    {t("Navbar.mytokens")}
+                  </Link>
+                </li>
+                <li className={`nav-item ${styles["nav-li"]}`}>
+                  <Link to="/bid" className="nav-link">
+                    경매
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
           <ul className={`navbar-nav ${styles.ul} ${styles["ul_right"]}`}>

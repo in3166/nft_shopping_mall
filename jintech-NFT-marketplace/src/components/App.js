@@ -31,6 +31,8 @@ import UserUpload from "./pages/UserUpload/UserUpload";
 import HomePage from "./pages/home/HomePage";
 import SettingPage from "./pages/setting/SettingPage";
 import UploadList from "./pages/UploadList/UploadList";
+import Marketplace from "./pages/Marketplace/Marketplace";
+import Sale from "./pages/Sale/Sale";
 
 //ipfs 서버 정보
 /*
@@ -401,74 +403,75 @@ class App extends Component {
           /* 아니면 연결 창으로 이동 */
           <ConnectToMetamask connectToMetamask={this.connectToMetamask} />
         ) : (
-          /*
+          this.state.isMounted && (
+            /*
         ) : !this.state.contractDetected ? (
           <Loading />
         ) : this.state.loading ? (
           <Loading />
           */
-          <>
-            <BrowserRouter>
-              {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
-              <Navbar
-                permission={
-                  this.state.account === process.env.REACT_APP_TEMP_ACCOUNT
-                    ? true
-                    : false
-                }
-                history={this.props.history}
-              />
-              <Route
-                path="/"
-                exact
-                render={() => (
-                  <HomePage />
-                  // <AccountDetails
-                  //   accountAddress={this.state.accountAddress}
-                  //   accountBalance={this.state.accountBalance}
-                  // />
-                )}
-              />
-              <Route
-                path="/mint"
-                component={Auth(() => (
-                  <FormAndPreview
-                    mintMyNFT={this.mintMyNFT}
-                    nameIsUsed={this.state.nameIsUsed}
-                    colorIsUsed={this.state.colorIsUsed}
-                    colorsUsed={this.state.colorsUsed}
-                    setMintBtnTimer={this.setMintBtnTimer}
-                  />
-                ))}
-              />
-              <Route
-                path="/marketplace"
-                render={() => (
-                  <AllCryptoBoys
-                    accountAddress={this.state.accountAddress}
-                    totalTokensMinted={this.state.totalTokensMinted}
-                    changeTokenPrice={this.changeTokenPrice}
-                    toggleForSale={this.toggleForSale}
-                  />
-                )}
-              />
-
-              <Route
-                path="/mytokens"
-                component={Auth(
-                  () => (
-                    <MyTokens
+            <>
+              <BrowserRouter>
+                {/* 관리자 계정이 아닐때는 즉 false 일때는 my mint 메뉴가 안보이게 하기 위해 2021-11.15 에 추가 했다 */}
+                <Navbar
+                  permission={
+                    this.state.account === process.env.REACT_APP_TEMP_ACCOUNT
+                      ? true
+                      : false
+                  }
+                  history={this.props.history}
+                />
+                <Route
+                  path="/"
+                  exact
+                  render={() => (
+                    <HomePage />
+                    // <AccountDetails
+                    //   accountAddress={this.state.accountAddress}
+                    //   accountBalance={this.state.accountBalance}
+                    // />
+                  )}
+                />
+                <Route
+                  path="/mint"
+                  component={Auth(() => (
+                    <FormAndPreview
+                      mintMyNFT={this.mintMyNFT}
+                      nameIsUsed={this.state.nameIsUsed}
+                      colorIsUsed={this.state.colorIsUsed}
+                      colorsUsed={this.state.colorsUsed}
+                      setMintBtnTimer={this.setMintBtnTimer}
+                    />
+                  ))}
+                />
+                <Route
+                  path="/marketplace"
+                  render={() => (
+                    <AllCryptoBoys
                       accountAddress={this.state.accountAddress}
                       totalTokensMinted={this.state.totalTokensMinted}
                       changeTokenPrice={this.changeTokenPrice}
                       toggleForSale={this.toggleForSale}
                     />
-                  ),
-                  true
-                )}
-              />
+                  )}
+                />
 
-              {/*  2021-11-21 주석처리 
+                <Route
+                  path="/mytokens"
+                  component={Auth(
+                    () => (
+                      <MyTokens
+                        accountAddress={this.state.accountAddress}
+                        totalTokensMinted={this.state.totalTokensMinted}
+                        changeTokenPrice={this.changeTokenPrice}
+                        toggleForSale={this.toggleForSale}
+                      />
+                    ),
+                    true
+                  )}
+                />
+
+                {/*  2021-11-21 주석처리 
               <Route
                 path="/queries"
                 render={() => (
@@ -477,34 +480,45 @@ class App extends Component {
               />
                 */}
 
-              <Route path="/nft-detail/:name" component={NtfDetail} />
-              <Route path="/user-nft-detail/:name" component={UserNFTDetail} />
+                <Route path="/nft-detail/:name" component={NtfDetail} />
+                <Route
+                  path="/user-nft-detail/:name"
+                  component={UserNFTDetail}
+                />
 
-              <Route path="/userlist" component={Auth(UserList, true, true)} />
-              <Route
-                path="/setting"
-                component={Auth(SettingPage, true, true)}
-              />
-              <Route path="/login" component={Auth(Login, false)} />
-              <Route path="/profile" component={Auth(Profile, true)} />
-              <Route path="/upload" component={Auth(UserUpload, true)} />
-              <Route
-                path="/uploadList"
-                component={Auth(UploadList, true, true)}
-              />
+                <Route
+                  path="/userlist"
+                  component={Auth(UserList, true, true)}
+                />
+                <Route
+                  path="/setting"
+                  component={Auth(SettingPage, true, true)}
+                />
+                <Route path="/login" component={Auth(Login, false)} />
+                <Route path="/profile" component={Auth(Profile, true)} />
+                <Route path="/upload" component={Auth(UserUpload, true)} />
 
-              <Route path="/register">
-                <Register></Register>
-              </Route>
+                <Route path="/bid" component={Auth(Marketplace, true)} />
+                <Route path="/goods/:id" component={Auth(Sale, true)} />
 
-              <Route path="/success">
-                <AuthenticationSuccess></AuthenticationSuccess>
-              </Route>
-              <Route path="/fail">
-                <AuthenticationFail></AuthenticationFail>
-              </Route>
-            </BrowserRouter>
-          </>
+                <Route
+                  path="/uploadList"
+                  component={Auth(UploadList, true, true)}
+                />
+
+                <Route path="/register">
+                  <Register></Register>
+                </Route>
+
+                <Route path="/success">
+                  <AuthenticationSuccess></AuthenticationSuccess>
+                </Route>
+                <Route path="/fail">
+                  <AuthenticationFail></AuthenticationFail>
+                </Route>
+              </BrowserRouter>
+            </>
+          )
         )}
       </div>
     );

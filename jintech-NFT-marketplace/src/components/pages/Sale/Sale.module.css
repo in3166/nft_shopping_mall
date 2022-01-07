@@ -1,0 +1,8 @@
+.timeline li::before {
+  flex: 0.1;
+  content: none;
+}
+
+.timeline li {
+  min-height: 55px;
+}

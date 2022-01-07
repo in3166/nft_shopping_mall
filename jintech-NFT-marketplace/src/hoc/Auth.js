@@ -40,6 +40,7 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
             history.push("/login");
           });
       } else if (!token && history.location.pathname !== "/login") {
+        console.log('login')
         alert("로그인 하세요.");
         history.push("/login");
       }

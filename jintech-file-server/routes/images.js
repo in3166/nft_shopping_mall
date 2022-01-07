@@ -14,6 +14,8 @@ router.post("/", images.create);
 // 모든 업로드 기록 가져오기
 router.get("/", authJwt.isAdmin, images.findAll);
 router.get("/:email", authJwt.verifyToken, images.findOne);
-router.get("/image", images.getFile);
+router.get("/goods/:id", images.getFile);
+
+router.put("/", images.update);
 
 module.exports = router;

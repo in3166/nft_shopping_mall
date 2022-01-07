@@ -16,6 +16,7 @@ contract ImageContract is IERC721Metadata, ERC721Full {
     }
 
     string[] public images;
+    //키, 자료형
     mapping(uint256 => metadata) public imageData;
     mapping(string => bool) _imageExists;
 
@@ -34,6 +35,7 @@ contract ImageContract is IERC721Metadata, ERC721Full {
     upate : 2021-11-15
     metadata 에 hash 가 추가 됨에 따라 파일 수정
    */
+
     function mint(
         string memory _name,
         string memory _description,

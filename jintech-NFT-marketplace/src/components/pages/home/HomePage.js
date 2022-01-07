@@ -40,6 +40,10 @@ const HomePage = (props) => {
       const totalSupply = await contract.methods.totalSupply().call();
 
       let temp = [];
+
+      console.log("imagesss:? : ", await contract.methods.images(3).call());
+      console.log("imagesss:? : ", await contract.methods.imageData(3).call());
+      console.log("imagesss:? : ", await contract.methods.ownerOf(3).call());
       // Load NFTs
       for (var i = 1; i <= totalSupply; i++) {
         const id = await contract.methods.images(i - 1).call();

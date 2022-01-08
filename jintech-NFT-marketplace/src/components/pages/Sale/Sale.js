@@ -11,7 +11,7 @@ const Sale = ({ match }) => {
 
   const getImageInfo = useCallback(() => {
     axios
-      .get("/api/images/goods/" + id)
+      .get("/api/marketplaces/goods/" + id)
       .then((res) => {
         console.log(res.data.info);
         setImage(res.data.info);

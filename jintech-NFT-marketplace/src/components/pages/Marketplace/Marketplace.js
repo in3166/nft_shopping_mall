@@ -42,11 +42,11 @@ const Marketplace = () => {
               >
                 <div className="token-box col-auto">
                   {/* 2021.11.26 텍스트 구분 */}
-                  <img alt="token" className="token" src={value.url} />
+                  <img alt="token" className="token" src={value.image.url} />
                 </div>
                 <div className="token-box-info token-name">
                   Name
-                  <span className="token-data">{value.name}</span>
+                  <span className="token-data">{value.image.filename}</span>
                 </div>
                 <div className="token-box-info token-price">
                   Price

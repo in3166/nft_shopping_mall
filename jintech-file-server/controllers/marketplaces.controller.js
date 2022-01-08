@@ -30,13 +30,29 @@ const { users, images } = require("../models");
 
 exports.getFile = (req, res) => {
   const id = req.params.id;
-
-  Marketplace.findOne({
-    where: {
-      id, // user email
-    },
+  console.log("goods: ", id);
+  Marketplace.findAll({
+    include: [
+      { association: 'a_owner' },
+      {
+        model: db.image,
+        attributes: [
+          "filename",
+          "type",
+          "url",
+          "price",
+          "period",
+          "type",
+          "buyout",
+          "markup",
+          "key",
+          "onMarket",
+        ],
+      },
+    ],
   })
     .then((info) => {
+      console.log("return :", info);
       return res.status(200).json({ success: true, info: info });
     })
     .catch((err) => {
@@ -83,20 +99,25 @@ exports.findAll = (req, res) => {
   console.log("findall");
 
   Marketplace.findAll({
-    where: { active: true },
-
     include: [
       {
-        model: users,
-        as: "owner",
-        where: { active: true },
-        attributes: ["email"],
+        model: db.users,
+        attributes: ["email", "address"],
       },
       {
-        model: images,
-        as: "product",
-        where: { active: true },
-        attributes: ["id"],
+        model: db.image,
+        attributes: [
+          "filename",
+          "type",
+          "url",
+          "price",
+          "period",
+          "type",
+          "buyout",
+          "markup",
+          "key",
+          "onMarket",
+        ],
       },
     ],
   })

@@ -37,13 +37,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    // buyer: {
-    //   type: Sequelize.STRING,
-    //   references: {
-    //     model: "users",
-    //     key: "email",
-    //   },
-    // },
   });
 
   return Marketplace;

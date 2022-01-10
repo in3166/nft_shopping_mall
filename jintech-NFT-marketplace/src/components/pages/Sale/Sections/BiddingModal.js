@@ -13,16 +13,75 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import styles from "../Sale.module.css";
 
 const BiddingModal = (props) => {
-  const { Open, handleClose, Image } = props;
-  const handleMintSubmit = () => {};
+  const { Open, handleClose, Image, setImage, getAllBidHistory } = props;
+  const user = useSelector((state) => state.user.user);
+  const [isOverMarkup, setisOverMarkup] = useState(false);
+  const [isUnderPrice, setisUnderPrice] = useState(false);
+  const [Price, setPrice] = useState("");
+
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+    if (Image.current_price + Image.image.markup < Number(e.target.value)) {
+      setisOverMarkup(true);
+      setisUnderPrice(false);
+    } else if (Number(e.target.value) <= Image.current_price) {
+      setisUnderPrice(true);
+      setisOverMarkup(false);
+    } else {
+      setisOverMarkup(false);
+      setisUnderPrice(false);
+    }
+  };
+
+  const handleMintSubmit = () => {
+    if (!isOverMarkup && !isUnderPrice) {
+      const body = {
+        action: "bid",
+        price: Price,
+        marketplaceId: Image.id,
+        userEmail: user.email,
+      };
+      console.log(body);
+      axios
+        .post("/api/marketHistories", body)
+        .then((res) => {
+          if (res.data.success) {
+            alert("등록 성공");
+            setImage((prev) => {
+              return { ...prev, current_price: res.data.current_price };
+            });
+            getAllBidHistory();
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        })
+        .finally(() => {
+          handleModalClose();
+        });
+    }
+  };
+
+  const handleModalClose = () => {
+    setisOverMarkup(false);
+    setisUnderPrice(false);
+    handleClose();
+    setPrice("");
+  };
+
   return (
     <Dialog
       //fullScreen={fullScreen}
       open={Open}
-      onClose={handleClose}
+      onClose={handleModalClose}
       aria-labelledby="responsive-dialog-title"
       className="diaa"
       PaperProps={{
@@ -44,35 +103,54 @@ const BiddingModal = (props) => {
             }}
           >
             <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom:'10px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "10px",
+                }}
+              >
                 <span>Current Bid</span>
-                <span>220 ETH</span>
+                <span>{Image.current_price.toLocaleString("ko-KR")} ETH</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Minimum Markup</span>
-                <span>11 ETH</span>
+                <span>{Image.image.markup.toLocaleString("ko-KR")} ETH</span>
               </div>
             </div>
             <br />
             <br />
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-              <InputLabel  color="warning" htmlFor="standard-adornment-amount">Bid</InputLabel>
+              <InputLabel color="warning" htmlFor="standard-adornment-amount">
+                Bid
+              </InputLabel>
               <Input
                 id="standard-adornment-amount"
-                //onChange={handleChange("amount")}
+                onChange={handlePriceChange}
+                value={Price}
                 autoFocus
+                type="number"
                 color="warning"
                 endAdornment={
                   <InputAdornment position="end">ETH</InputAdornment>
                 }
               />
             </FormControl>
+            {isUnderPrice && (
+              <p className={styles["modal-error-message"]}>
+                현재 가격보다 적은 금액입니다.
+              </p>
+            )}
+            {isOverMarkup && (
+              <p className={styles["modal-error-message"]}>
+                마크업을 초과하였습니다.
+              </p>
+            )}
           </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={handleMintSubmit}
-            
             variant="outlined"
             color="warning"
             sx={{ p: 1, pr: 5, pl: 5 }}

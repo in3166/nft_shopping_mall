@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const Op = db.Sequelize.Op;
 const multerFile = require("../middleware/multerFile");
+const MarketHistory = db.marketHistory;
 const Marketplace = db.marketplace;
 var fs = require("fs");
 
@@ -9,15 +10,73 @@ exports.create = async (req, res) => {
   const body = req.body;
   console.log("body: ", body);
 
-  Marketplace.create(body)
+  MarketHistory.create(body)
     .then((createData) => {
-      console.log("createData: ", createData);
+      // console.log("createData: ", createData);
+      if (body.action === "bid") {
+        Marketplace.update(
+          { current_price: body.price },
+          {
+            where: {
+              id: body.marketplaceId,
+            },
+          }
+        )
+          .then((bid) => {
+            res.status(200).send({ success: true, current_price: body.price });
+          })
+          .catch((err) => {
+            console.log("soldout err: ", err);
+            console.log(createData.id);
+            MarketHistory.destroy({ where: { id: createData.id } })
+              .then((del) => {
+                return res.json({ success: false, err, message: err });
+              })
+              .catch((err) => {
+                console.log("delete history err: ", err);
+                return res.json({
+                  success: false,
+                  err,
+                  message: "delete 실패",
+                });
+              });
+          });
+      } else if (body.action === "buy") {
+        Marketplace.update(
+          {
+            soldOut: true,
+            current_price: body.price,
+            buyerEmail: body.userEmail,
+          },
+          {
+            where: {
+              id: body.marketplaceId,
+            },
+          }
+        )
+          .then((sold) => {
+            res.status(200).send({
+              success: true,
+              current_price: body.price,
+            });
+          })
+          .catch((err) => {
+            console.log("but soldout err: ", err);
 
-      return res.status(200).json({
-        success: true,
-        //url: res.req.file.path,
-        msg: "상품 등록을 성공했습니다.",
-      });
+            MarketHistory.destroy({ where: { id: createData.id } })
+              .then((del) => {
+                return res.json({ success: false, err, message: err });
+              })
+              .catch((err) => {
+                console.log("delete history err: ", err);
+                return res.json({
+                  success: false,
+                  err,
+                  message: "delete 실패",
+                });
+              });
+          });
+      }
     })
     .catch((err) => {
       console.log("db err: ", err);
@@ -31,7 +90,7 @@ const { users, images } = require("../models");
 exports.findOne = (req, res) => {
   const id = req.params.id;
   console.log("goods: ", id);
-  Marketplace.findOne({
+  MarketHistory.findOne({
     where: { id },
     include: [
       // { association: "owner" },
@@ -72,33 +131,16 @@ exports.findOne = (req, res) => {
 exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
+  const id = req.params.id;
 
-  Marketplace.findAll({
-    include: [
-      {
-        model: db.users,
-        attributes: ["email", "address"],
-        as: "owner",
-      },
-      {
-        model: db.image,
-        attributes: [
-          "filename",
-          "type",
-          "url",
-          "price",
-          "period",
-          "type",
-          "buyout",
-          "markup",
-          "key",
-          "onMarket",
-        ],
-      },
-    ],
+  MarketHistory.findAll({
+    where: {
+      marketplaceId: id,
+    },
+    order: [["createdAt", "DESC"]],
   })
     .then((data) => {
-      res.status(200).send(data);
+      res.status(200).send({ success: true, history: data });
     })
     .catch((err) => {
       console.log(err);
@@ -116,7 +158,7 @@ exports.update = (req, res) => {
   console.log("key: ", key);
   console.log("id: ", id);
 
-  Marketplace.update(
+  MarketHistory.update(
     { key },
     {
       where: { id },

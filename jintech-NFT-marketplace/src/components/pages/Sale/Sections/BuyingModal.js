@@ -13,11 +13,45 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const BuyingModal = (props) => {
-  const { Open, handleClose, Image } = props;
-  const handleMintSubmit = () => {};
+  const { Open, handleClose, Image, setImage } = props;
+  const user = useSelector((state) => state.user.user);
+
+  const handleBuySubmit = () => {
+    const body = {
+      action: "buy",
+      price: Image.image.buyout,
+      userEmail: user.email,
+      marketplaceId: Image.id,
+    };
+    axios
+      .post("/api/marketHistories", body)
+      .then((res) => {
+        if (res.data.success) {
+          alert("성공");
+          setImage((prev) => {
+            return {
+              ...prev,
+              current_price: res.data.current_price,
+              soldOut: true,
+            };
+          });
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      })
+      .finally(() => {
+        handleClose();
+      });
+    console.log(body);
+  };
   return (
     <Dialog
       //fullScreen={fullScreen}
@@ -31,7 +65,7 @@ const BuyingModal = (props) => {
       <Box sx={{ p: 6 }}>
         <div style={{ textAlign: "center" }}>You Will Pay</div>
         <DialogTitle id="responsive-dialog-title" sx={{ textAlign: "center" }}>
-          {"800 ETH"}
+          {Image.image.buyout.toLocaleString("ko-KR")} ETH
         </DialogTitle>
         <DialogContent sx={{ alignSelf: "center" }}>
           <Box
@@ -68,7 +102,7 @@ const BuyingModal = (props) => {
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button
-            onClick={handleMintSubmit}
+            onClick={handleBuySubmit}
             variant="outlined"
             color="warning"
             sx={{ p: 1, pr: 5, pl: 5 }}

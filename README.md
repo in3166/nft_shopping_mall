@@ -44,6 +44,10 @@ xxx버전 업그레이드함 xxx
   - `npm install react-i18next i18next --save`
   - `npm install i18next-http-backend i18next-browser-languagedetector --save`
   - (i18next 참고)[https://react.i18next.com/latest/using-with-hooks]
+
+- 경매 시간 카운트 추가
+  - `react-countdown` 라이브러리 설치
+  
 ## 기능 추가
 
 - 회원 가입
@@ -68,6 +72,32 @@ xxx버전 업그레이드함 xxx
   - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
   - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
 
+- postgreSQL sequelize 외래키 설정하고 조회하기
+  ```js
+  // 설정 in index
+  db.marketplace.belongsTo(db.users, {
+    foreignKey: "buyerEmail",
+    as: "buyer",
+    targetKey: "email",
+  });
+
+  // 조회 in controller
+  Marketplace.findAll({
+    include: [
+      {
+        model: db.users,
+        attributes: ["email", "address"],
+        as: "owner",
+      },
+  
+  // findOne 은 where 절과 함께 객체에 넣기
+  Marketplace.findOne({
+    where: { id },
+    include: [
+            { association: "owner" },
+      {
+        //...
+  ```
 ## 수정 사항
 - 같은 이미지의 경우 mint 방지
   - `ImageContract.sol`
@@ -93,6 +123,11 @@ xxx버전 업그레이드함 xxx
   - `app.use("/uploads", express.static(path.join(__dirname, "/uploads")));`: 최상위 upload 폴더에서 파일 보내기
   - `res.sendFile(path.resolve(path))`;
   - path는 앞에 '/'를 붙이지 않는다. ('uplaods/filename)
+
+- `jsipfs daemon`: `Error: listen EACCES: permission denied 0.0.0.0:4002`
+  - windows 해결법 CMD 
+  - `net stop winnat`
+  - `net start winnat`
 
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지

@@ -22,19 +22,40 @@ import {
   Tab,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "../Sale.module.css";
 import BiddingModal from "./BiddingModal.js";
 import BuyingModal from "./BuyingModal";
+import Countdown from "react-countdown";
 
 const ProductDetail = (props) => {
-  const { Image } = props;
-  console.log(Image);
+  const { Image, setImage } = props;
+  const [History, setHistory] = useState([]);
+  const [EndTime, setEndTime] = useState(false);
+
+  const [HistoryViewEnd, setHistoryViewEnd] = useState(3);
+
   let isBidding = null;
   if (Image.type) {
     isBidding = Image?.type === "auction" ? true : false;
   }
-  console.log(isBidding);
+
+  const getAllBidHistory = useCallback(() => {
+    axios
+      .get("/api/marketHistories/" + Image.id)
+      .then((res) => {
+        if (res.data.success) {
+          setHistory(res.data.history);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }, [Image.id]);
+
   const [value, setValue] = useState(isBidding ? "1" : "2");
 
   const [BidOpen, setBidOpen] = useState(false);
@@ -60,29 +81,66 @@ const ProductDetail = (props) => {
   };
 
   useEffect(() => {
-    if (isBidding) setValue("1");
-  }, [isBidding]);
+    if (isBidding) {
+      setValue("1");
+      getAllBidHistory();
+    }
+  }, [isBidding, getAllBidHistory]);
+
+  if (Image.image === undefined) {
+    return <>Loading...</>;
+  }
+
+  const countRenderer = (data) => {
+    // Render a countdown
+    // const f_hour = Math.floor(hours / 10);
+    // const b_hour = Math.floor(hours % 10);
+    // const f_minutes = Math.floor(minutes / 10);
+    // const b_minutes = Math.floor(minutes % 10);
+    // const f_seconds = Math.floor(seconds / 10);
+    // const b_seconds = Math.floor(seconds % 10);
+    if (!data.total) {
+      setEndTime(true);
+    }
+
+    return (
+      <span className={styles["count_container"]}>
+        <span className={styles["count_item"]}>{data.formatted.days}</span>:
+        <span className={styles["count_item"]}>{data.formatted.hours}</span>:
+        <span className={styles["count_item"]}>{data.formatted.minutes}</span>:
+        <span className={styles["count_item"]}>{data.formatted.seconds}</span>
+      </span>
+    );
+  };
+
+  const handleMoreClick = () => {
+    if (HistoryViewEnd + 5 >= History.length) {
+      setHistoryViewEnd(History.length);
+    } else {
+      setHistoryViewEnd((prev) => prev + 5);
+    }
+  };
 
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
       <div>
-        <h4>{Image.filename}</h4>
+        <h5>{Image.image.filename}</h5>
       </div>
-      <div style={{ display: "flex" }}>
-        <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", paddingTop: 20, paddingBottom: 14 }}>
+        {/* <div style={{ display: "flex" }}>
           <Avatar src="/broken-image.jpg" />
-          <div>
-            <label>Creator</label>
+          <div style={{ marginLeft: 10, lineHeight: 1, paddingTop: 2 }}>
+            <label style={{ fontWeight: "bold" }}>Creator</label>
             <br />
-            <label>Some1</label>
+            <label>Someone</label>
           </div>
-        </div>
-        <div style={{ display: "flex" }}>
+        </div> */}
+        <div style={{ display: "flex", marginLeft: 5 }}>
           <Avatar src="/broken-image.jpg" />
-          <div>
-            <label>Owner</label>
+          <div style={{ marginLeft: 10, lineHeight: 1, paddingTop: 2 }}>
+            <label style={{ fontWeight: "bold" }}>Owner</label>
             <br />
-            <label>Some2</label>
+            <label>{Image.ownerEmail}</label>
           </div>
         </div>
       </div>
@@ -91,33 +149,38 @@ const ProductDetail = (props) => {
         <Card
           sx={{
             mt: 2,
-            mb: 2,
+            mb: 3,
             p: 1,
             minHeight: "50px",
             maxHeight: "120px",
             overflow: "auto",
           }}
         >
-          {Image.description}
-          According to our idea, REAL BORED APE would look exactly like this.
-          Have you ever seen this tough guy on the streets of your city? If you
-          want to make friends with him, just make him smile:) Made by
-          @nft.pride Curated by NFT Pride agency. Only the best and profitable
-          NFT arts. @nft.pride
+          {Image.image.description}
         </Card>
       </div>
       <div>
         <h5>Price</h5>
-        {Image.price}
+        {Image.current_price.toLocaleString("ko-KR")} ETH
       </div>
       <br />
-      {isBidding && (
-        <div>
-          <h5>Minimum Markup</h5>
-          {Image.markup}
+      {isBidding !== null && isBidding && (
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            <h5>Minimum Markup</h5>
+            {Image.image.markup.toLocaleString("ko-KR")} ETH
+          </div>
+          <div style={{ marginTop: "auto" }}>
+            <Countdown
+              date={
+                new Date(Image.starting_time).getTime() + Image.limit_hours * 60 * 60 * 1000
+              }
+              renderer={countRenderer}
+            />
+          </div>
         </div>
       )}
-      {isBidding && (
+      {isBidding !== null && isBidding && (
         <Grid container columns={10} spacing={2} sx={{ mt: 2, mb: 2 }}>
           <Grid item xs={6}>
             <Button
@@ -126,6 +189,7 @@ const ProductDetail = (props) => {
               onClick={handleBidClick}
               fullWidth
               sx={{ p: 2 }}
+              disabled={Image.soldOut || EndTime ? true : false}
             >
               Place a Bid
             </Button>
@@ -137,10 +201,13 @@ const ProductDetail = (props) => {
               fullWidth
               onClick={handleBuyClick}
               sx={{ p: 1, flexDirection: "column" }}
+              disabled={Image.soldOut || EndTime ? true : false}
             >
               <div style={{ fontSize: "10px" }}>Buyout Price</div>
               <div style={{ fontSize: "12px" }}>
-                <strong>120 ETH</strong>
+                <strong>
+                  {Image.image.buyout.toLocaleString("ko-KR")} ETH
+                </strong>
               </div>
             </Button>
           </Grid>
@@ -153,6 +220,7 @@ const ProductDetail = (props) => {
           sx={{ width: "70%", p: 2 }}
           fullWidth
           onClick={handleBuyClick}
+          disabled={Image.soldOut ? true : false}
         >
           Buy Now
         </Button>
@@ -170,76 +238,53 @@ const ProductDetail = (props) => {
             <Tab label="Provenance" value="2" />
           </TabList>
         </Box>
-        {isBidding && (
-          <TabPanel value="1">
+
+        {isBidding !== null && isBidding && (
+          <TabPanel value="1" className={styles["tab-panel"]}>
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar src="/broken-image.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <>
-                      <span style={{ fontSize: 14 }}>
-                        <strong>Anonymous</strong>
-                      </span>{" "}
-                      <span style={{ fontSize: 3 }}>Place a Bids</span>
-                    </>
-                  }
-                  secondary="Jan 9, 2014"
-                />
-                <ListItemText
-                  sx={{ textAlign: "right" }}
-                  primary={<span style={{ fontSize: 14 }}>4.45 BUSD</span>}
-                  secondary=" ≈ $ 4.45"
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar src="/broken-image.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <>
-                      <span style={{ fontSize: 14 }}>
-                        <strong>Anonymous</strong>
-                      </span>{" "}
-                      <span style={{ fontSize: 3 }}>Place a Bids</span>
-                    </>
-                  }
-                  secondary="Jan 9, 2014"
-                />
-                <ListItemText
-                  sx={{ textAlign: "right" }}
-                  primary={<span style={{ fontSize: 14 }}>4.45 BUSD</span>}
-                  secondary=" ≈ $ 4.45"
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar src="/broken-image.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <>
-                      <span style={{ fontSize: 14 }}>
-                        <strong>Anonymous</strong>
-                      </span>{" "}
-                      <span style={{ fontSize: 3 }}>Place a Bids</span>
-                    </>
-                  }
-                  secondary="Jan 9, 2014"
-                />
-                <ListItemText
-                  sx={{ textAlign: "right" }}
-                  primary={<span style={{ fontSize: 14 }}>4.45 BUSD</span>}
-                  secondary=" ≈ $ 4.45"
-                />
-              </ListItem>
+              {History.length > 0 &&
+                History.filter((value, index) => index < HistoryViewEnd).map(
+                  (history, index) => (
+                    <ListItem key={history.id}>
+                      <ListItemAvatar>
+                        <Avatar src="/broken-image.jpg" />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <>
+                            <span style={{ fontSize: 14 }}>
+                              <strong>{history.userEmail}</strong>
+                            </span>
+                            <span style={{ fontSize: 3 }}>
+                              {history.action === "bid"
+                                ? " Place a bid"
+                                : " Buyout"}
+                            </span>
+                          </>
+                        }
+                        secondary={new Date(history.createdAt).toLocaleString()}
+                      />
+                      <ListItemText
+                        sx={{ textAlign: "right" }}
+                        primary={
+                          <span style={{ fontSize: 14 }}>
+                            {history.price.toLocaleString("ko-KR")} ETH
+                          </span>
+                        }
+                        secondary=" ≈ $ ---"
+                      />
+                    </ListItem>
+                  )
+                )}
+              {HistoryViewEnd < History.length && (
+                <div style={{ width: "100%", textAlign: "center" }}>
+                  <button onClick={handleMoreClick}>Viwe More</button>
+                </div>
+              )}
             </List>
           </TabPanel>
         )}
-        <TabPanel value="2">
+        <TabPanel value="2" className={styles["tab-panel"]}>
           <Timeline className={styles.timeline}>
             <TimelineItem>
               <TimelineSeparator>
@@ -267,8 +312,23 @@ const ProductDetail = (props) => {
           </Timeline>
         </TabPanel>
       </TabContext>
-      <BiddingModal Open={BidOpen} handleClose={handleBidClose} Image={Image} />
-      <BuyingModal Open={BuyOpen} handleClose={handleBuyClose} Image={Image} />
+      {isBidding !== null && isBidding && (
+        <BiddingModal
+          Open={BidOpen}
+          setImage={setImage}
+          handleClose={handleBidClose}
+          Image={Image}
+          getAllBidHistory={getAllBidHistory}
+        />
+      )}
+      {isBidding !== null && (
+        <BuyingModal
+          Open={BuyOpen}
+          setImage={setImage}
+          handleClose={handleBuyClose}
+          Image={Image}
+        />
+      )}
     </Box>
   );
 };

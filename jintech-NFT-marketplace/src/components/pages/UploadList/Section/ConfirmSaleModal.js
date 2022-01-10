@@ -37,7 +37,7 @@ const ConfirmSaleModal = (props) => {
     // console.log(selectedData.period);
     // console.log(selectedData.id);
     const body = {
-      owner: selectedData.email,
+      ownerEmail: selectedData.email,
       product: selectedData.id,
       type: selectedData.type,
       current_price: selectedData.price,

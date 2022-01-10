@@ -37,6 +37,14 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    onMarket: {
+      type: Sequelize.BOOLEAN,
+      default: true,
+    },
+    soldOut: {
+      type: Sequelize.BOOLEAN,
+      default: false,
+    },
   });
 
   return Marketplace;

@@ -6,3 +6,32 @@
 .timeline li {
   min-height: 55px;
 }
+
+.modal-error-message {
+  color: rgb(223, 4, 4);
+  padding-left: 5px;
+}
+
+.count_container {
+}
+
+.count_item {
+  background-color: black;
+  margin: 1px;
+  padding: 1.3px 5px 1px 5.5px;
+  color: rgb(255, 255, 255);
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.loading {
+  position: absolute;
+  top: 30%;
+}
+
+.tab-panel {
+  margin-bottom: 15px;
+  padding-left: 0;
+  max-height: 350px;
+  overflow: auto;
+}

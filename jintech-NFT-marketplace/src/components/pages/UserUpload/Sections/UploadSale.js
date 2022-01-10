@@ -86,6 +86,7 @@ const UploadSale = () => {
           email: user.email,
           url: urlStr,
           price: startPriceValue,
+          buyout: startPriceValue,
           period: period,
           description: descriptionValue,
           type: "sale",

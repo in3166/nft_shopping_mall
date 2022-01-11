@@ -39,11 +39,11 @@ module.exports = (sequelize, Sequelize) => {
     },
     onMarket: {
       type: Sequelize.BOOLEAN,
-      default: true,
+      defaultValue: true,
     },
     soldOut: {
       type: Sequelize.BOOLEAN,
-      default: false,
+      defaultValue: false,
     },
   });
 

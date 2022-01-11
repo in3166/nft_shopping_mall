@@ -129,7 +129,7 @@ exports.findAll = (req, res) => {
   console.log("findall");
   Category.findAll()
     .then((data) => {
-      res.status(200).send({ success: true, categories: data });
+      res.status(200).send({ success: true, data });
     })
     .catch((err) => {
       res.status(500).send({

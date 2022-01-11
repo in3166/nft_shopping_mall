@@ -112,12 +112,14 @@ exports.findOne = async (req, res) => {
 exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
-  const Op = require('sequelize').Op;
+  const Op = require("sequelize").Op;
   IMAGE.findAll({ where: { onMarket: false } })
     .then((data) => {
+      console.log(data);
       res.status(200).send(data);
     })
     .catch((err) => {
+      console.log("err: ", err);
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Users.",
       });

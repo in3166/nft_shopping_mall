@@ -57,13 +57,15 @@ module.exports = (sequelize, Sequelize) => {
       },
       approval: {
         type: Sequelize.BOOLEAN,
-        default: false,
+        defaultValue: false,
+        allowNull: false,
       },
       onMarket: {
         type: Sequelize.BOOLEAN,
-        default: false,
+        defaultValue: false,
+        allowNull: false,
       },
-    },
+    }
     // {
     //   defaultScope: { where: { id: true } },
     // }

@@ -29,10 +29,8 @@ db.marketplace = require("../models/marketplaces.model.js")(
   sequelize,
   Sequelize
 );
-db.marketHistory = require("./marketHistories.model.js")(
-  sequelize,
-  Sequelize
-);
+db.marketHistory = require("./marketHistories.model.js")(sequelize, Sequelize);
+db.view = require("../models/views.model.js")(sequelize, Sequelize);
 
 // db.otp.hasOne(db.users, {
 //   as: "email",
@@ -49,6 +47,12 @@ db.users.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "email",
   otherKey: "roleId",
+});
+
+db.image.belongsTo(db.category, {
+  foreignKey: "categoryId",
+  as: "category",
+  targetKey: "id",
 });
 
 // db.image.hasMany(db.marketplace);
@@ -89,6 +93,24 @@ db.marketHistory.belongsTo(db.users, {
   foreignKey: "userEmail",
   as: "user",
   targetKey: "email",
+});
+
+db.view.belongsTo(db.users, {
+  foreignKey: "userEmail",
+  as: "user",
+  targetKey: "email",
+});
+
+db.view.belongsTo(db.marketplace, {
+  foreignKey: "marketplaceId",
+  as: "marketplace",
+  targetKey: "id",
+});
+
+db.view.belongsTo(db.image, {
+  foreignKey: "imageId",
+  as: "image",
+  targetKey: "id",
 });
 
 db.ROLES = ["user", "admin"];

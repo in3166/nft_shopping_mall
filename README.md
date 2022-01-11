@@ -98,6 +98,11 @@ xxx버전 업그레이드함 xxx
       {
         //...
   ```
+
+- 로그 찍기
+  - 
+
+
 ## 수정 사항
 - 같은 이미지의 경우 mint 방지
   - `ImageContract.sol`
@@ -135,6 +140,9 @@ xxx버전 업그레이드함 xxx
   - `truffle compile`
   - `truffle migrate --reset`
 
+- sequelize migration - undo
+- winsoton, morgan - logger
+- 
 
 <br><br><br>
 ### ignore

@@ -5,9 +5,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import ProductDetail from "./Sections/ProductDetail";
 import ProductImage from "./Sections/ProductImage";
 import styles from "./Sale.module.css";
+import ViewCounts from "../../../util/ViewCounts";
+import { useSelector } from "react-redux";
 
 const Sale = ({ match }) => {
   const id = match.params.id;
+  const user = useSelector((state) => state.user.user);
   const [Image, setImage] = useState({});
   const [Loading, setLoading] = useState(false);
 
@@ -18,6 +21,10 @@ const Sale = ({ match }) => {
       .then((res) => {
         console.log("sale: ", res.data.info);
         setImage(res.data.info);
+        ViewCounts(window.location.pathname, user.email, {
+          marketplaceId: res.data.info.id,
+          imageId: res.data.info.image.id,
+        });
       })
       .catch((err) => {
         alert(err);

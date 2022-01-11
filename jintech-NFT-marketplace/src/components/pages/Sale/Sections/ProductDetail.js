@@ -28,7 +28,7 @@ import styles from "../Sale.module.css";
 import BiddingModal from "./BiddingModal.js";
 import BuyingModal from "./BuyingModal";
 import Countdown from "react-countdown";
-
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 const ProductDetail = (props) => {
   const { Image, setImage } = props;
   const [History, setHistory] = useState([]);
@@ -173,7 +173,8 @@ const ProductDetail = (props) => {
           <div style={{ marginTop: "auto" }}>
             <Countdown
               date={
-                new Date(Image.starting_time).getTime() + Image.limit_hours * 60 * 60 * 1000
+                new Date(Image.starting_time).getTime() +
+                Image.limit_hours * 60 * 60 * 1000
               }
               renderer={countRenderer}
             />
@@ -242,6 +243,11 @@ const ProductDetail = (props) => {
         {isBidding !== null && isBidding && (
           <TabPanel value="1" className={styles["tab-panel"]}>
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+              {History.length === 0 && (
+                <ListItem className={styles.empty}>
+                  <SearchOffIcon className={styles.icon} /> No Items.
+                </ListItem>
+              )}
               {History.length > 0 &&
                 History.filter((value, index) => index < HistoryViewEnd).map(
                   (history, index) => (

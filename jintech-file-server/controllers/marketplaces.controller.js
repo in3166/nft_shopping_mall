@@ -43,6 +43,7 @@ exports.findOne = (req, res) => {
       {
         model: db.image,
         attributes: [
+          "categoryId",
           "filename",
           "type",
           "url",
@@ -54,6 +55,7 @@ exports.findOne = (req, res) => {
           "key",
           "onMarket",
           "description",
+          "id",
         ],
       },
     ],

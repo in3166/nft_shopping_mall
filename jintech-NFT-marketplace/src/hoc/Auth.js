@@ -14,7 +14,10 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
     console.log("hoc run");
     const dispatch = useDispatch();
     // server auth 검사는 아직 적용 안함.
-    useEffect(() => {
+    
+ 
+    useEffect(
+      () => {
       const token = JSON.parse(localStorage.getItem("nft_token"));
       // console.log("hoc token: ", token);
       if (token) {

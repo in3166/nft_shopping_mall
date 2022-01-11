@@ -16,15 +16,15 @@ module.exports = (sequelize, Sequelize) => {
       },
       email_verification: {
         type: Sequelize.STRING,
-        default: "N",
+        defaultValue: "N",
       },
       leave: {
         type: Sequelize.BOOLEAN,
-        default: false,
+        defaultValue: false,
       },
       otp: {
         type: Sequelize.BOOLEAN,
-        default: false,
+        defaultValue: false,
       },
     },
     {

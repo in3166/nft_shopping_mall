@@ -18,10 +18,11 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const BuyingModal = (props) => {
-  const { Open, handleClose, Image, setImage } = props;
+  const { Open, handleClose, Image, setImage, EndTime } = props;
   const user = useSelector((state) => state.user.user);
 
   const handleBuySubmit = () => {
+    if (EndTime) return;
     const body = {
       action: "buy",
       price: Image.image.buyout,

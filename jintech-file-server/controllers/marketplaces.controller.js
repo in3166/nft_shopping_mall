@@ -95,6 +95,7 @@ exports.findAll = (req, res) => {
           "markup",
           "key",
           "onMarket",
+          "categoryId",
         ],
       },
     ],

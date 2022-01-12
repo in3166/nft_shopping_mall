@@ -128,6 +128,14 @@ const retrieveStoredToken = () => {
 //
 export const authCheckAction = (token) => {
   return async (dispatch) => {
+    const storedExipirationDate = localStorage.getItem("expirationTime");
+    const remainingTime = calculateRemainingTime(storedExipirationDate);
+    if (remainingTime <= 3600) {
+      localStorage.removeItem("nft_token");
+      localStorage.removeItem("expirationTime");
+      return { isLoggedIn: false };
+    }
+
     const body = { token };
     //console.log("token: ", token);
 

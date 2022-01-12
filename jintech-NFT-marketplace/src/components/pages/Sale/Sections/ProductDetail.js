@@ -29,9 +29,11 @@ import BiddingModal from "./BiddingModal.js";
 import BuyingModal from "./BuyingModal";
 import Countdown from "react-countdown";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+
 const ProductDetail = (props) => {
   const { Image, setImage } = props;
   const [History, setHistory] = useState([]);
+  const [CountDate, setCountDate] = useState(0);
   const [EndTime, setEndTime] = useState(false);
 
   const [HistoryViewEnd, setHistoryViewEnd] = useState(3);
@@ -85,7 +87,16 @@ const ProductDetail = (props) => {
       setValue("1");
       getAllBidHistory();
     }
-  }, [isBidding, getAllBidHistory]);
+    if (Image.image) {
+      setCountDate(
+        new Date(Image.starting_time).getTime() +
+          Image.limit_hours * 60 * 60 * 1000
+      );
+    }
+    if (CountDate !== 0 && CountDate < Date.now()) {
+      setEndTime(true);
+    }
+  }, [isBidding, getAllBidHistory, Image, CountDate]);
 
   if (Image.image === undefined) {
     return <>Loading...</>;
@@ -168,19 +179,19 @@ const ProductDetail = (props) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <h5>Minimum Markup</h5>
-            {Image.image.markup.toLocaleString("ko-KR")} ETH
-          </div>
-          <div style={{ marginTop: "auto" }}>
-            <Countdown
-              date={
-                new Date(Image.starting_time).getTime() +
-                Image.limit_hours * 60 * 60 * 1000
-              }
-              renderer={countRenderer}
-            />
+            {Image?.image?.markup?.toLocaleString("ko-KR")} ETH
           </div>
         </div>
       )}
+      <div className={styles.countDown}>
+        <Countdown
+          date={
+            new Date(Image.starting_time).getTime() +
+            Image.limit_hours * 60 * 60 * 1000
+          }
+          renderer={countRenderer}
+        />
+      </div>
       {isBidding !== null && isBidding && (
         <Grid container columns={10} spacing={2} sx={{ mt: 2, mb: 2 }}>
           <Grid item xs={6}>
@@ -218,10 +229,10 @@ const ProductDetail = (props) => {
         <Button
           variant="contained"
           color="warning"
-          sx={{ width: "70%", p: 2 }}
+          sx={{ width: "100%", p: 2 }}
           fullWidth
           onClick={handleBuyClick}
-          disabled={Image.soldOut ? true : false}
+          disabled={Image.soldOut || EndTime ? true : false}
         >
           Buy Now
         </Button>
@@ -325,10 +336,12 @@ const ProductDetail = (props) => {
           handleClose={handleBidClose}
           Image={Image}
           getAllBidHistory={getAllBidHistory}
+          EndTime={EndTime}
         />
       )}
       {isBidding !== null && (
         <BuyingModal
+          EndTime={EndTime}
           Open={BuyOpen}
           setImage={setImage}
           handleClose={handleBuyClose}

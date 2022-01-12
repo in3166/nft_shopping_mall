@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { authCheckAction } from "../store/actions/user-action";
@@ -14,16 +14,13 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
     console.log("hoc run");
     const dispatch = useDispatch();
     // server auth 검사는 아직 적용 안함.
-    
- 
-    useEffect(
-      () => {
+
+    useEffect(() => {
       const token = JSON.parse(localStorage.getItem("nft_token"));
       // console.log("hoc token: ", token);
       if (token) {
         dispatch(authCheckAction(token))
           .then((res) => {
-            console.log("hoc res: ", res);
             if (!res.isLoggedIn) {
               if (option) {
                 history.push("/login");
@@ -43,12 +40,11 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
             history.push("/login");
           });
       } else if (!token && history.location.pathname !== "/login") {
-        console.log('login')
+        console.log("login");
         alert("로그인 하세요.");
         history.push("/login");
       }
     }, [history, dispatch]);
-
     return <SpecificComponent {...props} user={user} />;
   };
   return AuthCheck;

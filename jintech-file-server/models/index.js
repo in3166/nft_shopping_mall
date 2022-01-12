@@ -99,6 +99,7 @@ db.view.belongsTo(db.users, {
   foreignKey: "userEmail",
   as: "user",
   targetKey: "email",
+  allowNull: true,
 });
 
 db.view.belongsTo(db.marketplace, {

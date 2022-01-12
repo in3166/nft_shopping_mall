@@ -39,12 +39,23 @@
 .empty {
   display: flex;
   font-size: 30px;
-  justify-content: center;
+  justify-content: center !important;
+  text-align: center;
   font-weight: bold;
   color: rgb(155, 155, 155);
   padding: 30px 0px 30px 0px;
 }
 .icon {
-  font-size: 40px;
+  font-size: 40px !important;
   font-weight: bold;
+}
+
+.countDown {
+  width: 100%;
+  float: right;
+  padding: 0px 0px 10px 0px;
+}
+
+.countDown > span {
+  float: right;
 }

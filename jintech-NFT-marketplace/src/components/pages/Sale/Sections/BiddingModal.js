@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import styles from "../Sale.module.css";
 
 const BiddingModal = (props) => {
-  const { Open, handleClose, Image, setImage, getAllBidHistory } = props;
+  const { Open, handleClose, Image, setImage, getAllBidHistory, EndTime } = props;
   const user = useSelector((state) => state.user.user);
   const [isOverMarkup, setisOverMarkup] = useState(false);
   const [isUnderPrice, setisUnderPrice] = useState(false);
@@ -39,7 +39,8 @@ const BiddingModal = (props) => {
     }
   };
 
-  const handleMintSubmit = () => {
+  const handleBidSubmit = () => {
+    if (EndTime) return;
     if (!isOverMarkup && !isUnderPrice) {
       const body = {
         action: "bid",
@@ -150,7 +151,7 @@ const BiddingModal = (props) => {
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button
-            onClick={handleMintSubmit}
+            onClick={handleBidSubmit}
             variant="outlined"
             color="warning"
             sx={{ p: 1, pr: 5, pl: 5 }}

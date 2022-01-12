@@ -99,6 +99,51 @@ xxx버전 업그레이드함 xxx
         //...
   ```
 
+- 조회수 기능
+  - views 테이블: 날짜별, 제품별 통계 분석을 위해 테이블을 따로 둠.
+  ```
+  (id, ip, client_url, server_url, userEmail, marketplaceId, imageId, date)
+  ```
+  - `views.controller.js`
+    - front에서 `ip-url` 형식으로 localStorage에 저장하여 조회수 연속 추가 방지
+    ```js
+    // src/util/ViewCounts.js
+    const existed = localStorage.getItem(ip + url);
+    if (!!existed) return;
+
+    localStorage.setItem(ip + url, true);
+
+    const request = async () => {
+      //...
+    }
+    ```
+
+    - interval을 줘서 views 테이블에 한 번에 생성할 수 있도록 함. (2-3시간 간격)
+    ```js
+    const counts = []; // [{id:1,...}, {id:2, ...}, ...]
+
+    const addCount = () => {
+      Views.bulkCreate(...) // 여기서 모아진 counts를 db에 넣기
+      counts.length = 0;  
+      console.log(counts);
+    };
+
+    const setIntervalQuery = {
+      inteval: () =>
+        setInterval(() => {
+          addCount();
+        }, 36000),
+    };
+
+    setIntervalQuery.inteval();
+
+    exports.create = async (req, res) => {
+      //...
+      counts.push(req.body);
+      //...
+    }
+    ```
+    
 - 로그 찍기
   - 
 

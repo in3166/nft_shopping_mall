@@ -123,6 +123,11 @@ const Navbar = () => {
                     경매
                   </Link>
                 </li>
+                <li className={`nav-item ${styles["nav-li"]}`}>
+                  <Link to="/myimages" className="nav-link">
+                    경매
+                  </Link>
+                </li>
               </>
             )}
           </ul>

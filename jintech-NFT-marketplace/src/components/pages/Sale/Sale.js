@@ -58,7 +58,7 @@ const Sale = ({ match }) => {
       )}
 
       {!Loading && (
-        <Box sx={{ p: 2, pt: 4 }}>
+        <Box sx={{ p: 2, pt: 4, overflow: "auto" }}>
           <Grid container spacing={6} columns={18}>
             <Grid item xs={18} sm={9}>
               <ProductImage url={Image?.image?.url} />

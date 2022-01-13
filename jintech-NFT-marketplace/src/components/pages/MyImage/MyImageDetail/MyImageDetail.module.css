@@ -1,0 +1,97 @@
+.timeline li::before {
+  flex: 0.1;
+  content: none;
+}
+
+.timeline li {
+  min-height: 55px;
+}
+
+.modal-error-message {
+  color: rgb(223, 4, 4);
+  padding-left: 5px;
+}
+
+.count_container {
+}
+
+.count_item {
+  background-color: black;
+  margin: 1px;
+  padding: 1.3px 5px 1px 5.5px;
+  color: rgb(255, 255, 255);
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.loading {
+  position: absolute;
+  top: 30%;
+}
+
+.tab-panel {
+  margin-bottom: 15px;
+  padding-left: 0;
+  max-height: 350px;
+  overflow: auto;
+}
+
+.empty {
+  display: flex;
+  font-size: 30px;
+  justify-content: center !important;
+  text-align: center;
+  font-weight: bold;
+  color: rgb(155, 155, 155);
+  padding: 30px 0px 30px 0px;
+}
+.icon {
+  font-size: 40px !important;
+  font-weight: bold;
+}
+
+.countDown {
+  width: 100%;
+  float: right;
+  padding: 0px 0px 10px 0px;
+}
+
+.countDown > span {
+  float: right;
+}
+
+.container {
+  margin-top: 1.3rem;
+}
+.form-input-name {
+  font-size: 0.94em;
+  font-weight: 500;
+}
+
+.form-input-name:before {
+  content: "";
+  border-left: 3px solid #888;
+  margin-right: 8px;
+}
+
+.submit-btn-box {
+  text-align: right;
+}
+
+.error-text {
+  color: rgb(224, 41, 41);
+  font-size: small;
+  float: right;
+}
+
+/* MEDIA */
+@media screen and (max-width: 767px) {
+  .form-container .form-input-wrap {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+}

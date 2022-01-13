@@ -41,7 +41,7 @@ class MyTokens extends Component {
       const accounts = await web3.eth.getAccounts();
       //일반 사용자의 계정 정보를 집어 넣어야 한다.
       console.log(1);
-      console.log(this.state.isMount)
+      console.log(this.state.isMount);
       this.state.isMount && this.setState({ account: accounts[0] });
       const networkId = await web3.eth.net.getId();
       const networkData = ImageContract.networks[networkId];
@@ -142,14 +142,16 @@ class MyTokens extends Component {
 
   async componentDidMount() {
     const accounts = await window?.web3?.eth?.getAccounts();
-    const { user } = this.props;
-    console.log("prop user", user);
+    const { user, authChecked } = this.props;
+    console.log(this.props);
+    console.log("prop user", user, authChecked);
 
     if (user && user.email !== "") {
       await axios.get(`/api/users/user/${user?.email}`).then((res) => {
         if (accounts[0] !== res.data.address) {
-          const { history } = this.props;
-          if (user.isLoggedIn) {
+          const { history, authChecked } = this.props;
+          console.log("authChecked: ", this.props.authChecked);
+          if (user.isLoggedIn && authChecked) {
             alert("지갑 주소가 맞지 않습니다.");
             history.replace("/");
           }
@@ -234,7 +236,7 @@ class MyTokens extends Component {
                   </div>
                   <div className="m-6">
                     {"Price - " + this.state.imageData_price[key]}
-                    
+
                     {/*<img alt="main" className="eth-class" src="../ebizcoin.png" />*/}
                     <img
                       alt="main"

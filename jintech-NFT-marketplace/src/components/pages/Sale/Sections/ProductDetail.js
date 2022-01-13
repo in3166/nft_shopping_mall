@@ -42,7 +42,7 @@ const ProductDetail = (props) => {
   if (Image.type) {
     isBidding = Image?.type === "auction" ? true : false;
   }
-
+  console.log(Image);
   const getAllBidHistory = useCallback(() => {
     axios
       .get("/api/marketHistories/" + Image.id)
@@ -95,6 +95,19 @@ const ProductDetail = (props) => {
     }
     if (CountDate !== 0 && CountDate < Date.now()) {
       setEndTime(true);
+      // onMarket false
+      axios
+        .put("/api/marketplaces/end", { id: Image.id })
+        .then((res) => {
+          if (res.data.success) {
+            alert("판매 종료");
+          } else {
+            alert("판매 종료 오류: ", res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert("판매 종료 오류: ", err);
+        });
     }
   }, [isBidding, getAllBidHistory, Image, CountDate]);
 

@@ -50,21 +50,27 @@ isAdmin = (req, res, next) => {
       message: "No email provided!",
     });
   }
+  console.log('isadmin email:" ', email);
   User.findOne({ where: { email: email } })
     .then((user) => {
-      user.getRoles().then((roles) => {
-        for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "admin") {
-            next();
-            return;
+      user
+        .getRoles()
+        .then((roles) => {
+          for (let i = 0; i < roles.length; i++) {
+            if (roles[i].name === "admin") {
+              next();
+              return;
+            }
           }
-        }
-
-        res.status(403).send({
-          message: "Require Admin Role!",
+          console.log("isnot admin");
+          res.status(403).send({
+            message: "Require Admin Role!",
+          });
+          return;
+        })
+        .catch((err) => {
+          console.log("isadmin find role: ", err);
         });
-        return;
-      });
     })
     .catch((err) => {
       console.log("isAdmin find err: ", err);

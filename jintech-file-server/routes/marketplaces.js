@@ -12,10 +12,12 @@ const { authJwt } = require("../middleware");
 router.post("/", marketplaces.create);
 
 // 모든 업로드 기록 가져오기
-router.get("/", authJwt.isAdmin, marketplaces.findAll);
+router.get("/", marketplaces.findAll);
+router.get("/myimages/:email", marketplaces.findAllMyImages);
 router.get("/:email", authJwt.verifyToken, marketplaces.findOne);
 router.get("/goods/:id", marketplaces.findOne);
 
+router.put("/end", marketplaces.endtime);
 router.put("/", marketplaces.update);
 
 module.exports = router;

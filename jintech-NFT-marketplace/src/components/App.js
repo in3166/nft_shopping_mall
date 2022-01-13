@@ -33,7 +33,8 @@ import SettingPage from "./pages/setting/SettingPage";
 import UploadList from "./pages/UploadList/UploadList";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import Sale from "./pages/Sale/Sale";
-
+import MyImage from "./pages/MyImage/MyImage";
+import MyImageDetail from "./pages/MyImage/MyImageDetail/MyImageDetail";
 //ipfs 서버 정보
 /*
 const ipfsClient = require("ipfs-http-client");
@@ -499,6 +500,8 @@ class App extends Component {
                 <Route path="/upload" component={Auth(UserUpload, true)} />
 
                 <Route path="/bid" component={Auth(Marketplace, true)} />
+                <Route path="/myimages" exact component={Auth(MyImage, true)} />
+                <Route path="/myimages/:id" component={Auth(MyImageDetail, true)} />
                 <Route path="/goods/:id" component={Auth(Sale, true)} />
 
                 <Route

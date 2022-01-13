@@ -32,7 +32,7 @@ const Sale = ({ match }) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
+  }, [id, user.email]);
 
   useEffect(() => {
     getImageInfo();

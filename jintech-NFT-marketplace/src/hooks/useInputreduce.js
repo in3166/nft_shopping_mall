@@ -1,6 +1,6 @@
 import { useReducer, useRef } from "react";
 
-const initialInputState = {
+const initialInputState2 = {
   value: "",
   isTouched: false,
 };
@@ -18,11 +18,11 @@ const inputStateReducer = (state, action) => {
   return inputStateReducer;
 };
 
-const useInput = (validator) => {
-  const [inputState, dispatch] = useReducer(
-    inputStateReducer,
-    initialInputState
-  );
+const useInput = (validator, initialValue) => {
+  const [inputState, dispatch] = useReducer(inputStateReducer, {
+    value: initialValue || "",
+    isTouched: false,
+  });
   const inputRef = useRef();
 
   const valueIsValid = validator(inputState.value);

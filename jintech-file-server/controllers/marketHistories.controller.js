@@ -47,6 +47,7 @@ exports.create = async (req, res) => {
             soldOut: true,
             current_price: body.price,
             buyerEmail: body.userEmail,
+            onMarket: false,
           },
           {
             where: {

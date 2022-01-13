@@ -12,6 +12,7 @@ import styles from "./Marketplace.module.css";
 const Marketplace = () => {
   const user = useSelector((state) => state.user.user);
   const [Images, setImages] = useState(undefined);
+  const [OriginalImages, setOriginalImages] = useState(Images);
   const [Categories, setCategories] = useState([]);
   const [SelectedCategory, setSelectedCategory] = useState(0);
   const getAllImages = useCallback(async () => {
@@ -32,6 +33,7 @@ const Marketplace = () => {
     console.log(imagesRes.data);
     console.log(categoryRes);
     setImages(imagesRes.data);
+    setOriginalImages(imagesRes.data);
     setCategories(categoryRes.data.data);
   }, [user.email]);
 
@@ -57,8 +59,19 @@ const Marketplace = () => {
     setSelectedCategory(e.target.value);
   };
   console.log("Images: ", Images);
+  const [SearchText, setSearchText] = useState("");
+  const handleSearchClick = () => {
+    console.log(SearchText);
+    if (SearchText === "" && OriginalImages.length > 0) {
+      setImages(OriginalImages);
+    } else if (SearchText !== "" && OriginalImages.length > 0) {
+      //setOriginalImages(Images);
+      setImages(OriginalImages.filter((v) => v.image.filename.includes(SearchText)));
+    }
+  };
+
   return (
-    <Box>
+    <Box className={styles.box}>
       <div className={styles.header}>
         <div style={{ maxWidth: "250px", width: "100%" }}>
           <select onChange={handleCategoryChange}>
@@ -72,19 +85,29 @@ const Marketplace = () => {
           </select>
         </div>
         <div style={{ alignSelf: "center" }}>
-          <Input type="text" />
+          <Input
+            type="text"
+            value={SearchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <Button
             color="inherit"
             variant="outlined"
             style={{ marginLeft: 10 }}
             size="small"
+            onClick={handleSearchClick}
           >
             검색
           </Button>
         </div>
       </div>
 
-      {Images?.length === 0 && (
+      {(Images?.length === 0 ||
+        Images?.filter(
+          (value, index) =>
+            Number(SelectedCategory) === 0 ||
+            Number(SelectedCategory) === Number(value.image.categoryId)
+        ).length === 0) && (
         <div className={styles.empty}>
           <SearchOffIcon className={styles.icon} /> No Items.
         </div>

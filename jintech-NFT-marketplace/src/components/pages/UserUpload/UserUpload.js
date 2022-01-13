@@ -38,6 +38,7 @@ function a11yProps(index) {
 }
 
 const UserUpload = (props) => {
+  const { authChecked } = props;
   const history = useHistory();
   const user = useSelector((state) => state?.user?.user);
   const getAccount = useCallback(async () => {
@@ -50,7 +51,7 @@ const UserUpload = (props) => {
         .then((res) => {
           console.log("res : ", res.data.address);
           if (accounts[0] !== res.data.address) {
-            if (user.isLoggedIn) {
+            if (user.isLoggedIn && authChecked) {
               alert("지갑 주소가 맞지 않습니다.");
               history.replace("/");
             }
@@ -61,7 +62,7 @@ const UserUpload = (props) => {
           console.log("err: ", err);
         });
     }
-  }, [history, user]);
+  }, [history, user, authChecked]);
 
   useEffect(() => {
     getAccount();

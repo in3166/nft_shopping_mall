@@ -9,6 +9,7 @@ import { userAction } from "../store/reducers/user-slice";
 
 export default function auth(SpecificComponent, option, adminRoute = null) {
   const AuthCheck = (props) => {
+    const [AuthChecked, setAuthChecked] = useState(false);
     const user = useSelector((state) => state.user);
     const history = useHistory();
     console.log("hoc run");
@@ -33,19 +34,24 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
               // Logged in Status, but Try to go into log in page
               history.push("/");
             }
+            setAuthChecked(true);
           })
           .catch((err) => {
             console.log(err);
             alert("!: ", err);
             history.push("/login");
+            setAuthChecked(true);
           });
       } else if (!token && history.location.pathname !== "/login") {
         console.log("login");
         alert("로그인 하세요.");
         history.push("/login");
+        setAuthChecked(true);
       }
     }, [history, dispatch]);
-    return <SpecificComponent {...props} user={user} />;
+    console.log("hoc authChecked: ", AuthChecked);
+    console.log("hoc props: ", props);
+    return <SpecificComponent {...props} user={user} authChecked={AuthChecked} />;
   };
   return AuthCheck;
 }

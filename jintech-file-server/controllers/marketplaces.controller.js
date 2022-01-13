@@ -70,12 +70,14 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Retrieve all User from the database.
 exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
 
   Marketplace.findAll({
+    where: {
+      onMarket: true,
+    },
     include: [
       {
         model: db.users,
@@ -100,8 +102,73 @@ exports.findAll = (req, res) => {
       },
     ],
   })
-    .then((data) => {
+    .then(async (images) => {
+      const data = [];
+      const endData = [];
+
+      images.forEach((value) => {
+        const start = new Date(value.starting_time);
+        const miliEnd = start.getTime() + value.limit_hours * 60 * 60 * 1000;
+        // console.log("miliEnd: ", miliEnd);
+        // console.log(" Date.now();: ", Date.now());
+        // console.log(value.id, "vse: ", miliEnd < Date.now());
+        if (miliEnd > Date.now()) return data.push(value);
+        return endData.push(value.id);
+      });
+
+      try {
+        // 시간 지난 제품 onMarket false
+        const resEndData = await Marketplace.update(
+          { onMarket: false },
+          { where: { id: endData } }
+        );
+        console.log(resEndData);
+      } catch (error) {
+        console.log("onMarket error: ", error);
+      }
+
       res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
+exports.findAllMyImages = (req, res) => {
+  const email = req.params.email;
+  console.log("findAllMyImages");
+
+  Marketplace.findAll({
+    where: { ownerEmail: email },
+    include: [
+      {
+        model: db.users,
+        attributes: ["email", "address"],
+        as: "owner",
+      },
+      {
+        model: db.image,
+        attributes: [
+          "filename",
+          "type",
+          "url",
+          "price",
+          "period",
+          "type",
+          "buyout",
+          "markup",
+          "key",
+          "onMarket",
+          "categoryId",
+        ],
+      },
+    ],
+  })
+    .then((images) => {
+      res.status(200).send({ success: true, images });
     })
     .catch((err) => {
       console.log(err);
@@ -133,4 +200,18 @@ exports.update = (req, res) => {
       console.log("err: ", err);
       res.status(500).send({ message: err, error: err });
     });
+};
+
+exports.endtime = (req, res) => {
+  const id = req.body.id;
+  Marketplace.update(
+    { onMarket: false },
+    {
+      where: { id },
+    }
+  )
+    .then((data) => {
+      console.log;
+    })
+    .cathch((err) => {});
 };

@@ -13,7 +13,7 @@ const calculateRemainingTime = (expirationTime) => {
 
 // 로그 아웃
 export const logoutAction = () => {
-  return async (dispatch) => {
+  return (dispatch) => {
     localStorage.removeItem("nft_token");
     localStorage.removeItem("expirationTime");
     if (logoutTimer) {
@@ -129,10 +129,14 @@ const retrieveStoredToken = () => {
 export const authCheckAction = (token) => {
   return async (dispatch) => {
     const storedExipirationDate = localStorage.getItem("expirationTime");
+    console.log("storedExipirationDate1: ", storedExipirationDate);
     const remainingTime = calculateRemainingTime(storedExipirationDate);
+
     if (remainingTime <= 3600) {
+      console.log("storedExipirationDate2: ", storedExipirationDate);
       localStorage.removeItem("nft_token");
       localStorage.removeItem("expirationTime");
+      await dispatch(userAction.logout());
       return { isLoggedIn: false };
     }
 

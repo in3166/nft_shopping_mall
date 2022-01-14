@@ -1,0 +1,10 @@
+.loading {
+  display: block !important;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loading {
+  position: absolute;
+  top: 30%;
+}

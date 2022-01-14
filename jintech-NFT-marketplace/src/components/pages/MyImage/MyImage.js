@@ -5,14 +5,19 @@ import { useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styles from "./MyImage.module.css";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import LoadingSpinner from "../../UI/Loading/LoadingSpinner";
 
 const MyImage = (props) => {
   const { authChecked } = props;
-  const [Images, setImages] = useState([]);
   const history = useHistory();
   const user = useSelector((state) => state.user.user);
+  const [Images, setImages] = useState(null);
+  const [Loading, setLoading] = useState(false);
+  const [isMounted, setisMounted] = useState(true);
+
   console.log(Images);
   const getAllMyImages = useCallback(() => {
+    setLoading(true);
     axios
       .get("/api/marketplaces/myimages/" + user.email)
       .then((res) => {
@@ -24,10 +29,14 @@ const MyImage = (props) => {
       })
       .catch((err) => {
         alert("가져오기 Error: ", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
-  }, [user.email]);
+  }, [user.email, isMounted]);
 
   const getAccount = useCallback(async () => {
+    setLoading(true);
     const accounts = await window.web3.eth.getAccounts();
     console.log(accounts[0]);
     console.log("user: ", user);
@@ -48,23 +57,35 @@ const MyImage = (props) => {
           console.log("err: ", err);
         });
     }
-  }, [history, user, authChecked]);
+    if (isMounted) setLoading(false);
+  }, [history, user, authChecked, isMounted]);
 
   useEffect(() => {
     getAccount();
     getAllMyImages();
-  }, [getAllMyImages, getAccount]);
+
+    return () => {
+      setisMounted(false);
+    };
+  }, [getAllMyImages, getAccount, isMounted]);
+
+  const noItems = Images !== null && !Loading && Images?.length === 0 && (
+    <div className={styles.empty}>
+      <SearchOffIcon className={styles.icon} /> No Items.
+    </div>
+  );
 
   return (
     <div className={styles.box}>
-      {Images?.length === 0 && (
+      {Loading && <LoadingSpinner />}
+      {Images !== null && !Loading && Images?.length === 0 && (
         <div className={styles.empty}>
           <SearchOffIcon className={styles.icon} /> No Items.
         </div>
       )}
-
       <Grid container columns={24} spacing={4} padding={3}>
-        {Images?.length > 0 &&
+        {!Loading &&
+          Images?.length > 0 &&
           Images.map((value, index) => (
             <Grid item xs={24} sm={12} md={8} lg={6} key={value.id}>
               <Link
@@ -123,6 +144,7 @@ const MyImage = (props) => {
             </Grid>
           ))}
       </Grid>
+      {noItems}
     </div>
   );
 };

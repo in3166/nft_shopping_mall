@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import icon from "./favicon-32x32.png";
 import { Link } from "react-router-dom";
 
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions/user-action";
 import { useTranslation } from "react-i18next";
@@ -252,15 +253,26 @@ const Navbar = () => {
                   </Link>
                   <Divider />
                   {user.isAdmin && (
-                    <Link to="/setting">
-                      <MenuItem>
-                        <ListItemIcon>
-                          <Settings fontSize="small" />
-                        </ListItemIcon>
-                        {t("Navbar.settings")}
-                      </MenuItem>
-                    </Link>
+                    <div>
+                      <Link to="/setting">
+                        <MenuItem>
+                          <ListItemIcon>
+                            <Settings fontSize="small" />
+                          </ListItemIcon>
+                          {t("Navbar.settings")}
+                        </MenuItem>
+                      </Link>
+                      <Link to="/analysis">
+                        <MenuItem>
+                          <ListItemIcon>
+                            <AnalyticsIcon fontSize="small" />
+                          </ListItemIcon>
+                          Analysis
+                        </MenuItem>
+                      </Link>
+                    </div>
                   )}
+
                   <MenuItem onClick={logoutHandler}>
                     <ListItemIcon>
                       <Logout fontSize="small" />

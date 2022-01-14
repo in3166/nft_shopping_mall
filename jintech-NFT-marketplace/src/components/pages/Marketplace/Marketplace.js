@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import ViewCounts from "../../../util/ViewCounts";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import styles from "./Marketplace.module.css";
+import LoadingSpinner from "../../UI/Loading/LoadingSpinner";
 
 const Marketplace = () => {
   const user = useSelector((state) => state.user.user);
@@ -15,7 +16,11 @@ const Marketplace = () => {
   const [OriginalImages, setOriginalImages] = useState(Images);
   const [Categories, setCategories] = useState([]);
   const [SelectedCategory, setSelectedCategory] = useState(0);
+  const [Loading, setLoading] = useState(false);
+  const [isMounted, setisMounted] = useState(true);
+
   const getAllImages = useCallback(async () => {
+    setLoading(true);
     // .then((res) => {
     //   console.log(res.data);
     //   ViewCounts(window.location.pathname, user.email);
@@ -35,10 +40,15 @@ const Marketplace = () => {
     setImages(imagesRes.data);
     setOriginalImages(imagesRes.data);
     setCategories(categoryRes.data.data);
-  }, [user.email]);
+
+    if (isMounted) setLoading(false);
+  }, [user.email, isMounted]);
 
   useEffect(() => {
     getAllImages();
+    return () => {
+      setisMounted(false);
+    };
   }, [getAllImages]);
 
   const countRenderer = (data) => {
@@ -58,6 +68,7 @@ const Marketplace = () => {
     console.log(e.target.value);
     setSelectedCategory(e.target.value);
   };
+
   console.log("Images: ", Images);
   const [SearchText, setSearchText] = useState("");
   const handleSearchClick = () => {
@@ -66,7 +77,9 @@ const Marketplace = () => {
       setImages(OriginalImages);
     } else if (SearchText !== "" && OriginalImages.length > 0) {
       //setOriginalImages(Images);
-      setImages(OriginalImages.filter((v) => v.image.filename.includes(SearchText)));
+      setImages(
+        OriginalImages.filter((v) => v.image.filename.includes(SearchText))
+      );
     }
   };
 
@@ -102,19 +115,23 @@ const Marketplace = () => {
         </div>
       </div>
 
-      {(Images?.length === 0 ||
-        Images?.filter(
-          (value, index) =>
-            Number(SelectedCategory) === 0 ||
-            Number(SelectedCategory) === Number(value.image.categoryId)
-        ).length === 0) && (
-        <div className={styles.empty}>
-          <SearchOffIcon className={styles.icon} /> No Items.
-        </div>
-      )}
+      {Loading && <LoadingSpinner />}
+
+      {!Loading &&
+        (Images?.length === 0 ||
+          Images?.filter(
+            (value, index) =>
+              Number(SelectedCategory) === 0 ||
+              Number(SelectedCategory) === Number(value.image.categoryId)
+          ).length === 0) && (
+          <div className={styles.empty}>
+            <SearchOffIcon className={styles.icon} /> No Items.
+          </div>
+        )}
 
       <Grid container columns={24} spacing={4} padding={3}>
-        {Images?.length > 0 &&
+        {!Loading &&
+          Images?.length > 0 &&
           Images.filter(
             (value, index) =>
               Number(SelectedCategory) === 0 ||

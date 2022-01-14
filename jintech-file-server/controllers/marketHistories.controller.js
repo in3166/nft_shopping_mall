@@ -151,6 +151,29 @@ exports.findAll = (req, res) => {
     });
 };
 
+// Retrieve all User from the database.
+exports.findAllSales = (req, res) => {
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  console.log("findall");
+  const id = req.params.id;
+
+  MarketHistory.findAll({
+    where: {
+      action: "buy",
+    },
+    order: [["createdAt", "DESC"]],
+  })
+    .then((data) => {
+      res.status(200).send({ success: true, sales: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
 exports.update = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("update", req.body);

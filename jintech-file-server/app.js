@@ -93,6 +93,15 @@ function initial() {
       });
     }
   });
+
+  Role.findAll({ where: { id: 4} }).then((res) => {
+    if (res?.length === 0) {
+      Role.create({
+        id: 4,
+        name: "admin2",
+      });
+    }
+  });
 }
 
 module.exports = app;

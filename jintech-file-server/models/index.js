@@ -114,6 +114,6 @@ db.view.belongsTo(db.image, {
   targetKey: "id",
 });
 
-db.ROLES = ["user", "admin"];
+db.ROLES = ["user", "admin", "admin2"];
 
 module.exports = db;

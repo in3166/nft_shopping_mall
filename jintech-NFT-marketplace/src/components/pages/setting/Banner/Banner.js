@@ -45,6 +45,22 @@ const Banner = () => {
   const [checked, setChecked] = useState([]);
   const [LoadingBanner, setLoadingBanner] = useState(false);
   const [LoadingItems, setLoadingItems] = useState(false);
+  const [Categories, setCategories] = useState([]);
+  const [SelectCatgoryValue, setSelectCatgoryValue] = useState(0);
+  const getAllCategories = () => {
+    axios
+      .get("/api/categories/")
+      .then((res) => {
+        if (res.data.success) {
+          setCategories(res.data.data);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
 
   const getAllBanners = () => {
     setLoadingBanner(true);
@@ -115,6 +131,7 @@ const Banner = () => {
   useEffect(() => {
     getImagesFromEth();
     getAllBanners();
+    getAllCategories();
   }, [getImagesFromEth]);
 
   const handleCheck = (value) => {
@@ -169,6 +186,11 @@ const Banner = () => {
       .catch((err) => {
         alert(err);
       });
+  };
+
+  const handleSelectCategoryChange = (e) => {
+    console.log(e.target.value);
+    setSelectCatgoryValue(e.target.value);
   };
 
   return (
@@ -296,15 +318,17 @@ const Banner = () => {
                   Category
                 </InputLabel>
                 <NativeSelect
-                  defaultValue={30}
+                  value={SelectCatgoryValue}
+                  onChange={handleSelectCategoryChange}
                   inputProps={{
-                    name: "age",
+                    name: "category",
                     id: "uncontrolled-native",
                   }}
                 >
-                  <option value={10}>Ten</option>
-                  <option value={20}>Twenty</option>
-                  <option value={30}>Thirty</option>
+                  <option value={0}>All</option>
+                  {Categories.map((value) => (
+                    <option value={value.id}>{value.name}</option>
+                  ))}
                 </NativeSelect>
               </FormControl>
 

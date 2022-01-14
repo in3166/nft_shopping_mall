@@ -33,7 +33,7 @@ const Category = (props) => {
       .get("/api/categories/")
       .then((res) => {
         if (res.data.success) {
-          setCategories(res.data.categories);
+          setCategories(res.data.data);
         } else {
           alert(res.data.message);
         }
@@ -82,12 +82,14 @@ const Category = (props) => {
       setDeletedCategoriesId(checked);
     }
   };
+
   const handleDeleteClose = () => {
     setAnchorEl(null);
     setDeletedCategoriesId([]);
   };
+
   const handleDeleteSubmit = async () => {
-    if (DeletedCategoriesId.length < 1) {
+    if (DeletedCategoriesId?.length < 1) {
       alert("하나 이상의 항목을 선택하세요.");
       handleDeleteClose();
       return;
@@ -117,6 +119,7 @@ const Category = (props) => {
 
   const [isAdd, setIsAdd] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  
   const handleClickAddOpen = () => {
     setAddOpen(true);
     setIsAdd(true);
@@ -181,7 +184,7 @@ const Category = (props) => {
         </div>
 
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-          {Categories.length > 0 &&
+          {Categories?.length > 0 &&
             Categories.map((value) => {
               const labelId = `checkbox-list-label-${value.name}`;
 

@@ -10,6 +10,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CategoryIcon from "@mui/icons-material/Category";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import Banner from "./Banner/Banner";
+import AdminManager from "./AdminManager/AdminManager";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,21 +91,21 @@ const SettingPage = () => {
             {...a11yProps(0)}
           />
 
-          <Tab
+          {/* <Tab
             label={
               <div>
                 <AnalyticsIcon style={{ verticalAlign: "middle" }} /> Analysis
               </div>
             }
             {...a11yProps(1)}
-          />
+          /> */}
           <Tab
             label={
               <div>
                 <SecurityIcon style={{ verticalAlign: "middle" }} /> 2FA Manager
               </div>
             }
-            {...a11yProps(2)}
+            {...a11yProps(1)}
           />
           <Tab
             label={
@@ -113,7 +114,7 @@ const SettingPage = () => {
                 Admin Manager
               </div>
             }
-            {...a11yProps(3)}
+            {...a11yProps(2)}
           />
           <Tab
             label={
@@ -122,7 +123,7 @@ const SettingPage = () => {
                 Category
               </div>
             }
-            {...a11yProps(4)}
+            {...a11yProps(3)}
           />
           <Tab
             label={
@@ -131,29 +132,28 @@ const SettingPage = () => {
                 Banner
               </div>
             }
-            {...a11yProps(5)}
+            {...a11yProps(4)}
           />
         </Tabs>
         <TabPanel value={value} index={0}>
           <h4>Home</h4>
           Item One
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        {/* <TabPanel value={value} index={1}>
           <h4>Analysis</h4>
           Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
+        </TabPanel> */}
+        <TabPanel value={value} index={1}>
           <h4>2FA Manager</h4>
           Item Three
         </TabPanel>
-        <TabPanel value={value} index={3}>
-          <h4>Admin Manager</h4>
-          Item Four
+        <TabPanel value={value} index={2}>
+          <AdminManager />
         </TabPanel>
-        <TabPanel value={value} index={4}>
+        <TabPanel value={value} index={3}>
           <Category />
         </TabPanel>
-        <TabPanel value={value} index={5}>
+        <TabPanel value={value} index={4}>
           <Banner />
         </TabPanel>
       </Box>

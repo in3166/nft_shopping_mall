@@ -101,6 +101,7 @@ const HomePage = (props) => {
   useEffect(() => {
     getAllImages();
     getAllBanners();
+
   }, []);
 
   return (

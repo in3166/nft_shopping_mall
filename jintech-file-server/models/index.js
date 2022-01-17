@@ -72,6 +72,7 @@ db.marketplace.belongsTo(db.users, {
 //   foreignKey: "buyerEmail",
 //   as: "buyer",
 // });
+
 db.marketplace.belongsTo(db.users, {
   foreignKey: "buyerEmail",
   as: "buyer",
@@ -94,6 +95,12 @@ db.marketHistory.belongsTo(db.users, {
   as: "user",
   targetKey: "email",
 });
+
+// db.marketplace.belongsTo(db.category, {
+//   foreignKey: "categoryId",
+//   as: "category",
+//   targetKey: "id",
+// });
 
 db.view.belongsTo(db.users, {
   foreignKey: "userEmail",

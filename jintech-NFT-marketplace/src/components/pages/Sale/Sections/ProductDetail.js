@@ -29,26 +29,43 @@ import BiddingModal from "./BiddingModal.js";
 import BuyingModal from "./BuyingModal";
 import Countdown from "react-countdown";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import { useSelector } from "react-redux";
 
 const ProductDetail = (props) => {
   const { Image, setImage } = props;
-  const [History, setHistory] = useState([]);
   const [CountDate, setCountDate] = useState(0);
   const [EndTime, setEndTime] = useState(false);
-
-  const [HistoryViewEnd, setHistoryViewEnd] = useState(3);
-
+  const [BidHistory, setBidHistory] = useState([]);
+  const [BidHistoryViewEnd, setBidHistoryViewEnd] = useState(3);
+  const [Provenance, setProvenance] = useState([]);
+  const [ProvenanceViewEnd, setProvenanceViewEnd] = useState(3);
+  const user = useSelector((state) => state.user.user);
+  //const [IsSameUser, setisSameUser] = useState(user.email === Image.ownerEmail);
+  const IsSameUser = user.email === Image.ownerEmail;
   let isBidding = null;
   if (Image.type) {
     isBidding = Image?.type === "auction" ? true : false;
   }
   console.log(Image);
+
   const getAllBidHistory = useCallback(() => {
     axios
-      .get("/api/marketHistories/" + Image.id)
+      .get("/api/marketHistories/" + Image.id, {
+        headers: { starting_time: Image.starting_time },
+      })
       .then((res) => {
         if (res.data.success) {
-          setHistory(res.data.history);
+          const provenance = res.data.history.filter(
+            (value) => value.action === "register"
+          );
+
+          const bidHistorties = res.data.history.filter(
+            (value) =>
+              value.action !== "register" &&
+              value.starting_time === Image.starting_time
+          );
+          setProvenance(provenance);
+          setBidHistory(bidHistorties);
         } else {
           alert(res.data.message);
         }
@@ -56,7 +73,7 @@ const ProductDetail = (props) => {
       .catch((err) => {
         alert(err);
       });
-  }, [Image.id]);
+  }, [Image.id, Image.starting_time]);
 
   const [value, setValue] = useState(isBidding ? "1" : "2");
 
@@ -137,13 +154,22 @@ const ProductDetail = (props) => {
     );
   };
 
-  const handleMoreClick = () => {
-    if (HistoryViewEnd + 5 >= History.length) {
-      setHistoryViewEnd(History.length);
+  const handleBidHistoryMoreClick = () => {
+    if (BidHistoryViewEnd + 5 >= BidHistory.length) {
+      setBidHistoryViewEnd(BidHistory.length);
     } else {
-      setHistoryViewEnd((prev) => prev + 5);
+      setBidHistoryViewEnd((prev) => prev + 5);
     }
   };
+
+  const handleProvenanceMoreClick = () => {
+    if (ProvenanceViewEnd + 5 >= Provenance.length) {
+      setProvenanceViewEnd(Provenance.length);
+    } else {
+      setProvenanceViewEnd((prev) => prev + 5);
+    }
+  };
+  console.log(ProvenanceViewEnd);
 
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
@@ -179,6 +205,7 @@ const ProductDetail = (props) => {
             maxHeight: "120px",
             overflow: "auto",
           }}
+          variant="outlined"
         >
           {Image.image.description}
         </Card>
@@ -214,7 +241,7 @@ const ProductDetail = (props) => {
               onClick={handleBidClick}
               fullWidth
               sx={{ p: 2 }}
-              disabled={Image.soldOut || EndTime ? true : false}
+              disabled={EndTime || IsSameUser ? true : false}
             >
               Place a Bid
             </Button>
@@ -226,7 +253,7 @@ const ProductDetail = (props) => {
               fullWidth
               onClick={handleBuyClick}
               sx={{ p: 1, flexDirection: "column" }}
-              disabled={Image.soldOut || EndTime ? true : false}
+              disabled={EndTime || IsSameUser ? true : false}
             >
               <div style={{ fontSize: "10px" }}>Buyout Price</div>
               <div style={{ fontSize: "12px" }}>
@@ -267,48 +294,48 @@ const ProductDetail = (props) => {
         {isBidding !== null && isBidding && (
           <TabPanel value="1" className={styles["tab-panel"]}>
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-              {History.length === 0 && (
+              {BidHistory.length === 0 && (
                 <ListItem className={styles.empty}>
                   <SearchOffIcon className={styles.icon} /> No Items.
                 </ListItem>
               )}
-              {History.length > 0 &&
-                History.filter((value, index) => index < HistoryViewEnd).map(
-                  (history, index) => (
-                    <ListItem key={history.id}>
-                      <ListItemAvatar>
-                        <Avatar src="/broken-image.jpg" />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <>
-                            <span style={{ fontSize: 14 }}>
-                              <strong>{history.userEmail}</strong>
-                            </span>
-                            <span style={{ fontSize: 3 }}>
-                              {history.action === "bid"
-                                ? " Place a bid"
-                                : " Buyout"}
-                            </span>
-                          </>
-                        }
-                        secondary={new Date(history.createdAt).toLocaleString()}
-                      />
-                      <ListItemText
-                        sx={{ textAlign: "right" }}
-                        primary={
+              {BidHistory.length > 0 &&
+                BidHistory.filter(
+                  (value, index) => index < BidHistoryViewEnd
+                ).map((history, index) => (
+                  <ListItem key={history.id}>
+                    <ListItemAvatar>
+                      <Avatar src="/broken-image.jpg" />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <>
                           <span style={{ fontSize: 14 }}>
-                            {history.price.toLocaleString("ko-KR")} ETH
+                            <strong>{history.userEmail}</strong>
                           </span>
-                        }
-                        secondary=" ≈ $ ---"
-                      />
-                    </ListItem>
-                  )
-                )}
-              {HistoryViewEnd < History.length && (
+                          <span style={{ fontSize: 3 }}>
+                            {history.action === "bid"
+                              ? " Place a bid"
+                              : " Buyout"}
+                          </span>
+                        </>
+                      }
+                      secondary={new Date(history.createdAt).toLocaleString()}
+                    />
+                    <ListItemText
+                      sx={{ textAlign: "right" }}
+                      primary={
+                        <span style={{ fontSize: 14 }}>
+                          {history.price.toLocaleString("ko-KR")} ETH
+                        </span>
+                      }
+                      //secondary=" ≈ $ ---"
+                    />
+                  </ListItem>
+                ))}
+              {BidHistoryViewEnd < BidHistory.length && (
                 <div style={{ width: "100%", textAlign: "center" }}>
-                  <button onClick={handleMoreClick}>Viwe More</button>
+                  <button onClick={handleBidHistoryMoreClick}>Viwe More</button>
                 </div>
               )}
             </List>
@@ -316,32 +343,33 @@ const ProductDetail = (props) => {
         )}
         <TabPanel value="2" className={styles["tab-panel"]}>
           <Timeline className={styles.timeline}>
-            <TimelineItem>
-              <TimelineSeparator>
-                <TimelineDot color="warning" />
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography variant="h7" component="span">
-                  <strong>Listed by @Owner</strong>
-                </Typography>
-                <Typography fontSize={12}>2022-02-17 15:32</Typography>
-              </TimelineContent>
-            </TimelineItem>
-            <TimelineItem>
-              <TimelineSeparator>
-                <TimelineDot color="warning" />
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography variant="h7" component="span">
-                  <strong>Listed by @Owner</strong>
-                </Typography>
-                <Typography fontSize={12}>2022-02-17 15:32</Typography>
-              </TimelineContent>
-            </TimelineItem>
+            {Provenance.length > 0 &&
+              Provenance.filter(
+                (value, index) => index < ProvenanceViewEnd
+              ).map((value, index) => (
+                <TimelineItem>
+                  <TimelineSeparator>
+                    <TimelineDot color="warning" />
+                    {Provenance.length > 1 &&
+                      ProvenanceViewEnd !== index + 1 && <TimelineConnector />}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Typography variant="h7" component="span">
+                      <strong>Listed by {value.userEmail}</strong>
+                    </Typography>
+                    <Typography fontSize={12}>{value.createdAt}</Typography>
+                  </TimelineContent>
+                </TimelineItem>
+              ))}
           </Timeline>
+          {ProvenanceViewEnd < Provenance.length && (
+            <div style={{ width: "100%", textAlign: "center" }}>
+              <button onClick={handleProvenanceMoreClick}>Viwe More</button>
+            </div>
+          )}
         </TabPanel>
       </TabContext>
+
       {isBidding !== null && isBidding && (
         <BiddingModal
           Open={BidOpen}
@@ -350,6 +378,7 @@ const ProductDetail = (props) => {
           Image={Image}
           getAllBidHistory={getAllBidHistory}
           EndTime={EndTime}
+          buyout={Image.image.buyout}
         />
       )}
       {isBidding !== null && (

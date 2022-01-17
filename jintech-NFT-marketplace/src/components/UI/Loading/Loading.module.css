@@ -1,10 +1,9 @@
 .loading {
-  display: block !important;
+  display: flex !important;
   padding: 2rem;
-  text-align: center;
 }
 
-.loading {
+/* .loading {
   position: absolute;
   top: 30%;
-}
+} */

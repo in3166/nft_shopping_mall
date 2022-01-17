@@ -1,13 +1,14 @@
 import { CircularProgress, Stack } from "@mui/material";
 import React from "react";
-import styles from './Loading.module.css';
+import styles from "./Loading.module.css";
 
 const Loading = (props) => {
   return (
     <Stack
       sx={{
         color: "grey.500",
-        width: "100%",
+        maxWidth: "100%",
+
         minHeight: "250px",
         justifyContent: "center",
         alignItems: "center",
@@ -16,7 +17,7 @@ const Loading = (props) => {
       direction="row"
       className={styles.loading}
     >
-      <CircularProgress color="inherit" />
+      <CircularProgress color="inherit" className={styles.image}/>
     </Stack>
   );
 };

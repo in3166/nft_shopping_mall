@@ -70,7 +70,7 @@ const ConfirmSaleModal = (props) => {
       maxWidth="md"
     >
       <DialogTitle id="responsive-dialog-title">
-        {"Use Google's location service?"}
+        {"Add to Marketplace"}
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={1} columns={18}>
@@ -98,7 +98,7 @@ const ConfirmSaleModal = (props) => {
                 label="Owner"
                 defaultValue={selectedData.email}
                 InputProps={{
-                  readOnly: true,
+                  //readOnly: true,
                 }}
                 variant="standard"
                 sx={{ m: 1 }}
@@ -109,7 +109,7 @@ const ConfirmSaleModal = (props) => {
                 label="File Name"
                 defaultValue={selectedData.filename}
                 InputProps={{
-                  readOnly: true,
+                 // readOnly: true,
                 }}
                 sx={{ m: 1 }}
                 variant="standard"
@@ -221,7 +221,7 @@ const ConfirmSaleModal = (props) => {
               rows={2}
               defaultValue={selectedData.description}
               InputProps={{
-                readOnly: true,
+                // readOnly: true,
               }}
               fullWidth
             />

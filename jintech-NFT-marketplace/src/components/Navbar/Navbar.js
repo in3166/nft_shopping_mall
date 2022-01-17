@@ -254,14 +254,6 @@ const Navbar = () => {
                   <Divider />
                   {user.isAdmin && (
                     <div>
-                      <Link to="/setting">
-                        <MenuItem>
-                          <ListItemIcon>
-                            <Settings fontSize="small" />
-                          </ListItemIcon>
-                          {t("Navbar.settings")}
-                        </MenuItem>
-                      </Link>
                       <Link to="/analysis">
                         <MenuItem>
                           <ListItemIcon>
@@ -270,9 +262,16 @@ const Navbar = () => {
                           Analysis
                         </MenuItem>
                       </Link>
+                      <Link to="/setting">
+                        <MenuItem>
+                          <ListItemIcon>
+                            <Settings fontSize="small" />
+                          </ListItemIcon>
+                          {t("Navbar.settings")}
+                        </MenuItem>
+                      </Link>
                     </div>
                   )}
-
                   <MenuItem onClick={logoutHandler}>
                     <ListItemIcon>
                       <Logout fontSize="small" />

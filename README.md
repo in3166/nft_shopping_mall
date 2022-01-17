@@ -117,7 +117,7 @@ xxx버전 업그레이드함 xxx
     - front에서 `ip-url` 형식으로 localStorage에 저장하여 조회수 연속 추가 방지
 
     ```js
-    // src/util/ViewCounts.js
+    // src/utils/ViewCounts.js
     const existed = localStorage.getItem(ip + url);
     if (!!existed) return;
 

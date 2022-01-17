@@ -1,15 +1,15 @@
 import { Box, Grid } from "@mui/material";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 import MyProductImage from "./MyProductImage";
 import MyProductInfo from "./MyProductInfo";
 
 const MyImageDetail = ({ match }) => {
   const id = match.params.id;
-  const user = useSelector((state) => state.user.user);
-  const [Image, setImage] = useState({});
 
+  const [Image, setImage] = useState({});
+  const [Categories, setCategories] = useState([]);
   const getImageInfo = useCallback(() => {
     axios
       .get("/api/marketplaces/goods/" + id)
@@ -23,9 +23,23 @@ const MyImageDetail = ({ match }) => {
       .finally(() => {});
   }, [id]);
 
+  const getAllCategories = useCallback(() => {
+    axios
+      .get("/api/categories")
+      .then((res) => {
+        console.log("getAllCategories: ", res.data.data);
+        setCategories(res.data.data);
+      })
+      .catch((err) => {
+        alert(err);
+      })
+      .finally(() => {});
+  }, []);
+
   useEffect(() => {
     getImageInfo();
-  }, [getImageInfo]);
+    getAllCategories();
+  }, [getImageInfo, getAllCategories]);
 
   return (
     <Box sx={{ p: 2, pt: 4, overflow: "auto" }}>
@@ -35,7 +49,7 @@ const MyImageDetail = ({ match }) => {
             <MyProductImage Image={Image} url={Image?.image?.url} />
           </Grid>
           <Grid item xs={18} sm={9}>
-            <MyProductInfo Image={Image} setImage={setImage} />
+            <MyProductInfo Image={Image} setImage={setImage} Categories={Categories} />
           </Grid>
         </Grid>
       )}

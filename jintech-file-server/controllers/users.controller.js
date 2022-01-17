@@ -9,6 +9,7 @@ const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 let from = `NFT-Jintech <in@gmail.com>`;
+
 // 중복 확인 먼저해야?
 const authentication = async (email, authCode) => {
   const mailOptions = {

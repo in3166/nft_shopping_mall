@@ -78,11 +78,11 @@ const MyImage = (props) => {
   return (
     <div className={styles.box}>
       {Loading && <LoadingSpinner />}
-      {Images !== null && !Loading && Images?.length === 0 && (
+      {/* {Images !== null && !Loading && Images?.length === 0 && (
         <div className={styles.empty}>
           <SearchOffIcon className={styles.icon} /> No Items.
         </div>
-      )}
+      )} */}
       <Grid container columns={24} spacing={4} padding={3}>
         {!Loading &&
           Images?.length > 0 &&
@@ -135,7 +135,7 @@ const MyImage = (props) => {
                     <div className="token-box-info token-id">
                       Status
                       <span className="token-data">
-                        {value?.onMarket ? "판매중" : "유찰"}
+                        {value?.onMarket ? "판매" : "보유"}
                       </span>
                     </div>
                   </div>

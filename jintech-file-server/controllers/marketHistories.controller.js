@@ -10,12 +10,18 @@ exports.create = async (req, res) => {
   const body = req.body;
   console.log("body: ", body);
 
-  MarketHistory.create(body)
+  MarketHistory.create({
+    action: body.action,
+    price: body.price,
+    userEmail: body.userEmail,
+    marketplaceId: body.marketplaceId,
+    starting_time: body.starting_time,
+  })
     .then((createData) => {
       // console.log("createData: ", createData);
       if (body.action === "bid") {
         Marketplace.update(
-          { current_price: body.price },
+          { current_price: body.price, buyerEmail: body.userEmail },
           {
             where: {
               id: body.marketplaceId,
@@ -42,10 +48,12 @@ exports.create = async (req, res) => {
               });
           });
       } else if (body.action === "buy") {
+        // marketplace에서 내리기
         Marketplace.update(
           {
             soldOut: true,
             current_price: body.price,
+            ownerEmail: body.userEmail,
             buyerEmail: body.userEmail,
             onMarket: false,
           },
@@ -56,10 +64,23 @@ exports.create = async (req, res) => {
           }
         )
           .then((sold) => {
-            res.status(200).send({
-              success: true,
-              current_price: body.price,
-            });
+            // 판매 히스토리 추가
+            MarketHistory.create({
+              action: "sale",
+              price: body.price,
+              userEmail: body.ownerEmail,
+              marketplaceId: body.marketplaceId,
+              starting_time: body.starting_time,
+            })
+              .then((data) => {
+                res.status(200).send({
+                  success: true,
+                  current_price: body.price,
+                });
+              })
+              .catch((err) => {
+                console.log("add sale history err: ", err);
+              });
           })
           .catch((err) => {
             console.log("but soldout err: ", err);
@@ -133,10 +154,12 @@ exports.findAll = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
   const id = req.params.id;
+  const starting_time = req.get("starting_time");
 
   MarketHistory.findAll({
     where: {
       marketplaceId: id,
+      // starting_time,
     },
     order: [["createdAt", "DESC"]],
   })

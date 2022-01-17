@@ -35,7 +35,7 @@ const Marketplace = () => {
     });
     const categoryRes = await axios.get("/api/categories");
     ViewCounts(window.location.pathname, user.email);
-    console.log(imagesRes.data);
+    console.log(imagesRes);
     console.log(categoryRes);
     setImages(imagesRes.data);
     setOriginalImages(imagesRes.data);
@@ -179,8 +179,8 @@ const Marketplace = () => {
                       </span>
                     </div>
                     <div className="token-box-info token-id">
-                      Token ID
-                      <span className="token-data">{value?.token}</span>
+                      Owner
+                      <span className="token-data">{value?.ownerEmail}</span>
                     </div>
                   </div>
                   <div className={styles["count-container"]}>

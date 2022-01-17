@@ -19,7 +19,15 @@ import { useSelector } from "react-redux";
 import styles from "../Sale.module.css";
 
 const BiddingModal = (props) => {
-  const { Open, handleClose, Image, setImage, getAllBidHistory, EndTime } = props;
+  const {
+    Open,
+    handleClose,
+    Image,
+    setImage,
+    getAllBidHistory,
+    EndTime,
+    buyout,
+  } = props;
   const user = useSelector((state) => state.user.user);
   const [isOverMarkup, setisOverMarkup] = useState(false);
   const [isUnderPrice, setisUnderPrice] = useState(false);
@@ -47,7 +55,13 @@ const BiddingModal = (props) => {
         price: Price,
         marketplaceId: Image.id,
         userEmail: user.email,
+        starting_time: Image.starting_time,
       };
+      if (Price >= buyout) {
+        alert("Buyout 이상의 가격입니다.");
+        return;
+      }
+
       console.log(body);
       axios
         .post("/api/marketHistories", body)

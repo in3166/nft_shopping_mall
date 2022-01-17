@@ -8,8 +8,11 @@ import {
   Grid,
   Input,
   InputLabel,
+  MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
+  Select,
   Slider,
   TextareaAutosize,
 } from "@mui/material";
@@ -20,7 +23,7 @@ import { useSelector } from "react-redux";
 import useInput from "../../../../hooks/useInputreduce";
 
 const MyProductInfo = (props) => {
-  const { Image } = props;
+  const { Image, Categories } = props;
   const user = useSelector((state) => state.user.user);
 
   const [IsAuction, setIsAuction] = useState(Image.type === "auction");
@@ -28,26 +31,32 @@ const MyProductInfo = (props) => {
   //
   const [period, setPeriod] = useState(Number(Image.limit_hours));
   const [Markup, setMarkup] = useState(Number(Image?.image?.markup) || 5);
+  const [categoryId, setcategoryId] = useState(
+    Image.image.categoryId !== null ? Image.image.categoryId : 0
+  );
 
   const {
     value: startPriceValue,
     hasError: startPriceHasError,
     valueChangeHandler: startPriceChangeHandler,
     valueBlurHandler: startPriceBlurHandler,
+    valueIsValid: startPriceIsValid,
     reset: resetStartPrice,
-  } = useInput((data) => data >= 1, Image?.image?.price);
+  } = useInput((data) => data >= 1, Image?.current_price);
   const {
     value: buyoutValue,
     hasError: buyoutHasError,
     valueChangeHandler: buyoutChangeHandler,
     valueBlurHandler: buyoutBlurHandler,
+    valueIsValid: buyoutIsValid,
     reset: resetBuyout,
-  } = useInput((data) => data >= 1, Image?.image?.buyout);
+  } = useInput((data) => data > Image?.current_price, Image?.image?.buyout + 1);
   const {
     value: descriptionValue,
     hasError: descriptionHasError,
     valueChangeHandler: descriptionChangeHandler,
     valueBlurHandler: descriptionBlurHandler,
+    valueIsValid: descriptionIsValid,
     reset: resetDescription,
   } = useInput((data) => data.length > 3, Image?.image?.description);
 
@@ -87,18 +96,44 @@ const MyProductInfo = (props) => {
     }
   };
 
+  console.log(Image);
+
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log("submit");
-    if (!startPriceHasError && !buyoutHasError && !descriptionHasError) {
+
+    if (startPriceIsValid && buyoutIsValid && descriptionIsValid) {
       const body = {
-        price: startPriceValue,
+        email: user.email,
+        id: Image.id,
+        type: IsAuction ? "auction" : "sale",
+        starting_time: new Date(),
+        limit_hours: period,
+        current_price: startPriceValue,
+        imageId: Image.product,
         buyout: buyoutValue,
-        period: period,
         markup: Markup,
         description: descriptionValue,
-        type: IsAuction ? "auction" : "sale",
+        categoryId: categoryId,
       };
+      console.log(body);
+
+      axios
+        .put("/api/marketplaces", body)
+        .then((res) => {
+          if (res.data.success) {
+            alert("재등록 성공");
+          } else {
+            alert(res.data.message);
+          }
+          window.location.reload();
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    } else {
+      console.log(buyoutIsValid);
+      alert("입력 값 오류");
     }
   };
 
@@ -113,6 +148,10 @@ const MyProductInfo = (props) => {
   const handelTypeChange = (e) => {
     console.log(e.target.value);
     setIsAuction(e.target.value === "true");
+  };
+
+  const handleCategoryChange = (e) => {
+    setcategoryId(e.target.value);
   };
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
@@ -146,6 +185,30 @@ const MyProductInfo = (props) => {
           </Grid>
         )}
         <Grid item xs={18} md={18}>
+          <span className={styles["form-input-name"]}>Category</span>
+          <FormControl fullWidth variant="standard">
+            <InputLabel id="demo-simple-select-standard-label"></InputLabel>
+            <Select
+              readOnly={Image.onMarket}
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              value={categoryId}
+              onChange={handleCategoryChange}
+              displayEmpty
+              size="small"
+              label=""
+            >
+              <MenuItem value={0}>All</MenuItem>
+              {Categories.length > 0 &&
+                Categories.map((v) => (
+                  <MenuItem value={v.id} key={v.id}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={18} md={18}>
           <span className={styles["form-input-name"]}>가격</span>
           <input
             type="number"
@@ -161,7 +224,7 @@ const MyProductInfo = (props) => {
             <p className={styles["error-text"]}>1 이상의 값을 입력하세요.</p>
           )}
         </Grid>
-        {(Image.type === "auction" || IsAuction) && (
+        {IsAuction && (
           <Grid item xs={18} md={18}>
             <span className={styles["form-input-name"]}>BuyOut</span>
             <input
@@ -175,11 +238,8 @@ const MyProductInfo = (props) => {
               readOnly={Image.onMarket}
             />
             {!Image.onMarket && buyoutHasError && (
-              <p className={styles["error-text"]}>1 이상의 값을 입력하세요.</p>
-            )}
-            {!Image.onMarket && buyoutValue < startPriceValue && (
               <p className={styles["error-text"]}>
-                시작 가격 이상의 값을 입력하세요.
+                시작 가격보다 높은 값을 입력하세요.
               </p>
             )}
           </Grid>
@@ -233,7 +293,7 @@ const MyProductInfo = (props) => {
           </Grid>
         </Grid>
 
-        {(Image.type === "auction" || IsAuction) && (
+        {IsAuction && (
           <Grid item xs={18} md={18}>
             <span className={styles["form-input-name"]}>Markup</span>
             <Grid container columns={18} spacing={1} margin="0px 1px 1px 1px">

@@ -15,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    starting_time: {
+      type: Sequelize.DATE,
+      allowNull: false,
+    },
   });
 
   return MarketHistory;

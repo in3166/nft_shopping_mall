@@ -28,6 +28,8 @@ const BuyingModal = (props) => {
       price: Image.image.buyout,
       userEmail: user.email,
       marketplaceId: Image.id,
+      starting_time: Image.starting_time,
+      ownerEmail: Image.ownerEmail,
     };
     axios
       .post("/api/marketHistories", body)

@@ -42,6 +42,48 @@ verifyToken = (req, res, next) => {
   });
 };
 
+isTokenAdmin = (req, res, next) => {
+  let token = req?.body?.token;
+  if (!token) token = JSON.parse(req.get("token"));
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!",
+    });
+  }
+  token = JSON.parse(token);
+  jwt.verify(token, config.secret, async (err, decoded) => {
+    if (err) {
+      console.log("jwt.verify token err: ", err);
+      return res.status(200).send({
+        success: false,
+        message: "Not admin: Unauthorized!",
+      });
+    }
+    req.body.userEmail = decoded.userEmail;
+
+    await User.findOne({ where: { email: decoded.userEmail } })
+      .then(async (user) => {
+        console.log("user: ", user.dataValues);
+        req.user = user.dataValues;
+        await user.getRoles().then((roles) => {
+          req.user.role = roles[0].name;
+          console.log("role", roles);
+        });
+      })
+      .catch((err) => {
+        console.log("find err: ", err);
+        res.status(400).send({ message: err });
+      });
+
+    req.token = token;
+    // req.user = user
+    //console.log("decoded: ", decoded);
+    //console.log("req body: ", req.body);
+    if (req.user.role === "admin") next();
+    else res.status(400).send({ success: false, message: "not admin" });
+  });
+};
+
 isAdmin = (req, res, next) => {
   let email = req?.body?.email;
   if (!email) email = req.get("email");
@@ -126,6 +168,7 @@ const authJwt = {
   verifyToken: verifyToken,
   isAdmin: isAdmin,
   isModerator: isModerator,
+  isTokenAdmin: isTokenAdmin,
   //   isModeratorOrAdmin: isModeratorOrAdmin
 };
 module.exports = authJwt;

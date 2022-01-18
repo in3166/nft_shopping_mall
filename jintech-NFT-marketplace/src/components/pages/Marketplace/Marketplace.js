@@ -1,4 +1,13 @@
-import { Card, Grid, Button, Input } from "@mui/material";
+import {
+  Card,
+  Grid,
+  Button,
+  Input,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
@@ -16,6 +25,7 @@ const Marketplace = () => {
   const [OriginalImages, setOriginalImages] = useState(Images);
   const [Categories, setCategories] = useState([]);
   const [SelectedCategory, setSelectedCategory] = useState(0);
+  const [SelectedType, setSelectedType] = useState(0);
   const [Loading, setLoading] = useState(false);
   const [isMounted, setisMounted] = useState(true);
 
@@ -65,8 +75,11 @@ const Marketplace = () => {
   };
 
   const handleCategoryChange = (e) => {
-    console.log(e.target.value);
     setSelectedCategory(e.target.value);
+  };
+
+  const handleTypeChange = (e) => {
+    setSelectedType(e.target.value);
   };
 
   console.log("Images: ", Images);
@@ -86,27 +99,53 @@ const Marketplace = () => {
   return (
     <Box className={styles.box}>
       <div className={styles.header}>
-        <div style={{ maxWidth: "250px", width: "100%" }}>
-          <select onChange={handleCategoryChange}>
-            <option value={0}>All</option>
-            {Categories.length > 0 &&
-              Categories.map((value, index) => (
-                <option value={value.id} key={value.id}>
-                  {value.name}
-                </option>
-              ))}
-          </select>
+        <div className={styles["header-select"]}>
+          <FormControl className={styles["header-select-category"]}>
+            <InputLabel id="categories-select-label">Category</InputLabel>
+            <Select
+              labelId="categories-select-label"
+              id="categories-select"
+              onChange={handleCategoryChange}
+              size="small"
+              label="Category"
+              value={SelectedCategory}
+            >
+              <MenuItem value={0}>All</MenuItem>
+              {Categories.length > 0 &&
+                Categories.map((v) => (
+                  <MenuItem value={v.id} key={v.id}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          <FormControl className={styles["header-select-type"]}>
+            <InputLabel id="categories-select-label2">Type</InputLabel>
+            <Select
+              labelId="categories-select-label2"
+              id="categories-select2"
+              onChange={handleTypeChange}
+              size="small"
+              label="Type"
+              value={SelectedType}
+            >
+              <MenuItem value={0}>All</MenuItem>
+              <MenuItem value="sale">Fixed Price</MenuItem>
+              <MenuItem value="auction">Live Auction</MenuItem>
+            </Select>
+          </FormControl>
         </div>
-        <div style={{ alignSelf: "center" }}>
+        <div className={styles["header-search"]}>
           <Input
             type="text"
             value={SearchText}
             onChange={(e) => setSearchText(e.target.value)}
+            className={styles["header-search-input"]}
           />
           <Button
             color="inherit"
             variant="outlined"
-            style={{ marginLeft: 10 }}
+            className={styles["header-search-button"]}
             size="small"
             onClick={handleSearchClick}
           >
@@ -121,8 +160,9 @@ const Marketplace = () => {
         (Images?.length === 0 ||
           Images?.filter(
             (value, index) =>
-              Number(SelectedCategory) === 0 ||
-              Number(SelectedCategory) === Number(value.image.categoryId)
+              (Number(SelectedCategory) === 0 ||
+                Number(SelectedCategory) === Number(value.image.categoryId)) &&
+              (Number(SelectedType) === 0 || SelectedType === value.type)
           ).length === 0) && (
           <div className={styles.empty}>
             <SearchOffIcon className={styles.icon} /> No Items.
@@ -134,8 +174,9 @@ const Marketplace = () => {
           Images?.length > 0 &&
           Images.filter(
             (value, index) =>
-              Number(SelectedCategory) === 0 ||
-              Number(SelectedCategory) === Number(value.image.categoryId)
+              (Number(SelectedCategory) === 0 ||
+                Number(SelectedCategory) === Number(value.image.categoryId)) &&
+              (Number(SelectedType) === 0 || SelectedType === value.type)
           ).map((value, index) => (
             <Grid item xs={24} sm={12} md={8} lg={6} key={value.id}>
               <Link
@@ -174,7 +215,7 @@ const Marketplace = () => {
                     <div className="token-box-info token-price">
                       Price
                       <span className="token-data">
-                        {value?.current_price}
+                        {value?.current_price.toLocaleString()}
                         <span className="token-eth">ETH</span>
                       </span>
                     </div>

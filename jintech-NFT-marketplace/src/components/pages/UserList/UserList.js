@@ -15,59 +15,124 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 
-const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    width: 70,
-    align: "center",
-    headerAlign: "center",
-  },
-  { field: "email", headerName: "E-Mail", width: 210 },
-  {
-    field: "email_verification",
-    headerName: "이메일 인증",
-    width: 110,
-    align: "center",
-    headerAlign: "center",
-  },
-  {
-    field: "otp",
-    headerName: "OTP",
-    width: 100,
-    align: "center",
-    headerAlign: "center",
-  },
-  {
-    field: "created",
-    headerName: "생성일",
-    width: 200,
-    align: "center",
-    headerAlign: "center",
-  },
-];
-
 const UserList = () => {
   const [isMount, setisMount] = useState(true);
-  const state = useSelector((state) => state.user);
-  console.log(state);
+  const user = useSelector((state) => state.user.user);
+  //console.log(state);
   const [Users, setUsers] = useState([]);
   const [PopOpen, setPopOpen] = useState(false);
   const [Loading, setLoading] = useState(false);
   const history = useHistory();
   const gridRef = useRef();
 
+  function requestOTP(data, row) {
+    const token = localStorage.getItem("nft_token");
+    const body = {
+      token,
+      email: row?.email,
+      status: data,
+    };
+
+    axios
+      .post("/api/auth/admin", body)
+      .then((res) => {
+        if (res.data.success) {
+          setUsers((prev) => {
+            prev.forEach((value) => {
+              if (value.emaill === row.email) {
+                value.otp = !value.otp;
+              }
+            });
+            return [...prev];
+          });
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }
+
+  const columns = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 70,
+      align: "center",
+      headerAlign: "center",
+    },
+    { field: "email", headerName: "E-Mail", width: 210 },
+    {
+      field: "email_verification",
+      headerName: "이메일 인증",
+      width: 110,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "otp",
+      headerName: "OTP",
+      width: 70,
+      align: "center",
+      headerAlign: "center",
+      sortable: false,
+      renderCell: (params) => {
+        if (!params.value) {
+          return (
+            <Button
+              sx={{
+                borderRadius: "50%",
+                minWidth: "min-content",
+                padding: "2px 3px 2px 3px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                requestOTP("on", params.row);
+              }}
+            >
+              On
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              color="inherit"
+              sx={{
+                borderRadius: "50%",
+                minWidth: "min-content",
+                padding: "2px 3px 2px 3px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                requestOTP("off", params.row);
+              }}
+            >
+              Off
+            </Button>
+          );
+        }
+      },
+    },
+    {
+      field: "created",
+      headerName: "생성일",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+    },
+  ];
+
   const getUsers = useCallback(() => {
     setLoading(true);
 
     const body = {
-      email: state.user.email,
+      email: user.email,
     };
 
     axios
       .post("api/users/allUsers", body)
       .then((res) => {
-        console.log(res);
         const users = res.data.map((v, i) => {
           // 관리자 db 열 없음
           return {
@@ -76,7 +141,7 @@ const UserList = () => {
             created: new Date(v.createdAt).toLocaleString(),
             email_verification: v.email_verification,
             leave: v.leave,
-            otp: v.otp ? "Y" : "N",
+            otp: v.otp,
           };
         });
         if (isMount) setUsers(users);
@@ -84,7 +149,7 @@ const UserList = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [state.user.email, isMount]);
+  }, [user.email, isMount]);
 
   useEffect(() => {
     getUsers();
@@ -94,7 +159,6 @@ const UserList = () => {
   }, [getUsers]);
 
   const buttonLeaveClickHandler = (data) => {
-    console.log(data);
     axios
       .delete("/api/users/" + data.email)
       .then((res) => {
@@ -190,7 +254,6 @@ const UserList = () => {
   };
 
   const onSelectedRowHandler = (data) => {
-    console.log(data);
     setSelection(data);
   };
 
@@ -214,7 +277,7 @@ const UserList = () => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           checkboxSelection
-          // disableSelectionOnClick
+          disableSelectionOnClick
           ref={gridRef}
           onSelectionModelChange={(data) => {
             onSelectedRowHandler(data);

@@ -85,8 +85,17 @@ async function endTimeOrSoldOut(params) {
         starting_time: EndTimeImages[i].starting_time,
       });
 
+      const newMarketHistoryBuyPromise = MarketHistories.create({
+        action: "buy",
+        price: EndTimeImages[i].current_price,
+        marketplaceId: EndTimeImages[i].id,
+        userEmail: EndTimeImages[i].buyerEmail,
+        starting_time: EndTimeImages[i].starting_time,
+      });
+
       promises.push(newMarketPlacePromise);
       promises.push(newMarketHistoryPromise);
+      promises.push(newMarketHistoryBuyPromise);
     }
     console.log("promises: ", promises);
     const resPromiseAll = await Promise.all(promises);

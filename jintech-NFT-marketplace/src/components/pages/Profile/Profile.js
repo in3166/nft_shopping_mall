@@ -7,6 +7,8 @@ import UserFrom from "./Sections/UserForm";
 import LeaveUser from "./Sections/LeaveUser";
 import SecondAuthentication from "./Sections/SecondAuthentication";
 import UserUploadList from "./Sections/UserUploadList";
+import UserSaleHistory from "./Sections/UserSaleHistory";
+import UserBuyHistory from "./Sections/UserBuyHistory";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -95,10 +97,10 @@ const Profile = (props) => {
         <UserUploadList />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        Item Two
+        <UserBuyHistory />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Three
+        <UserSaleHistory />
       </TabPanel>
       <TabPanel value={value} index={5}>
         <SecondAuthentication value={value} user={props.user} />

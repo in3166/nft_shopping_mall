@@ -6,13 +6,18 @@ import styles from "./SalesAnalysis.module.css";
 
 const columns = [
   {
-    field: "id",
-    headerName: "ID",
-    width: 70,
-    align: "center",
+    field: "image",
+    id: "image1",
+    name: "image1",
+    headerName: "Name",
+    width: 300,
+    //    align: "center",
     headerAlign: "center",
+    renderCell: (params) => (
+      <div title={params.value.filename}>{params.value.filename}</div>
+    ),
   },
-  { field: "userEmail", headerName: "Buyer", width: 200 },
+  { field: "userEmail", headerName: "Seller", width: 200 },
   {
     field: "price",
     headerName: "Price",
@@ -21,6 +26,18 @@ const columns = [
     headerAlign: "center",
     renderCell: (params) => <div>{params.value.toLocaleString()}</div>,
   },
+  // {
+  //   field: "image",
+  //   id: "image2",
+  //   name: "image2",
+  //   headerName: "URL",
+  //   width: 200,
+  //   align: "center",
+  //   headerAlign: "center",
+  //   renderCell: (params) => (
+  //     <div title={params.value.url}>{params.value.url}</div>
+  //   ),
+  // },
   {
     field: "createdAt",
     headerName: "생성일",
@@ -34,7 +51,12 @@ const columns = [
 ];
 
 const SalesAnalysis = () => {
-  const today = new Date().toISOString().split("T")[0].toString();
+  const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+  const today = new Date(Date.now() - timezoneOffset)
+    .toISOString()
+    .split("T")[0]
+    .toString();
+
   const gridRef = useRef();
   const [select, setSelection] = useState([]);
   const [Sales, setSales] = useState([]);
@@ -52,10 +74,8 @@ const SalesAnalysis = () => {
           setSales(res.data.sales);
           const todaySales = res.data.sales.filter(
             (value) =>
-              new Date(value["createdAt"])
-                .toISOString()
-                .split("T")[0]
-                .toString() === today
+              new Date(value.createdAt) <= new Date(EndDate + " 23:59:59") &&
+              new Date(value.createdAt) >= new Date(StartDate + " 00:00:00")
           );
           const tempTotalPrice = todaySales.reduce(
             (prevValue, curValue) => prevValue + curValue.price,

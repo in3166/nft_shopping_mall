@@ -6,6 +6,7 @@ const { authJwt } = require("../middleware");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
 const db = require("../models");
+const { otp } = require("../models");
 
 const User = db.users;
 const OTP = db.otp;
@@ -16,7 +17,7 @@ router.post("/", otps.create);
 // otp 가져오기
 router.get("/:email", otps.findOne);
 
-// otp  비활성
+// otp  비활성 - profile
 router.put("/:email", (req, res) => {
   const email = req.params.email;
   console.log("email: ", email);
@@ -55,4 +56,22 @@ router.post("/verify", async (req, res) => {
   }
 });
 
+//admin otp on off
+router.post("/admin",authJwt.isTokenAdmin, otps.update);
+
+// (req, res) => {
+//   const email = req.params.email;
+//   console.log("email: ", email);
+//   User.update({ otp: false }, { where: { email: email } })
+//     .then((data) => {
+//       console.log("success: ", data);
+//       res.status(200).send({
+//         data,
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(400).send({ error: err, message: "otp put err" });
+//     });
+// });
 module.exports = router;

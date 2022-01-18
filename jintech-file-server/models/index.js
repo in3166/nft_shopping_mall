@@ -90,9 +90,15 @@ db.marketHistory.belongsTo(db.marketplace, {
   targetKey: "id",
 });
 
+db.marketHistory.belongsTo(db.image, {
+  foreignKey: "imageId",
+  as: "image",
+  targetKey: "id",
+});
+
 db.marketHistory.belongsTo(db.users, {
   foreignKey: "userEmail",
-  as: "user",
+  as: "owner",
   targetKey: "email",
 });
 

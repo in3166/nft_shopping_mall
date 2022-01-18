@@ -64,7 +64,7 @@ exports.create = async (req, res) => {
   console.log("result: ", result);
 };
 
-// 
+//
 exports.findOne = async (req, res) => {
   const email = req.params.email;
   await User.update({ otp: true }, { where: { email: email } });
@@ -84,5 +84,25 @@ exports.findOne = async (req, res) => {
     .catch((err) => {
       console.log("otp get err: ", err);
       res.status(400).send({ error: err, message: "otp get err" });
+    });
+};
+
+// users 테이블 otp on/off
+exports.update = (req, res) => {
+  const body = req.body;
+  let status = true;
+  if (body.status === "off") status = false;
+  User.update({ otp: status }, { where: { email: body.email } })
+    .then((otp) => {
+      console.log(otp, "otp??");
+      if (otp) {
+        res.status(200).send({
+          success: true,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("otp change err: ", err);
+      res.status(400).send({ error: err, message: "otp change err" });
     });
 };

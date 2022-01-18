@@ -18,7 +18,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const BuyingModal = (props) => {
-  const { Open, handleClose, Image, setImage, EndTime } = props;
+  const { Open, handleClose, Image, setImage, EndTime, setIsSoldOut } = props;
   const user = useSelector((state) => state.user.user);
 
   const handleBuySubmit = () => {
@@ -35,7 +35,7 @@ const BuyingModal = (props) => {
       .post("/api/marketHistories", body)
       .then((res) => {
         if (res.data.success) {
-          alert("성공");
+          alert("구매를 성공하였습니다.");
           setImage((prev) => {
             return {
               ...prev,

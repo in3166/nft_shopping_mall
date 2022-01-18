@@ -6,9 +6,9 @@ import { useSelector } from "react-redux";
 
 import styles from "./UserUploadList.module.css";
 
-const currencyFormatter = new Intl.NumberFormat("en-IN", {
-  maximumSignificantDigits: 3,
-});
+// const currencyFormatter = new Intl.NumberFormat("en-IN", {
+//   maximumSignificantDigits: 3,
+// });
 
 const columns = [
   {
@@ -36,19 +36,19 @@ const columns = [
     headerName: "가격",
     width: 100,
     type: "number",
-    valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
+    renderCell: (params) => params.value.toLocaleString(),
   },
   {
     field: "period",
     headerName: "기간 (h)",
     width: 90,
-    valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
+    renderCell: (params) => params.value.toLocaleString(),
   },
   {
     field: "buyout",
     headerName: "Buyout",
     width: 100,
-    valueFormatter: ({ value }) => currencyFormatter.format(Number(value)),
+    renderCell: (params) => params.value.toLocaleString(),
   },
   { field: "markup", headerName: "Markup", width: 90 },
   { field: "description", headerName: "설명", width: 90 },
@@ -83,7 +83,7 @@ const UserUploadList = () => {
         headers: { token: localStorage.getItem("nft_token") },
       })
       .then((res) => {
-          console.log(res.data)
+        console.log(res.data);
         if (isMount) setRows(res.data);
       })
       .catch((err) => {
@@ -120,14 +120,14 @@ const UserUploadList = () => {
 
   return (
     <Box className={styles.box}>
-      <div className={styles.buttonDiv}>
+      {/* <div className={styles.buttonDiv}>
         <Button variant="outlined" className={styles.button}>
           수정
         </Button>
         <Button variant="outlined" className={styles.button}>
           삭제
         </Button>
-      </div>
+      </div> */}
       <Card className={styles.card}>
         {Loading && (
           <Stack

@@ -13,7 +13,7 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
     const [IsMounted, setIsMounted] = useState(true);
     const user = useSelector((state) => state.user);
     const history = useHistory();
-    console.log("hoc run");
+    //console.log("hoc run");
     const dispatch = useDispatch();
     // server auth 검사는 아직 적용 안함.
 
@@ -52,9 +52,8 @@ export default function auth(SpecificComponent, option, adminRoute = null) {
       return () => {
         setIsMounted(false);
       };
-    }, [history, dispatch]);
-    console.log("hoc authChecked: ", AuthChecked);
-    console.log("hoc props: ", props);
+    }, [history, dispatch, IsMounted]);
+
     return (
       <SpecificComponent {...props} user={user} authChecked={AuthChecked} />
     );

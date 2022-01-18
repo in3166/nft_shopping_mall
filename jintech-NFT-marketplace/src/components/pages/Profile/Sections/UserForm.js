@@ -9,7 +9,6 @@ const UserForm = (props) => {
   const [passwordIsTouched, setpasswordIsTouched] = useState(false);
   const [loading, setloading] = useState(false);
   const [Balance, setBalance] = useState(0);
-  console.log("====================================");
 
   const [isMounted, setIsMounted] = useState(true);
 
@@ -17,7 +16,6 @@ const UserForm = (props) => {
   const getCurrentWalletAccount = async () => {
     setloading(true);
     const accounts = await window.web3.eth.getAccounts();
-    console.log(accounts[0], "address");
     formChangeHandler(accounts[0], "address");
 
     setTimeout(() => {
@@ -29,7 +27,6 @@ const UserForm = (props) => {
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     let accountBalance = await web3.eth.getBalance(accounts[0]);
-    console.log("getwallert");
     accountBalance = web3.utils.fromWei(accountBalance, "Ether");
     if (isMounted) setBalance(accountBalance + " Ξ");
   }, [isMounted]);

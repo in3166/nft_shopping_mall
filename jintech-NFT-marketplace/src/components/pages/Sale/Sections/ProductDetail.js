@@ -35,17 +35,19 @@ const ProductDetail = (props) => {
   const { Image, setImage } = props;
   const [CountDate, setCountDate] = useState(0);
   const [EndTime, setEndTime] = useState(false);
+
   const [BidHistory, setBidHistory] = useState([]);
   const [BidHistoryViewEnd, setBidHistoryViewEnd] = useState(3);
   const [Provenance, setProvenance] = useState([]);
   const [ProvenanceViewEnd, setProvenanceViewEnd] = useState(3);
   const user = useSelector((state) => state.user.user);
-  //const [IsSameUser, setisSameUser] = useState(user.email === Image.ownerEmail);
+
   const IsSameUser = user.email === Image.ownerEmail;
   let isBidding = null;
   if (Image.type) {
     isBidding = Image?.type === "auction" ? true : false;
   }
+
   console.log(Image);
 
   const getAllBidHistory = useCallback(() => {
@@ -64,6 +66,7 @@ const ProductDetail = (props) => {
               value.action !== "register" &&
               value.starting_time === Image.starting_time
           );
+          console.log(provenance, "provenance");
           setProvenance(provenance);
           setBidHistory(bidHistorties);
         } else {
@@ -102,9 +105,9 @@ const ProductDetail = (props) => {
   useEffect(() => {
     if (isBidding) {
       setValue("1");
-      getAllBidHistory();
     }
     if (Image.image) {
+      getAllBidHistory();
       setCountDate(
         new Date(Image.starting_time).getTime() +
           Image.limit_hours * 60 * 60 * 1000
@@ -241,7 +244,7 @@ const ProductDetail = (props) => {
               onClick={handleBidClick}
               fullWidth
               sx={{ p: 2 }}
-              disabled={EndTime || IsSameUser ? true : false}
+              disabled={Image.soldOut || EndTime || IsSameUser ? true : false}
             >
               Place a Bid
             </Button>
@@ -253,7 +256,7 @@ const ProductDetail = (props) => {
               fullWidth
               onClick={handleBuyClick}
               sx={{ p: 1, flexDirection: "column" }}
-              disabled={EndTime || IsSameUser ? true : false}
+              disabled={Image.soldOut || EndTime || IsSameUser ? true : false}
             >
               <div style={{ fontSize: "10px" }}>Buyout Price</div>
               <div style={{ fontSize: "12px" }}>
@@ -351,6 +354,7 @@ const ProductDetail = (props) => {
                   <TimelineSeparator>
                     <TimelineDot color="warning" />
                     {Provenance.length > 1 &&
+                      Provenance.length !== index + 1 &&
                       ProvenanceViewEnd !== index + 1 && <TimelineConnector />}
                   </TimelineSeparator>
                   <TimelineContent>
@@ -388,6 +392,7 @@ const ProductDetail = (props) => {
           setImage={setImage}
           handleClose={handleBuyClose}
           Image={Image}
+          //setIsSoldOut={setIsSoldOut}
         />
       )}
     </Box>

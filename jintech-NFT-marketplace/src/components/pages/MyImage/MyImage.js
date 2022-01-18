@@ -41,24 +41,29 @@ const MyImage = (props) => {
     console.log(accounts[0]);
     console.log("user: ", user);
     if (accounts && user.email !== "") {
-      await axios
-        .get(`/api/users/user/${user.email}`)
-        .then((res) => {
-          console.log("res : ", res.data.address);
-          if (accounts[0] !== res.data.address) {
-            if (user.isLoggedIn && authChecked) {
-              alert("지갑 주소가 맞지 않습니다.");
-              history.replace("/");
-            }
-            //user.walletAddress = accounts[0];
-          }
-        })
-        .catch((err) => {
-          console.log("err: ", err);
-        });
+      if (user.userAddress !== accounts[0]) {
+        alert("지갑 주소가 맞지 않습니다.");
+        history.replace("/");
+      }
+
+      // await axios
+      //   .get(`/api/users/user/${user.email}`)
+      //   .then((res) => {
+      //     console.log("res : ", res.data.address);
+      //     if (accounts[0] !== res.data.address) {
+      //       if (user.isLoggedIn && authChecked) {
+      //         alert("지갑 주소가 맞지 않습니다. 1");
+      //         history.replace("/");
+      //       }
+      //       //user.walletAddress = accounts[0];
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log("err: ", err);
+      //   });
     }
     if (isMounted) setLoading(false);
-  }, [history, user, authChecked, isMounted]);
+  }, [history, user, isMounted]);
 
   useEffect(() => {
     getAccount();
@@ -67,7 +72,7 @@ const MyImage = (props) => {
     return () => {
       setisMounted(false);
     };
-  }, [getAllMyImages, getAccount, isMounted]);
+  }, [getAllMyImages, getAccount]);
 
   const noItems = Images !== null && !Loading && Images?.length === 0 && (
     <div className={styles.empty}>
@@ -124,7 +129,7 @@ const MyImage = (props) => {
                     <div className="token-box-info token-price">
                       Price
                       <span className="token-data">
-                        {value?.current_price}
+                        {value?.current_price.toLocaleString()}
                         <span className="token-eth">ETH</span>
                       </span>
                     </div>

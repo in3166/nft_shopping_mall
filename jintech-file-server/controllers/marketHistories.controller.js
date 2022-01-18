@@ -155,6 +155,7 @@ exports.findAll = (req, res) => {
   console.log("findall");
   const id = req.params.id;
   const starting_time = req.get("starting_time");
+  console.log("findall", id, starting_time);
 
   MarketHistory.findAll({
     where: {
@@ -182,12 +183,97 @@ exports.findAllSales = (req, res) => {
 
   MarketHistory.findAll({
     where: {
-      action: "buy",
+      action: "sale",
     },
+    include: [
+      // { association: "owner" },
+      // {
+      //   model: db.marketplace,
+      //   attributes: ["id"],
+      //   as: "marketplace",
+      // },
+      {
+        model: db.image,
+        attributes: ["filename", "url", "description"],
+        as: "image",
+      },
+    ],
     order: [["createdAt", "DESC"]],
   })
     .then((data) => {
       res.status(200).send({ success: true, sales: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
+exports.findUserSales = (req, res) => {
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  console.log("findusersale");
+  const email = req.params.email;
+  console.log("findusersale", email);
+
+  MarketHistory.findAll({
+    where: {
+      action: "sale",
+      userEmail: email,
+    },
+    include: [
+      {
+        model: db.marketplace,
+        attributes: ["id"],
+        as: "marketplace",
+      },
+      {
+        model: db.image,
+        attributes: ["filename", "url", "description"],
+        as: "image",
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  })
+    .then((data) => {
+      res.status(200).send({ success: true, saleHistory: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
+exports.findUserBuys = (req, res) => {
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  console.log("findUserBuys");
+  const email = req.params.email;
+  console.log("findUserBuys", email);
+
+  MarketHistory.findAll({
+    where: {
+      action: "buy",
+      userEmail: email,
+    },
+    include: [
+      {
+        model: db.marketplace,
+        attributes: ["id"],
+        as: "marketplace",
+      },
+      {
+        model: db.image,
+        attributes: ["filename", "url", "description"],
+        as: "image",
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  })
+    .then((data) => {
+      res.status(200).send({ success: true, buyHistory: data });
     })
     .catch((err) => {
       console.log(err);

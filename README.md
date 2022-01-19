@@ -51,6 +51,8 @@ xxx버전 업그레이드함 xxx
 - 경매 시간 카운트 추가
   - `react-countdown` 라이브러리 설치
 
+- Banner Carousel 기능 추가
+  - `npm install react-material-ui-carousel`
 ## 기능 추가
 
 - 회원 가입

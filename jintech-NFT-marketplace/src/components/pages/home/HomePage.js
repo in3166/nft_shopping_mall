@@ -105,7 +105,7 @@ const HomePage = (props) => {
   }, []);
 
   return (
-    <div className="contents">
+    <div className="contents2">
       {/* 2021.11.26 main img slide 추가 */}
       <HomeBanner Banners={Banners} Images={Images} TokenPrice={TokenPrice} />
       {/* 2021.11.26 main img slide 끝 */}

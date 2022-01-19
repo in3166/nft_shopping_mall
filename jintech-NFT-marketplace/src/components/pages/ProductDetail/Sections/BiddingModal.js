@@ -16,7 +16,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import styles from "../Sale.module.css";
+import styles from "../ProductDetail.module.css";
 
 const BiddingModal = (props) => {
   const {

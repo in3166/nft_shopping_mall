@@ -155,7 +155,7 @@ exports.findAll = (req, res) => {
   console.log("findall");
   const id = req.params.id;
   const starting_time = req.get("starting_time");
-  console.log("findall", id, starting_time);
+  console.log("findall", id);
 
   MarketHistory.findAll({
     where: {
@@ -168,7 +168,7 @@ exports.findAll = (req, res) => {
       res.status(200).send({ success: true, history: data });
     })
     .catch((err) => {
-      console.log(err);
+      console.log("find history all: ", err);
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Users.",
       });

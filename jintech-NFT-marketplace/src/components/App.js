@@ -32,7 +32,7 @@ import HomePage from "./pages/home/HomePage";
 import SettingPage from "./pages/setting/SettingPage";
 import UploadList from "./pages/UploadList/UploadList";
 import Marketplace from "./pages/Marketplace/Marketplace";
-import Sale from "./pages/Sale/Sale";
+import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import MyImage from "./pages/MyImage/MyImage";
 import MyImageDetail from "./pages/MyImage/MyImageDetail/MyImageDetail";
 import Analysis from "./pages/Analysis/Analysis";
@@ -510,7 +510,7 @@ class App extends Component {
                   path="/myimages/:id"
                   component={Auth(MyImageDetail, true)}
                 />
-                <Route path="/goods/:id" component={Auth(Sale, true)} />
+                <Route path="/goods/:id" component={Auth(ProductDetail, true)} />
 
                 <Route
                   path="/uploadList"

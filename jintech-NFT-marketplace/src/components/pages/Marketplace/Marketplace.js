@@ -45,10 +45,10 @@ const Marketplace = () => {
     });
     const categoryRes = await axios.get("/api/categories");
     ViewCounts(window.location.pathname, user.email);
-    console.log(imagesRes);
+    console.log("imagesRes: ", imagesRes);
     console.log(categoryRes);
-    setImages(imagesRes.data);
-    setOriginalImages(imagesRes.data);
+    setImages(imagesRes.data.images);
+    setOriginalImages(imagesRes.data.images);
     setCategories(categoryRes.data.data);
 
     if (isMounted) setLoading(false);

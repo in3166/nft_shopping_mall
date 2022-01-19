@@ -58,6 +58,7 @@ async function endTimeOrSoldOut(params) {
     });
 
     console.log("EndTimeImages: ", EndTimeImages);
+
     if (EndTimeImages.length < 1) return { error: false };
 
     // 시간 초과된 이미지들 중
@@ -77,25 +78,29 @@ async function endTimeOrSoldOut(params) {
           where: { id: EndTimeImages[i].id },
         }
       );
-      const newMarketHistoryPromise = MarketHistories.create({
-        action: "sale",
-        price: EndTimeImages[i].current_price,
-        marketplaceId: EndTimeImages[i].id,
-        userEmail: EndTimeImages[i].ownerEmail,
-        starting_time: EndTimeImages[i].starting_time,
-      });
 
-      const newMarketHistoryBuyPromise = MarketHistories.create({
-        action: "buy",
-        price: EndTimeImages[i].current_price,
-        marketplaceId: EndTimeImages[i].id,
-        userEmail: EndTimeImages[i].buyerEmail,
-        starting_time: EndTimeImages[i].starting_time,
-      });
+      // 구매자가 있을 경우(경매 참여자) 히스토리에 추가
+      if (EndTimeImages[i].buyerEmail !== null) {
+        const newMarketHistoryPromise = MarketHistories.create({
+          action: "sale",
+          price: EndTimeImages[i].current_price,
+          marketplaceId: EndTimeImages[i].id,
+          userEmail: EndTimeImages[i].ownerEmail,
+          starting_time: EndTimeImages[i].starting_time,
+        });
+
+        const newMarketHistoryBuyPromise = MarketHistories.create({
+          action: "buy",
+          price: EndTimeImages[i].current_price,
+          marketplaceId: EndTimeImages[i].id,
+          userEmail: EndTimeImages[i].buyerEmail,
+          starting_time: EndTimeImages[i].starting_time,
+        });
+        promises.push(newMarketHistoryPromise);
+        promises.push(newMarketHistoryBuyPromise);
+      }
 
       promises.push(newMarketPlacePromise);
-      promises.push(newMarketHistoryPromise);
-      promises.push(newMarketHistoryBuyPromise);
     }
     console.log("promises: ", promises);
     const resPromiseAll = await Promise.all(promises);
@@ -173,6 +178,40 @@ exports.findOne = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
+  Marketplace.findAll({
+    include: [
+      {
+        model: db.users,
+        attributes: ["email", "address"],
+        as: "owner",
+      },
+      {
+        model: db.image,
+        attributes: [
+          "filename",
+          "type",
+          "url",
+          "price",
+          "period",
+          "type",
+          "buyout",
+          "markup",
+          "key",
+          "onMarket",
+          "categoryId",
+        ],
+      },
+    ],
+  })
+    .then((images) => {
+      res.status(200).send({ success: true, images: images });
+    })
+    .catch((err) => {
+      res.status(400).send({ success: false, error: err, message: err });
+    });
+};
+
+exports.findAllOnMarket = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("findall");
 
@@ -206,60 +245,13 @@ exports.findAll = (req, res) => {
   })
     .then(async (images) => {
       const endTimeRes = await endTimeOrSoldOut();
+      console.log(endTimeRes.error, "error?");
       if (endTimeRes.error)
         return res
           .status(500)
           .send({ error: endTimeRes.message, message: endTimeRes.message });
-      // const TimeRemainImages = [];
-      // const TimeEndImages = [];
-
-      // images.forEach((value) => {
-      //   const start = new Date(value.starting_time);
-      //   // 끝나는 시간
-      //   const miliEnd = start.getTime() + value.limit_hours * 60 * 60 * 1000;
-
-      //   // 판매 시간이 남아있는 제품 목록
-      //   if (miliEnd > Date.now()) return TimeRemainImages.push(value);
-
-      //   // 판매 시간 종료된 제품의 아이디 목록
-      //   TimeEndImages.push({
-      //     id: value.id,
-      //     buyerEmail: value.buyerEmail,
-      //   });
-      // });
-
-      // try {
-      //   // 시간 지난 제품의 buyerEmail이 존재하면 SoldOut: true, BuyerEmail => OwnerEmail
-      //   if (TimeEndImages.length > 0) {
-      //     const promises = [];
-      //     for (let i = 0; i < TimeEndImages.length; i++) {
-      //       let newTempPromise;
-      //       if (TimeEndImages[i].buyerEmail !== null) {
-      //         newTempPromise = await Marketplace.update(
-      //           { onMarket: false, soldOut: true },
-      //           { where: { id: TimeEndImages[i].id } }
-      //         );
-      //       } else {
-      //         newTempPromise = await Marketplace.update(
-      //           { onMarket: false, soldOut: false },
-      //           { where: { id: TimeEndImages[i].id } }
-      //         );
-      //       }
-      //       promises.push(newTempPromise);
-      //     }
-      //     // 시간 지난 제품 onMarket false
-      //     const resEndData = await Promise.all(promises);
-      //     if (resEndData.length > 0) {
-      //       console.log(
-      //         "Products terminated in the market are changed to false: ",
-      //         resEndData
-      //       );
-      //     }
-      //   }
-      // } catch (error) {
-      //   console.log("onMarket error: ", error);
-      // }
-      res.status(200).send(images);
+      console.log("images: ", images);
+      res.status(200).send({ success: true, images });
     })
     .catch((err) => {
       console.log(err);
@@ -372,6 +364,8 @@ exports.update = async (req, res) => {
     limit_hours: req.body.limit_hours,
     current_price: req.body.current_price,
     onMarket: true,
+    soldOut: false,
+    buyerEmail: null,
   };
 
   let imageData;

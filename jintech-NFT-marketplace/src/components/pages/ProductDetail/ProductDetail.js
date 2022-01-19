@@ -2,13 +2,13 @@ import { Box, CircularProgress, Grid, Stack } from "@mui/material";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 
-import ProductDetail from "./Sections/ProductDetail";
+import ProductInfo from "./Sections/ProductInfo";
 import ProductImage from "./Sections/ProductImage";
-import styles from "./Sale.module.css";
+import styles from "./ProductDetail.module.css";
 import ViewCounts from "../../../util/ViewCounts";
 import { useSelector } from "react-redux";
 
-const Sale = ({ match }) => {
+const ProductDetail = ({ match }) => {
   const id = match.params.id;
   const user = useSelector((state) => state.user.user);
   const [Image, setImage] = useState({});
@@ -64,7 +64,7 @@ const Sale = ({ match }) => {
               <ProductImage url={Image?.image?.url} />
             </Grid>
             <Grid item xs={18} sm={9}>
-              <ProductDetail Image={Image} setImage={setImage} />
+              <ProductInfo Image={Image} setImage={setImage} />
             </Grid>
           </Grid>
         </Box>
@@ -73,4 +73,4 @@ const Sale = ({ match }) => {
   );
 };
 
-export default Sale;
+export default ProductDetail;

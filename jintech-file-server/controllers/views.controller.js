@@ -18,6 +18,7 @@ const addCount = () => {
       })
       .catch((err) => {
         console.log("view count Error: ", err);
+        countsBody.length = 0;
       });
   }
 };
@@ -26,7 +27,7 @@ const setIntervalQuery = {
   inteval: () =>
     setInterval(() => {
       addCount();
-    }, 36000 * 60),
+    }, 1000 * 60 * 5),
 };
 
 const clearIntevalQuery = () => {
@@ -55,6 +56,21 @@ exports.create = async (req, res) => {
   countsBody.push(data);
 };
 
+exports.findAll = async (req, res) => {
+  const email = req.params.email;
+  console.log("findone", email);
+
+  View.findAll()
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
 exports.findOne = async (req, res) => {
   const email = req.params.email;
   console.log("findone", email);
@@ -72,13 +88,14 @@ exports.findOne = async (req, res) => {
     });
 };
 
-// Retrieve all User from the database.
-exports.findAll = (req, res) => {
+exports.count = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  console.log("findall");
-  View.findAll()
+  const id = req.params.marketId;
+  console.log("countcount: ", id);
+  View.count({ where: { marketplaceId: id } })
     .then((data) => {
-      res.status(200).send({ success: true, categories: data });
+      console.log("count: ", data);
+      res.status(200).send({ success: true, count: data });
     })
     .catch((err) => {
       res.status(500).send({

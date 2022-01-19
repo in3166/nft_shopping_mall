@@ -414,11 +414,11 @@ const Banner = () => {
                           </Typography>
                         </CardContent>
                       </CardActionArea>
-                      <CardActions>
+                      {/* <CardActions>
                         <Button size="small" color="primary">
                           Share
                         </Button>
-                      </CardActions>
+                      </CardActions> */}
                     </Card>
                   </Grid>
                 );

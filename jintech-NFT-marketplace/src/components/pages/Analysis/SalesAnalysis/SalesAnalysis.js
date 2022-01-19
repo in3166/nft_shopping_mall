@@ -14,7 +14,7 @@ const columns = [
     //    align: "center",
     headerAlign: "center",
     renderCell: (params) => (
-      <div title={params.value.filename}>{params.value.filename}</div>
+      <div title={params?.value?.filename}>{params?.value?.filename}</div>
     ),
   },
   { field: "userEmail", headerName: "Seller", width: 200 },
@@ -24,7 +24,7 @@ const columns = [
     width: 100,
     align: "center",
     headerAlign: "center",
-    renderCell: (params) => <div>{params.value.toLocaleString()}</div>,
+    renderCell: (params) => <div>{params?.value?.toLocaleString()}</div>,
   },
   // {
   //   field: "image",
@@ -72,11 +72,13 @@ const SalesAnalysis = () => {
         if (res.data.success) {
           console.log("res.data.sales: ", res.data.sales);
           setSales(res.data.sales);
+
           const todaySales = res.data.sales.filter(
             (value) =>
               new Date(value.createdAt) <= new Date(EndDate + " 23:59:59") &&
               new Date(value.createdAt) >= new Date(StartDate + " 00:00:00")
           );
+          console.log("todaySales: ", todaySales);
           const tempTotalPrice = todaySales.reduce(
             (prevValue, curValue) => prevValue + curValue.price,
             0

@@ -10,7 +10,7 @@ router.post("/", views.create);
 // Retrieve all users
 router.post("/allUsers", views.findAll);
 
-// Retrieve a single user with id
+router.get("/:marketId", views.count);
 router.get("/user/:email", views.findOne);
 
 module.exports = router;

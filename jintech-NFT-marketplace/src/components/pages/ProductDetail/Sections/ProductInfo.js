@@ -24,14 +24,14 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
-import styles from "../Sale.module.css";
+import styles from "../ProductDetail.module.css";
 import BiddingModal from "./BiddingModal.js";
 import BuyingModal from "./BuyingModal";
 import Countdown from "react-countdown";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { useSelector } from "react-redux";
 
-const ProductDetail = (props) => {
+const ProductInfo = (props) => {
   const { Image, setImage } = props;
   const [CountDate, setCountDate] = useState(0);
   const [EndTime, setEndTime] = useState(false);
@@ -350,7 +350,7 @@ const ProductDetail = (props) => {
               Provenance.filter(
                 (value, index) => index < ProvenanceViewEnd
               ).map((value, index) => (
-                <TimelineItem>
+                <TimelineItem key={value.id}>
                   <TimelineSeparator>
                     <TimelineDot color="warning" />
                     {Provenance.length > 1 &&
@@ -399,4 +399,4 @@ const ProductDetail = (props) => {
   );
 };
 
-export default ProductDetail;
+export default ProductInfo;

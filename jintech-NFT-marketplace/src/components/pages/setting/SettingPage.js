@@ -1,6 +1,6 @@
-import { Box, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { Box, Tab, Tabs, Typography, useMediaQuery,Card } from "@mui/material";
 import React, { useState } from "react";
-import Card from "../../UI/Card/Card";
+
 import Category from "./Category/Category";
 import styles from "./SettingPage.module.css";
 import HomeIcon from "@mui/icons-material/Home";

@@ -120,7 +120,7 @@ const UserList = () => {
         if (res.data.success) {
           setUsers((prev) => {
             prev.forEach((value) => {
-              if (value.emaill === row.email) {
+              if (value.email === row.email) {
                 value.otp = !value.otp;
               }
             });

@@ -210,6 +210,33 @@ exports.findAll = (req, res) => {
     });
 };
 
+// Retrieve all User from the database.
+exports.findAllUserAndSubAdmin = (req, res) => {
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  console.log("ffind");
+  User.findAll()
+    .then(async (users) => {
+      const userData = [];
+      const admin = [];
+      for (let i = 0; i < users.length; i++) {
+        await users[i].getRoles().then((role) => {
+          console.log("user: ", users[i].email, "/ role: ", role[0].id === 1);
+          if (role[0].id === 1) {
+            userData.push(users[i]);
+          } else if (role[0].id === 4) {
+            admin.push(users[i]);
+          }
+        });
+      }
+      res.status(200).send({ success: true, user: userData, admin });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
 // Find a single User with an id
 exports.findOne = (req, res) => {
   const email = req.params.email;

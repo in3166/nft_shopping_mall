@@ -25,53 +25,47 @@ const HomeBanner = (props) => {
         indicators={true}
         stopAutoPlayOnHover
         swipe
+        indicatorContainerProps={{
+          style: {
+            position: "absolute",
+            bottom: 0,
+          },
+        }}
         indicatorIconButtonProps={{
           style: {
-            zIndex: 999,
+            zIndex: 9999,
           },
         }}
         activeIndicatorIconButtonProps={{
           style: {
-            zIndex: 999,
+            zIndex: 9999,
           },
         }}
-        className="my-carousel"
+        className={styles["my-carousel"]}
       >
         {Banners.map((value, i) => {
           return (
-            <div className={styles["carousel-item"]} key={`list-${i}`}>
-              <Link to={`/nft-detail/${value.key}`}>
-                <Card
-                  sx={{
-                    opacity: 0.5,
-                    position: "absolute",
-                    left: 30,
-                    bottom: 30,
-                    height: "max-content",
-                    textAlign: "left",
-                    padding: 3,
-                    fontWeight: 600,
-                    fontSize: "0.99rem",
-                  }}
-                >
-                  <div>
-                    <strong>Name: {value.name}</strong>
-                  </div>
-                  <div>
-                    <strong>Owner: {value.owner}</strong>
-                  </div>
-                  <div>
-                    <strong>Price: {value.price} ETH</strong>
-                  </div>
-                </Card>
+            <Link to={`/nft-detail/${value.key}`} key={`list-${i}`}>
+              <div className={styles["carousel-item"]} key={`list-${i}`}>
                 <img
                   id="slideImg0"
                   src={value.url}
                   alt="slideImg0"
-                  className="w-100"
+                  className={styles.image}
                 />
-              </Link>
-            </div>
+              </div>
+              <Card className={styles.info}>
+                <div>
+                  <strong>Name: {value.name}</strong>
+                </div>
+                <div>
+                  <strong>Owner: {value.owner}</strong>
+                </div>
+                <div>
+                  <strong>Price: {value.price} ETH</strong>
+                </div>
+              </Card>
+            </Link>
           );
         })}
       </Carousel>

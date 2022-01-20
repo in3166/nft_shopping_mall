@@ -7,12 +7,38 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     //console.log("BODY:", req.body.body);
     const body = JSON.parse(req.body.body);
-    if (!fs.existsSync(dir + body.email)) {
-      fs.mkdirSync(dir + body.email);
+    console.log("dir: ", dir);
+    if (!fs.existsSync("uploads")) {
+      fs.mkdirSync("uploads", (err) => {
+        if (err) {
+          console.log("mkdir err: ", err);
+        } else {
+          if (!fs.existsSync(dir + body.email)) {
+            console.log("make1");
+            fs.mkdirSync(dir + body.email, (err) => {
+              if (err) {
+                console.log("mkdir err: ", err);
+              } else {
+                callback(null, `uploads/${body.email}`); //업로드 파일의 저장 위치를 설정
+              }
+            });
+          }
+        }
+      });
+    } else {
+      if (!fs.existsSync(dir + body.email)) {
+        console.log("make2");
+        fs.mkdirSync(dir + body.email, (err) => {
+          if (err) {
+            console.log("mkdir err: ", err);
+          } else {
+            callback(null, `uploads/${body.email}`); //업로드 파일의 저장 위치를 설정
+          }
+        });
+      } else {
+        callback(null, `uploads/${body.email}`); //업로드 파일의 저장 위치를 설정
+      }
     }
-
-    console.log("ffile1: ", file); // fieldname: file, originalname: 파일 이름.확장자, encoding: 7bit, mimetype: 'image/jpeg'
-    callback(null, `uploads/${body.email}`); //업로드 파일의 저장 위치를 설정
   },
   filename: (req, file, callback) => {
     const body = JSON.parse(req.body.body);
@@ -26,8 +52,6 @@ const limits = {
 };
 
 const upload = multer({ storage, limits }).single("file");
-
-
 
 const multerFile = {
   upload: upload,

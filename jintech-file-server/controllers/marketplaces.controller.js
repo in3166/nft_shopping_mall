@@ -80,7 +80,10 @@ async function endTimeOrSoldOut(params) {
       );
 
       // 구매자가 있을 경우(경매 참여자) 히스토리에 추가
-      if (EndTimeImages[i].buyerEmail !== null) {
+      if (
+        EndTimeImages[i].buyerEmail !== null &&
+        EndTimeImages[i].buyerEmail !== EndTimeImages[i].ownerEmail
+      ) {
         const newMarketHistoryPromise = MarketHistories.create({
           action: "sale",
           price: EndTimeImages[i].current_price,
@@ -245,8 +248,8 @@ exports.findAllOnMarket = (req, res) => {
   })
     .then(async (images) => {
       const endTimeRes = await endTimeOrSoldOut();
-      console.log(endTimeRes.error, "error?");
-      if (endTimeRes.error)
+      console.log(endTimeRes?.error, "error?");
+      if (endTimeRes?.error)
         return res
           .status(500)
           .send({ error: endTimeRes.message, message: endTimeRes.message });
@@ -266,7 +269,7 @@ exports.findAllMyImages = async (req, res) => {
   console.log("findAllMyImages");
   try {
     const endTimeRes = await endTimeOrSoldOut();
-    if (endTimeRes.error)
+    if (endTimeRes?.error)
       return res
         .status(500)
         .send({ error: endTimeRes.message, message: endTimeRes.message });

@@ -16,7 +16,8 @@ router.post("/", verifySignUp.checkRolesExisted, users.create);
 router.post("/auth", authJwt.verifyToken, users.auth);
 
 // Retrieve all users
-router.post("/allUsers", authJwt.isAdmin, users.findAll);
+router.get("/allUsers", users.findAll);
+router.get("/settings", users.findAllUserAndSubAdmin);
 
 // Retrieve a single user with id
 router.get("/user/:email", users.findOne);

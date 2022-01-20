@@ -1,3 +1,43 @@
+.my-carousel {
+  max-height: 400px;
+  position: relative;
+}
 .carousel-item {
-    max-height: 400px;
+  height: 100%;
+  max-height: 400px;
+}
+
+.image {
+  object-fit: cover;
+  min-height: 250px;
+  width: 100%;
+}
+
+.info {
+  opacity: 0.5;
+  position: absolute;
+  left: 2%;
+  bottom: 7%;
+  height: max-content;
+  text-align: left;
+  padding: 3;
+  font-weight: bold;
+  font-size: 0.99rem;
+}
+
+@media screen and (max-width: 535px) {
+  .info {
+    left: 0;
+    padding: 1;
+    font-weight: bolder;
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .my-carousel {
+    min-height: 250px;
+    max-height: 300px;
+  }
 }

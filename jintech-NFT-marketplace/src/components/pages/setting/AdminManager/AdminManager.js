@@ -1,81 +1,55 @@
 import {
   Button,
-  Paper,
   List,
-  IconButton,
-  ListItemButton,
   ListItemIcon,
   Checkbox,
   ListItem,
   ListItemText,
-  Popover,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  TextField,
-  DialogActions,
+  Grid,
+  Card,
+  CardHeader,
+  Divider,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./AdminManager.module.css";
 import axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 
-const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    width: 70,
-    align: "center",
-    headerAlign: "center",
-  },
-  { field: "email", headerName: "E-Mail", width: 200 },
-  {
-    field: "otp",
-    headerName: "OTP",
-    width: 100,
-    align: "center",
-    headerAlign: "center",
-  },
-  {
-    field: "created",
-    headerName: "생성일",
-    width: 200,
-    align: "center",
-    headerAlign: "center",
-  },
-];
+function not(a, b) {
+  return a.filter((value) => b.indexOf(value) === -1);
+}
+
+function intersection(a, b) {
+  return a.filter((value) => b.indexOf(value) !== -1);
+}
+
+function union(a, b) {
+  return [...a, ...not(b, a)];
+}
 
 const AdminManager = (props) => {
   const state = useSelector((state) => state.user);
   const gridRef = useRef();
-
   const [DeletedCategoriesId, setDeletedCategoriesId] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [Users, setUsers] = useState([]);
   const [isMount, setisMount] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
+
   const [checked, setChecked] = useState([]);
-  const [PopOpen, setPopOpen] = useState(false);
-  const [DialogValue, setDialogValue] = useState("");
-  const [select, setSelection] = useState([]);
+  const [left, setLeft] = useState([]);
+  const [right, setRight] = useState([]);
+
+  const leftChecked = intersection(checked, left);
+  const rightChecked = intersection(checked, right);
 
   const getUsers = useCallback(() => {
     setLoading(true);
 
-    const body = {
-      email: state.user.email,
-    };
-
     axios
-      .post("api/users/allUsers", body)
+      .get("api/users/settings")
       .then((res) => {
         console.log(res);
-        const users = res.data.map((v, i) => {
+        const users = res.data.user.map((v, i) => {
           // 관리자 db 열 없음
           return {
             id: i,
@@ -83,10 +57,22 @@ const AdminManager = (props) => {
             created: new Date(v.createdAt).toLocaleString(),
             email_verification: v.email_verification,
             leave: v.leave,
-            otp: v.otp ? "Y" : "N",
+            otp: v.otp,
           };
         });
-        if (isMount) setUsers(users);
+        const admin = res.data.admin.map((v, i) => {
+          // 관리자 db 열 없음
+          return {
+            id: i,
+            email: v.email,
+            created: new Date(v.createdAt).toLocaleString(),
+            email_verification: v.email_verification,
+            leave: v.leave,
+            otp: v.otp,
+          };
+        });
+        if (isMount) setLeft(users);
+        if (isMount) setRight(admin);
       })
       .finally(() => {
         setLoading(false);
@@ -97,163 +83,143 @@ const AdminManager = (props) => {
     getUsers();
   }, [getUsers]);
 
-  const handleDeleteClick = (event, value) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
 
-  const handleDeleteClose = () => {
-    setAnchorEl(null);
-    setSelection([]);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (select.length === 0) {
-      alert("하나 이상의 계정을 선택하세요.");
-      return;
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
     }
-    console.log(select);
-    handleDeleteClose();
-    console.log(select);
-    // 해당 계정 삭제
+
+    setChecked(newChecked);
   };
 
-  const deleteOpen = Boolean(anchorEl);
-  const id = deleteOpen ? "simple-popover" : undefined;
+  const numberOfChecked = (items) => intersection(checked, items).length;
 
-  const [isAdd, setIsAdd] = useState(false);
-  const [addOpen, setAddOpen] = useState(false);
-
-  const handleClickAddOpen = () => {
-    setAddOpen(true);
-    setIsAdd(true);
-    setDialogValue("");
+  const handleToggleAll = (items) => () => {
+    if (numberOfChecked(items) === items.length) {
+      setChecked(not(checked, items));
+    } else {
+      setChecked(union(checked, items));
+    }
   };
 
-  const handleAddClose = () => {
-    setAddOpen(false);
-    setDialogValue("");
+  const handleCheckedRight = () => {
+    console.log(leftChecked);
+    axios.post('/api/usres/role').then(res=>{
+      if(res.data.success){
+        
+      }
+    })
+    .catch(err=>{
+      alert(err);
+    })
+    setRight(right.concat(leftChecked));
+    setLeft(not(left, leftChecked));
+    setChecked(not(checked, leftChecked));
   };
 
-  const leaveButtonColumn = {
-    field: "leave",
-    headerName: "비밀번호",
-    width: 100,
-    sortable: false,
-    align: "center",
-    headerAlign: "center",
-    renderCell: (data) => {
-      return (
-        <div>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsAdd(false);
-              setAddOpen(true);
-              console.log(e.target);
+  const handleCheckedLeft = () => {
+    setLeft(left.concat(rightChecked));
+    setRight(not(right, rightChecked));
+    setChecked(not(checked, rightChecked));
+  };
+
+  const customList = (title, items) => (
+    <Card sx={{ margin: "20px 0px 20px 0px" }}>
+      <CardHeader
+        sx={{ px: 2, py: 1 }}
+        avatar={
+          <Checkbox
+            onClick={handleToggleAll(items)}
+            checked={
+              numberOfChecked(items) === items.length && items.length !== 0
+            }
+            indeterminate={
+              numberOfChecked(items) !== items.length &&
+              numberOfChecked(items) !== 0
+            }
+            disabled={items.length === 0}
+            inputProps={{
+              "aria-label": "all items selected",
             }}
-            aria-describedby={id}
-            variant="outlined"
-            size="small"
-            color="info"
-          >
-            변경
-          </Button>
-        </div>
-      );
-    },
-  };
+          />
+        }
+        title={title}
+        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+      />
+      <Divider />
+      <List
+        sx={{
+          width: 300,
+          height: 230,
+          bgcolor: "background.paper",
+          overflow: "auto",
+        }}
+        dense
+        component="div"
+        role="list"
+      >
+        {items.map((value) => {
+          const labelId = `transfer-list-all-item-${value}-label`;
 
-  const onSelectedRowHandler = (data) => {
-    console.log(data);
-    setSelection(data);
-  };
-
-  const handleDialogConfirm = () => {
-    console.log(DialogValue);
-  };
+          return (
+            <ListItem
+              key={value.id}
+              role="listitem"
+              button
+              onClick={handleToggle(value)}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  checked={checked.indexOf(value) !== -1}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{
+                    "aria-labelledby": labelId,
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText id={labelId} primary={`${value.email}`} />
+            </ListItem>
+          );
+        })}
+        <ListItem />
+      </List>
+    </Card>
+  );
 
   return (
-    <>
-      <h4 className={styles["head-text"]}>ADMIN MANAGER</h4>
-
-      <Paper elevation={3}>
-        <div className={styles["header"]}>
-          <div className={styles["btn-div"]}>
-            {/* <Button onClick={handleClickEditOpen}>Edit</Button> */}
-            <Button onClick={handleClickAddOpen}>Add</Button>
-            <Button onClick={handleDeleteClick}>Delete</Button>
-          </div>
-        </div>
-
-        {!Loading && (
-          <DataGrid
-            rows={Users}
-            columns={[...columns, leaveButtonColumn]}
-            autoHeight
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            // disableSelectionOnClick
-            ref={gridRef}
-            selectionModel={select}
-            onSelectionModelChange={(data) => {
-              onSelectedRowHandler(data);
-            }}
-          />
-        )}
-      </Paper>
-
-      <Popover
-        id={id}
-        open={deleteOpen}
-        anchorEl={anchorEl}
-        onClose={handleDeleteClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <Typography sx={{ p: 2 }}>정말 삭제하시겠습니까?</Typography>
-        <div style={{ float: "right" }}>
-          <Button onClick={handleDeleteClose}>취소</Button>
-          <Button onClick={handleDeleteConfirm}>삭제</Button>
-        </div>
-      </Popover>
-
-      <Dialog open={addOpen} onClose={handleAddClose}>
-        <DialogTitle>{isAdd ? "Add" : "Edit"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {isAdd
-              ? "추가할 운영자 이메일을 입력하세요."
-              : "변경할 비밀번호를 입력하세요."}
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="normal"
-            id="dialog"
-            label={isAdd ? "E-Mail" : "Password"}
-            type="text"
-            fullWidth
-            variant="standard"
-            value={DialogValue}
-            onChange={(e) => {
-              setDialogValue(e.target.value);
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleAddClose}>취소</Button>
-          <Button onClick={handleDialogConfirm}>
-            {isAdd ? "추가" : "수정"}
+    <Grid container spacing={2} justifyContent="center" alignItems="center">
+      <Grid item>{customList("User", left)}</Grid>
+      <Grid item>
+        <Grid container direction="column" alignItems="center">
+          <Button
+            sx={{ my: 0.5 }}
+            variant="outlined"
+            size="small"
+            onClick={handleCheckedRight}
+            disabled={leftChecked.length === 0}
+            aria-label="move selected right"
+          >
+            &gt;
           </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+          <Button
+            sx={{ my: 0.5 }}
+            variant="outlined"
+            size="small"
+            onClick={handleCheckedLeft}
+            disabled={rightChecked.length === 0}
+            aria-label="move selected left"
+          >
+            &lt;
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid item>{customList("Admin", right)}</Grid>
+    </Grid>
   );
 };
 

@@ -169,7 +169,7 @@ xxx버전 업그레이드함 xxx
 
 ## 수정 사항
 
-- 같은 이미지의 경우 mint 방지
+- 같은 이미지의 경우 mint 방지 => hash url
   - `ImageContract.sol`
     - `require(!_imageExists[_hash], "ERC721: token already minted");` 추가
 
@@ -202,7 +202,6 @@ xxx버전 업그레이드함 xxx
   - `net start winnat`
 
 # 참고
-
 - `err.response.data.message` 서버에서 받은 에러메세지
 - 컨트랙스 수정 후 재실행
 
@@ -212,6 +211,49 @@ xxx버전 업그레이드함 xxx
 - sequelize migration - undo
 - winsoton, morgan - logger
 - `useInputReduce`에서 initalValue 내려줄 때 동일한 객체(전역?)를 내려주면 값을 공유하게 됨 => 객체를 새롭게
+
+# EC2 Ubuntu에 올리기
+- (nvm)node, (python2.7-), truffle, ganache-cli 설치
+```
+$ sudo apt-get update
+$ sudo apt-get -y upgrade
+$ sudo apt install -y build-essential
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+source ~/.bashrc
+nvm install v16.13.0
+```
+```
+[npm install 시 sudo npm intall => command not found] 
+n=$(which node); \
+n=${n%/bin/node}; \
+chmod -R 755 $n/bin/*; \
+sudo cp -r $n/{bin,lib,share} /usr/local
+-----
+[EC2 보안- 아웃바운드 규칙 433 -> Anyware]
+sudo npm install
+```
+- ganache-cli 실행: `ganache-cli --host 0.0.0.0`
+- truffle compile / migrate
+- ipfs 설치 및 실행
+
+### 메타 마스크 연결
+- RPC URL: `http://주소:8545`
+- Chain Id: 1337
+- 계정 비밀키 등록
+
+### SERVER GIT CLONE
+- git clone -
+- npm install
+- 파일 생성
+  - jintech-file-server
+    - config (auth.confing.js, db.config.js, email.config.js)
+
+  - jintech-nft-marketplace
+   - .env.development, .env.production
+
+- `truffle-config.js` 설정 변경
+- `ipconfig.json` 설정 변경
 
 <br><br><br>
 
@@ -262,7 +304,7 @@ xxx버전 업그레이드함 xxx
 - [React.js](https://reactjs.org/) - JavaScript library for building user interfaces.
 - [web3.js](https://web3js.readthedocs.io/en/v1.3.4/) - Allows users to interact with a local or remote ethereum node using HTTP, IPC or WebSocket.
 - [Truffle](https://www.trufflesuite.com/truffle) - Development environment, testing framework and asset pipeline for blockchains using the Ethereum Virtual Machine (EVM).
-- [Ganache](https://www.trufflesuite.com/ganache) - Personal blockchain for Ethereum development used to deploy contracts, develop DApps, and run tests.
+- [Ganache](https://www.truffleste.com/ganache) - Personal blockchain for Ethereum development used to deploy contracts, develop DApps, and run tests.
 
 #
 

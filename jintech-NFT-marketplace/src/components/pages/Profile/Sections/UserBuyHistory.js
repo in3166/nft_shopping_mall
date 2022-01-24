@@ -17,7 +17,7 @@ const columns = [
     headerName: "Name",
     width: 310,
     renderCell: (params) => (
-      <div title={params.value.filename}>{params.value.filename}</div>
+      <div title={params.value?.filename}>{params.value?.filename}</div>
     ),
   },
   {
@@ -25,14 +25,14 @@ const columns = [
     headerName: "가격",
     width: 100,
     type: "number",
-    renderCell: (params) => params.value.toLocaleString(),
+    renderCell: (params) => params.value?.toLocaleString(),
   },
   {
     field: "createdAt",
     headerName: "날짜",
     width: 200,
     renderCell: (params) => (
-      <div>{new Date(params.value).toLocaleString()}</div>
+      <div>{new Date(params.value)?.toLocaleString()}</div>
     ),
   },
 ];

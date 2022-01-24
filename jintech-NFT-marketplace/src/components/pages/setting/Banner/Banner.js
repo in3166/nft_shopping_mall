@@ -47,11 +47,12 @@ const Banner = () => {
   const [LoadingItems, setLoadingItems] = useState(false);
   const [Categories, setCategories] = useState([]);
   const [SelectCatgoryValue, setSelectCatgoryValue] = useState(0);
+  const [IsMount, setIsMount] = useState(true);
   const getAllCategories = () => {
     axios
       .get("/api/categories/")
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.success && IsMount) {
           setCategories(res.data.data);
         } else {
           alert(res.data.message);
@@ -67,7 +68,7 @@ const Banner = () => {
     axios
       .get("/api/banners")
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.success && IsMount) {
           setBanners(res.data.banners);
         } else {
           alert(res.data.message);
@@ -108,7 +109,7 @@ const Banner = () => {
         };
         tempImages.push(body);
       }
-      setImages(tempImages);
+      if (IsMount) setImages(tempImages);
 
       const sale_networkData = TokenSaleContract.networks[networkId];
       const tokenSaleAbi = TokenSaleContract.abi;
@@ -124,14 +125,17 @@ const Banner = () => {
     } catch (error) {
       alert(error);
     } finally {
-      setLoadingItems(false);
+      if (IsMount) setLoadingItems(false);
     }
-  }, [web3.eth, web3.utils]);
+  }, [web3.eth, web3.utils, IsMount]);
 
   useEffect(() => {
     getImagesFromEth();
     getAllBanners();
     getAllCategories();
+    return () => {
+      setIsMount(false);
+    };
   }, [getImagesFromEth]);
 
   const handleCheck = (value) => {
@@ -327,7 +331,9 @@ const Banner = () => {
                 >
                   <option value={0}>All</option>
                   {Categories.map((value) => (
-                    <option value={value.id}>{value.name}</option>
+                    <option value={value.id} key={value.id}>
+                      {value.name}
+                    </option>
                   ))}
                 </NativeSelect>
               </FormControl>

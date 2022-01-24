@@ -212,6 +212,8 @@ xxx버전 업그레이드함 xxx
 - winsoton, morgan - logger
 - `useInputReduce`에서 initalValue 내려줄 때 동일한 객체(전역?)를 내려주면 값을 공유하게 됨 => 객체를 새롭게
 
+- ubuntu PostgreSQL: `Connection Refused`
+  - `sudo service postgresql restart`
 # EC2 Ubuntu에 올리기
 - (nvm)node, (python2.7-), truffle, ganache-cli 설치
 ```

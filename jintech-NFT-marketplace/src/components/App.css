@@ -281,3 +281,7 @@ input:-webkit-autofill:active {
   flex: 1 1 auto;
   width: 80%;
 }
+
+.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
+  outline: none !important;
+}

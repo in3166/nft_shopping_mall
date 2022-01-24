@@ -14,6 +14,7 @@ router.post("/", verifySignUp.checkRolesExisted, users.create);
 
 // auth
 router.post("/auth", authJwt.verifyToken, users.auth);
+router.post("/role", users.updateRole);
 
 // Retrieve all users
 router.get("/allUsers", users.findAll);
@@ -29,6 +30,8 @@ router.get("/email/:email/:code", users.verify);
 router.post("/login", users.login);
 
 // Update a user with id
+router.put("/address", users.updateAddress);
+// Update a user with id
 router.put("/:email", users.update);
 
 // 탈퇴 신청, 취소
@@ -39,7 +42,5 @@ router.delete("/:email", authJwt.isAdmin, users.delete);
 
 // delete a all user
 router.delete("/", users.deleteAll);
-
-
 
 module.exports = router;

@@ -119,7 +119,7 @@ const HomePage = (props) => {
         </div>
       </div>
 
-      <div className="align-items-left d-flex justify-content-left w-100 p-5">
+      {/* <div className="align-items-left d-flex justify-content-left w-100 p-5">
         <div className="align-items-left d-flex justify-content-left">
           <select>
             <option>1</option>
@@ -128,7 +128,7 @@ const HomePage = (props) => {
           <input type="text" />
           <button>검색</button>
         </div>
-      </div>
+      </div> */}
 
       <div className="product-page flex-wrap w-100 p-5">
         {Loading && (

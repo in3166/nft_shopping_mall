@@ -12,7 +12,6 @@ const HomeBanner = (props) => {
 
   const handleChange = (cur, prev) => {
     setIndex(cur);
-    console.log(cur, prev);
   };
 
   return (
@@ -20,7 +19,7 @@ const HomeBanner = (props) => {
       <Carousel
         index={index}
         onChange={handleChange}
-        interval={4000}
+        interval={5000}
         animation="slide"
         indicators={true}
         stopAutoPlayOnHover

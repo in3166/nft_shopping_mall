@@ -25,6 +25,7 @@ async function endTimeOrSoldOut(params) {
         {
           model: db.image,
           attributes: [
+            "id",
             "filename",
             "type",
             "url",
@@ -191,6 +192,7 @@ exports.findAll = (req, res) => {
       {
         model: db.image,
         attributes: [
+          "id",
           "filename",
           "type",
           "url",
@@ -231,6 +233,7 @@ exports.findAllOnMarket = (req, res) => {
       {
         model: db.image,
         attributes: [
+          "id",
           "filename",
           "type",
           "url",
@@ -320,6 +323,7 @@ exports.findAllMyImages = async (req, res) => {
         {
           model: db.image,
           attributes: [
+            "id",
             "filename",
             "type",
             "url",
@@ -400,6 +404,7 @@ exports.update = async (req, res) => {
     marketplaceId: req.body.id,
     userEmail: req.body.email,
     starting_time: req.body.starting_time,
+    imageId: req.body.imageId,
   };
   console.log("historyData: ", historyData);
   try {

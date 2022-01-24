@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Category.module.css";
 import axios from "axios";
 
@@ -27,13 +27,14 @@ const Category = (props) => {
   const [checked, setChecked] = useState([]);
   const [AllChecked, setAllChecked] = useState(false);
   const [Categories, setCategories] = useState([]);
+  const [IsMount, setIsMount] = useState(true);
 
-  const getAllCategories = () => {
+  const getAllCategories = useCallback(() => {
     axios
       .get("/api/categories/")
       .then((res) => {
         if (res.data.success) {
-          setCategories(res.data.data);
+          if (IsMount) setCategories(res.data.data);
         } else {
           alert(res.data.message);
         }
@@ -41,11 +42,14 @@ const Category = (props) => {
       .catch((err) => {
         alert(err);
       });
-  };
+  }, [IsMount]);
 
   useEffect(() => {
     getAllCategories();
-  }, []);
+    return () => {
+      setIsMount(false);
+    };
+  }, [getAllCategories]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -119,7 +123,7 @@ const Category = (props) => {
 
   const [isAdd, setIsAdd] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
-  
+
   const handleClickAddOpen = () => {
     setAddOpen(true);
     setIsAdd(true);

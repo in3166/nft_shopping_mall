@@ -58,7 +58,7 @@ const UserList = () => {
     };
 
     axios
-      .post("api/users/allUsers", body)
+      .get("api/users/allUsers", body)
       .then((res) => {
         const users = res.data.map((v, i) => {
           // 관리자 db 열 없음

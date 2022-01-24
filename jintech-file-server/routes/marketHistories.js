@@ -12,9 +12,10 @@ const { authJwt } = require("../middleware");
 router.post("/", marketHistories.create);
 
 // 모든 업로드 기록 가져오기
-router.get("/buys/:email", marketHistories.findUserBuys);
 router.get("/sales", marketHistories.findAllSales);
+router.get("/buys/:email", marketHistories.findUserBuys);
 router.get("/sales/:email", marketHistories.findUserSales);
+router.get("/bids/:email", marketHistories.findUserBids);
 router.get("/:id", marketHistories.findAll);
 // router.get("/:email", authJwt.verifyToken, marketHistories.findOne);
 router.get("/goods/:id", marketHistories.findOne);

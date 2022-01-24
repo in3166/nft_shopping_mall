@@ -51,25 +51,23 @@ const AdminManager = (props) => {
         console.log(res);
         const users = res.data.user.map((v, i) => {
           // 관리자 db 열 없음
-          return {
-            id: i,
-            email: v.email,
-            created: new Date(v.createdAt).toLocaleString(),
-            email_verification: v.email_verification,
-            leave: v.leave,
-            otp: v.otp,
-          };
+          return v.email;
+          // id: i,
+
+          // created: new Date(v.createdAt).toLocaleString(),
+          // email_verification: v.email_verification,
+          // leave: v.leave,
+          // otp: v.otp,
         });
         const admin = res.data.admin.map((v, i) => {
           // 관리자 db 열 없음
-          return {
-            id: i,
-            email: v.email,
-            created: new Date(v.createdAt).toLocaleString(),
-            email_verification: v.email_verification,
-            leave: v.leave,
-            otp: v.otp,
-          };
+          return v.email;
+          //            id: i,
+
+          // created: new Date(v.createdAt).toLocaleString(),
+          // email_verification: v.email_verification,
+          // leave: v.leave,
+          // otp: v.otp,
         });
         if (isMount) setLeft(users);
         if (isMount) setRight(admin);
@@ -77,10 +75,14 @@ const AdminManager = (props) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [state.user.email, isMount]);
+  }, [isMount]);
 
   useEffect(() => {
     getUsers();
+
+    return () => {
+      setisMount(false);
+    };
   }, [getUsers]);
 
   const handleToggle = (value) => () => {
@@ -108,27 +110,48 @@ const AdminManager = (props) => {
 
   const handleCheckedRight = () => {
     console.log(leftChecked);
-    axios.post('/api/usres/role').then(res=>{
-      if(res.data.success){
-        
-      }
-    })
-    .catch(err=>{
-      alert(err);
-    })
+    const body = {
+      user: leftChecked,
+      toUser: false,
+    };
+    axios
+      .post("/api/users/role", body)
+      .then((res) => {
+        if (!res.data.success) {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
+    console.log(rightChecked);
+    const body = {
+      user: rightChecked,
+      toUser: true,
+    };
+    axios
+      .post("/api/users/role", body)
+      .then((res) => {
+        if (!res.data.success) {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
   const customList = (title, items) => (
-    <Card sx={{ margin: "20px 0px 20px 0px" }}>
+    <Card sx={{ margin: "20px 0px 20px 0px", width: "100%" }}>
       <CardHeader
         sx={{ px: 2, py: 1 }}
         avatar={
@@ -153,7 +176,7 @@ const AdminManager = (props) => {
       <Divider />
       <List
         sx={{
-          width: 300,
+          width: "100%",
           height: 230,
           bgcolor: "background.paper",
           overflow: "auto",
@@ -167,7 +190,7 @@ const AdminManager = (props) => {
 
           return (
             <ListItem
-              key={value.id}
+              key={value}
               role="listitem"
               button
               onClick={handleToggle(value)}
@@ -182,7 +205,7 @@ const AdminManager = (props) => {
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.email}`} />
+              <ListItemText id={labelId} primary={`${value}`} />
             </ListItem>
           );
         })}
@@ -192,9 +215,17 @@ const AdminManager = (props) => {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList("User", left)}</Grid>
-      <Grid item>
+    <Grid
+      container
+      spacing={2}
+      columns={18}
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Grid item xs={18} md={8} lg={6}>
+        {customList("User", left)}
+      </Grid>
+      <Grid item xs={18} md={2} lg={4}>
         <Grid container direction="column" alignItems="center">
           <Button
             sx={{ my: 0.5 }}
@@ -218,7 +249,9 @@ const AdminManager = (props) => {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList("Admin", right)}</Grid>
+      <Grid item xs={18} md={8} lg={6}>
+        {customList("Admin", right)}
+      </Grid>
     </Grid>
   );
 };

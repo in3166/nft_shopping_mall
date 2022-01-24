@@ -3,7 +3,8 @@ import axios from "axios";
 
 import { Button, FormControl, Grid, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserInfo } from "../../../../store/actions/user-action";
 
 const UserForm = (props) => {
   const [passwordIsTouched, setpasswordIsTouched] = useState(false);
@@ -12,6 +13,7 @@ const UserForm = (props) => {
 
   const [isMounted, setIsMounted] = useState(true);
 
+  const dispatch = useDispatch();
   // 현재 지갑 address load
   const getCurrentWalletAccount = async () => {
     setloading(true);
@@ -100,6 +102,20 @@ const UserForm = (props) => {
   const submintHandler = (e) => {
     e.preventDefault();
     console.log(User);
+    const body = User;
+    axios
+      .put("/api/users/address", body)
+      .then((res) => {
+        if (res.data.success) {
+          alert("저장 완료");
+          dispatch(updateUserInfo({ userAddress: body.address }));
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
   return (
@@ -166,7 +182,7 @@ const UserForm = (props) => {
                 variant="standard"
               />
             </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+            {/* <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 required
                 id="password"
@@ -183,7 +199,7 @@ const UserForm = (props) => {
                 }}
                 autoComplete="current-password"
               />
-            </FormControl>
+            </FormControl> */}
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <TextField
                 id="emailauth"

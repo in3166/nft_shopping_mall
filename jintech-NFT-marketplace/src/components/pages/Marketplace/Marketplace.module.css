@@ -87,6 +87,23 @@
   object-fit: contain;
 }
 
+@media screen and (max-width: 700px) {
+  .header {
+    flex-direction: column;
+  }
+  .header-search > div {
+    width: 100%;
+  }
+  .header-select-category {
+    max-width: 100%;
+  }
+  .header-select-type {
+    margin-left: 0px !important;
+    margin-top: 9px !important;
+    max-width: 100%;
+  }
+}
+
 @media screen and (min-width: 800px) {
   .box {
     padding: 0px 30px 0px 30px;

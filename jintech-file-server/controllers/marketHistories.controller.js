@@ -283,6 +283,42 @@ exports.findUserBuys = (req, res) => {
     });
 };
 
+exports.findUserBids = (req, res) => {
+  //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
+  console.log("findUserBids");
+  const email = req.params.email;
+  console.log("findUserBids", email);
+
+  MarketHistory.findAll({
+    where: {
+      action: "bid",
+      userEmail: email,
+    },
+    include: [
+      {
+        model: db.marketplace,
+        attributes: ["id"],
+        as: "marketplace",
+      },
+      {
+        model: db.image,
+        attributes: ["filename", "url", "description"],
+        as: "image",
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  })
+    .then((data) => {
+      res.status(200).send({ success: true, bidHistory: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Users.",
+      });
+    });
+};
+
 exports.update = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
   console.log("update", req.body);

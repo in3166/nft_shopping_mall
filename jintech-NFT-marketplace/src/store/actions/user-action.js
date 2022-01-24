@@ -176,3 +176,10 @@ export const getLocalTokenAction = (user, token) => {
     }
   };
 };
+
+// 유저 정보 변경
+export const updateUserInfo = (user) => {
+  return async (dispatch) => {
+    dispatch(userAction.replaceUserInfo({user}));
+  };
+};

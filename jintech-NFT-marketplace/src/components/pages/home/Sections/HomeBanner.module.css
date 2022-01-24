@@ -41,3 +41,9 @@
     max-height: 300px;
   }
 }
+@media screen and (min-width: 700px) {
+  .my-carousel {
+    min-height: 450px;
+    max-height: 550px;
+  }
+}

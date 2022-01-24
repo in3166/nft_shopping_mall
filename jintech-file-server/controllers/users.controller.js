@@ -213,17 +213,17 @@ exports.findAll = (req, res) => {
 // Retrieve all User from the database.
 exports.findAllUserAndSubAdmin = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  console.log("ffind");
+  console.log("ffind?????????????");
   User.findAll()
     .then(async (users) => {
       const userData = [];
       const admin = [];
       for (let i = 0; i < users.length; i++) {
         await users[i].getRoles().then((role) => {
-          console.log("user: ", users[i].email, "/ role: ", role[0].id === 1);
-          if (role[0].id === 1) {
+          console.log("user: ", users[i]?.email, "/ role: ", role[0]?.id === 1);
+          if (role[0]?.id === 1) {
             userData.push(users[i]);
-          } else if (role[0].id === 4) {
+          } else if (role[0]?.id === 4) {
             admin.push(users[i]);
           }
         });
@@ -231,6 +231,7 @@ exports.findAllUserAndSubAdmin = (req, res) => {
       res.status(200).send({ success: true, user: userData, admin });
     })
     .catch((err) => {
+      console.log("find all user and admin: ", err);
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Users.",
       });
@@ -279,6 +280,39 @@ exports.update = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: "Error updating User with email=" + email,
+      });
+    });
+};
+
+exports.updateAddress = (req, res) => {
+  const body = req.body;
+  console.log("body:", body);
+  User.update(
+    { address: body.address },
+    {
+      where: { email: body.email },
+    }
+  )
+    .then((num) => {
+      console.log("num:", num);
+      if (num == 1) {
+        res.status(200).send({
+          success: true,
+          message: "User was updated successfully.",
+        });
+      } else {
+        res.status(200).send({
+          success: false,
+          message: "something wrong",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("err:", err);
+
+      res.status(500).send({
+        message: "Error updating User with email=" + email,
+        error: err,
       });
     });
 };
@@ -483,6 +517,36 @@ exports.login = (req, res) => {
     };
     return res.status(500).send(user);
   }
+};
+
+exports.updateRole = async (req, res) => {
+  const toUser = req.body.toUser;
+  const user = req.body.user;
+  console.log(toUser, user);
+  const promises = [];
+
+  User.findAll({ where: { email: user } })
+    .then(async (users) => {
+      for (let i = 0; i < users.length; i++) {
+        try {
+          if (toUser) {
+            await users[i].setRoles(1);
+          } else {
+            await users[i].setRoles(4);
+          }
+        } catch (error) {
+          return res
+            .status(400)
+            .send({ success: false, message: "setRoles error", error });
+        }
+      }
+
+      return res.status(200).send({ success: true });
+    })
+    .catch((err) => {
+      console.log("find err: ", err);
+      return res.status(400).send({ error: err, message: err, success: false });
+    });
 };
 
 exports.auth = (req, res) => {

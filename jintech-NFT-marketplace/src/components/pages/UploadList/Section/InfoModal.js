@@ -138,7 +138,7 @@ const InfoModal = (props) => {
       maxWidth="md"
     >
       <DialogTitle id="responsive-dialog-title">
-        {"Use Google's location service?"}
+        {"상세 정보"}
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={1} columns={18}>

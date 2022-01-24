@@ -43,6 +43,7 @@ const ProductInfo = (props) => {
   const user = useSelector((state) => state.user.user);
 
   const IsSameUser = user.email === Image.ownerEmail;
+  console.log("IsSameUser", IsSameUser);
   let isBidding = null;
   if (Image.type) {
     isBidding = Image?.type === "auction" ? true : false;
@@ -275,7 +276,7 @@ const ProductInfo = (props) => {
           sx={{ width: "100%", p: 2 }}
           fullWidth
           onClick={handleBuyClick}
-          disabled={Image.soldOut || EndTime ? true : false}
+          disabled={Image.soldOut || EndTime || IsSameUser ? true : false}
         >
           Buy Now
         </Button>

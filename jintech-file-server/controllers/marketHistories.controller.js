@@ -16,6 +16,7 @@ exports.create = async (req, res) => {
     userEmail: body.userEmail,
     marketplaceId: body.marketplaceId,
     starting_time: body.starting_time,
+    imageId: body.imageId,
   })
     .then((createData) => {
       // console.log("createData: ", createData);
@@ -71,6 +72,7 @@ exports.create = async (req, res) => {
               userEmail: body.ownerEmail,
               marketplaceId: body.marketplaceId,
               starting_time: body.starting_time,
+              imageId: body.imageId,
             })
               .then((data) => {
                 res.status(200).send({

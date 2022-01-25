@@ -22,7 +22,7 @@ const HomePage = (props) => {
 
   const handlePageChange = (e, page) => {
     setPage(page);
-    _DATA?.jump(page);
+    _DATA.jump(page);
   };
 
   const getAllImages = async () => {
@@ -101,6 +101,7 @@ const HomePage = (props) => {
   useEffect(() => {
     getAllImages();
     getAllBanners();
+
   }, []);
 
   return (

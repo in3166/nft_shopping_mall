@@ -30,7 +30,9 @@ const BuyingModal = (props) => {
       marketplaceId: Image.id,
       starting_time: Image.starting_time,
       ownerEmail: Image.ownerEmail,
+      imageId: Image.image.id,
     };
+    console.log("body: ", body);
     axios
       .post("/api/marketHistories", body)
       .then((res) => {

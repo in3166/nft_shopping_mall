@@ -7,6 +7,7 @@ import {
   FormControl,
   MenuItem,
   InputLabel,
+  Pagination,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
@@ -18,8 +19,12 @@ import ViewCounts from "../../../util/ViewCounts";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import styles from "./Marketplace.module.css";
 import LoadingSpinner from "../../UI/Loading/LoadingSpinner";
+import usePagination from "../../../hooks/usePagination";
 
-const Marketplace = () => {
+const Marketplace = ({ location }) => {
+  let query = location.pathname.split("/");
+  query = query[query?.length - 1];
+
   const user = useSelector((state) => state.user.user);
   const [Images, setImages] = useState(undefined);
   const [OriginalImages, setOriginalImages] = useState(Images);
@@ -31,6 +36,7 @@ const Marketplace = () => {
 
   const getAllImages = useCallback(async () => {
     setLoading(true);
+    setisMounted(true);
     // .then((res) => {
     //   console.log(res.data);
     //   ViewCounts(window.location.pathname, user.email);
@@ -47,12 +53,20 @@ const Marketplace = () => {
     ViewCounts(window.location.pathname, user.email);
     console.log("imagesRes: ", imagesRes);
     console.log(categoryRes);
-    setImages(imagesRes.data.images);
+    console.log("query: ", query);
+    if (query !== "" && query !== "bid" && query !== "/") {
+      setImages(
+        imagesRes.data.images.filter((v) => v.image.filename.includes(query))
+      );
+    } else {
+      setImages(imagesRes.data.images);
+    }
     setOriginalImages(imagesRes.data.images);
     setCategories(categoryRes.data.data);
-
     if (isMounted) setLoading(false);
-  }, [user.email, isMounted]);
+    console.log("isMounted: ", isMounted);
+    console.log("Loading: ", Loading);
+  }, [user.email, isMounted, query]);
 
   useEffect(() => {
     getAllImages();
@@ -94,6 +108,16 @@ const Marketplace = () => {
         OriginalImages.filter((v) => v.image.filename.includes(SearchText))
       );
     }
+  };
+
+  // pagination
+  const PER_PAGE = 8;
+  const _DATA = usePagination(Images, PER_PAGE);
+  const [page, setPage] = useState(1);
+
+  const handlePageChange = (e, page) => {
+    setPage(page);
+    _DATA?.jump(page);
   };
 
   return (
@@ -238,6 +262,19 @@ const Marketplace = () => {
             </Grid>
           ))}
       </Grid>
+      {!Loading && (
+        <div className="market-pager d-flex">
+          <Pagination
+            //count={10}
+            color="primary"
+            page={page}
+            siblingCount={1}
+            boundaryCount={1}
+            count={Math.ceil(Images?.length / PER_PAGE)}
+            onChange={handlePageChange}
+          />
+        </div>
+      )}
     </Box>
   );
 };

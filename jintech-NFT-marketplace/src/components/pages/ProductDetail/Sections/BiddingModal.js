@@ -58,6 +58,7 @@ const BiddingModal = (props) => {
         starting_time: Image.starting_time,
       };
       if (Price >= buyout) {
+        console.log(Price, buyout);
         alert("Buyout 이상의 가격입니다.");
         return;
       }

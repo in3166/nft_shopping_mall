@@ -49,7 +49,8 @@ db.users.belongsToMany(db.role, {
   otherKey: "roleId",
 });
 
-db.image.belongsTo(db.category, {
+// 수정
+db.marketplace.belongsTo(db.category, {
   foreignKey: "categoryId",
   as: "category",
   targetKey: "id",
@@ -79,10 +80,10 @@ db.marketplace.belongsTo(db.users, {
   targetKey: "email",
 });
 
-db.marketplace.belongsTo(db.image, {
-  foreignKey: "product",
-  targetKey: "id",
-});
+// db.marketplace.belongsTo(db.image, {
+//   foreignKey: "product",
+//   targetKey: "id",
+// });
 
 db.marketHistory.belongsTo(db.marketplace, {
   foreignKey: "marketplaceId",

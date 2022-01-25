@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import icon from "./favicon-32x32.png";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,22 +10,29 @@ import styles from "./Navbar.module.css";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Avatar,
+  Button,
   Divider,
   IconButton,
+  Input,
+  InputBase,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Paper,
   Stack,
   Tooltip,
 } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import { Box } from "@mui/system";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import i18next from "i18next";
+import SearchIcon from "@mui/icons-material/Search";
+import "./Navbar.css";
 
 const Navbar = () => {
   const user = useSelector((state) => state.user.user);
@@ -64,7 +71,6 @@ const Navbar = () => {
   //lang
   const getLanguage = () => i18next.language || window.localStorage.i18nextLng;
   const lang = getLanguage();
-  console.log("lang? ", lang);
   const [LanguageAnchor, setLanguageAnchor] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(
     lang.includes("ko") ? 1 : 0
@@ -86,8 +92,16 @@ const Navbar = () => {
     setLanguageAnchor(null);
   };
 
+  const history = useHistory();
+  const [SearchText, setSearchText] = useState("");
+  const handleSearchClick = () => {
+    console.log(SearchText);
+    history.push("/bid/" + SearchText);
+    setSearchText("");
+  };
+
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-md">
       <div className="container">
         <img src={icon} alt="" />
         <Link to="/" className="navbar-brand ml-2">
@@ -98,7 +112,7 @@ const Navbar = () => {
           data-toggle="collapse"
           data-target="#navbarNav"
         >
-          <span className="navbar-toggler-icon"></span>
+          <MenuIcon />
         </button>
 
         <div
@@ -107,26 +121,27 @@ const Navbar = () => {
           style={{ justifyContent: "space-between" }}
         >
           <ul className={`navbar-nav ${styles.ul} ${styles["ul_left"]}`}>
-            <li className={`nav-item ${styles["nav-li"]}`}>
+            {/* <li className={`nav-item ${styles["nav-li"]}`}>
               <Link to="/marketplace" className="nav-link">
+                {t("Navbar.marketplace")}
+              </Link>
+            </li> */}
+            <li className={`nav-item ${styles["nav-li"]}`}>
+              <Link to="/bid" className="nav-link">
                 {t("Navbar.marketplace")}
               </Link>
             </li>
             {user.isLoggedIn && (
               <>
-                <li className={`nav-item ${styles["nav-li"]}`}>
+                {/* <li className={`nav-item ${styles["nav-li"]}`}>
                   <Link to="/mytokens" className="nav-link">
                     {t("Navbar.mytokens")}
                   </Link>
-                </li>
-                <li className={`nav-item ${styles["nav-li"]}`}>
-                  <Link to="/bid" className="nav-link">
-                    경매
-                  </Link>
-                </li>
+                </li> */}
+
                 <li className={`nav-item ${styles["nav-li"]}`}>
                   <Link to="/myimages" className="nav-link">
-                    My Images
+                    {t("Navbar.mytokens")}
                   </Link>
                 </li>
               </>
@@ -145,11 +160,40 @@ const Navbar = () => {
               ) : null
             }
             {user.isLoggedIn && !user.isAdmin && (
-              <li className={`nav-item ${styles["nav-li"]}`}>
-                <Link to="/upload" className="nav-link">
-                  {t("Navbar.upload")}
-                </Link>
-              </li>
+              <>
+                <Paper
+                  component="form"
+                  sx={{
+                    p: "0px 4px",
+                    mr: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    width: 200,
+                    height: "35px",
+                  }}
+                >
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Search..."
+                    inputProps={{ "aria-label": "search google maps" }}
+                    type="text"
+                    value={SearchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className={styles["header-search-input"]}
+                  />
+                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+
+                  <SearchIcon
+                    sx={{ cursor: "pointer" }}
+                    onClick={handleSearchClick}
+                  />
+                </Paper>
+                {/* <li className={`nav-item ${styles["nav-li"]}`}>
+                  <Link to="/upload" className="nav-link">
+                    {t("Navbar.upload")}
+                  </Link>
+                </li> */}
+              </>
             )}
             {user.isAdmin && (
               <>

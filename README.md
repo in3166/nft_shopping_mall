@@ -256,6 +256,11 @@ sudo npm install
 
 - `truffle-config.js` 설정 변경
 - `ipconfig.json` 설정 변경
+- 하드코딩 url 변경
+  - server: `users.controller.js` 메일 주소
+  - client
+    - `UploadAuction.js`
+    - `UploadSale.js`
 
 <br><br><br>
 

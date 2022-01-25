@@ -91,6 +91,7 @@ async function endTimeOrSoldOut(params) {
           marketplaceId: EndTimeImages[i].id,
           userEmail: EndTimeImages[i].ownerEmail,
           starting_time: EndTimeImages[i].starting_time,
+          imageId: EndTimeImages[i].image.imageId,
         });
 
         const newMarketHistoryBuyPromise = MarketHistories.create({
@@ -99,6 +100,7 @@ async function endTimeOrSoldOut(params) {
           marketplaceId: EndTimeImages[i].id,
           userEmail: EndTimeImages[i].buyerEmail,
           starting_time: EndTimeImages[i].starting_time,
+          imageId: EndTimeImages[i].image.imageId,
         });
         promises.push(newMarketHistoryPromise);
         promises.push(newMarketHistoryBuyPromise);
@@ -341,7 +343,7 @@ exports.findAllMyImages = async (req, res) => {
     });
 
     // console.log("myAllImages: ", myAllImages);
-    res.status(200).send({ success: true, images: myAllImages });
+    return res.status(200).send({ success: true, images: myAllImages });
 
     // .then((images) => {
     //   res.status(200).send({ success: true, images });
@@ -354,7 +356,7 @@ exports.findAllMyImages = async (req, res) => {
     // });
   } catch (error) {
     console.log("err: ", error);
-    res.status(500).send({
+    return res.status(500).send({
       message: error || "Some error occurred while retrieving Images.",
       error: error,
     });

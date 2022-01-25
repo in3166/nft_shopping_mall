@@ -7,20 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    // owner: {
-    //   type: Sequelize.STRING,
-    //   references: {
-    //     model: "users",
-    //     key: "email",
-    //   },
-    // },
-    // product: {
-    //   type: Sequelize.INTEGER,
-    //   references: {
-    //     model: "images",
-    //     key: "id",
-    //   },
-    // },
+    // owner => index
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     type: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -33,6 +24,15 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    contractAddress: {
+      type: Sequelize.STRING,
+    },
+    tokenId: {
+      type: Sequelize.INTEGER,
+    },
+    networkId: {
+      type: Sequelize.INTEGER,
+    },
     limit_hours: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -44,6 +44,18 @@ module.exports = (sequelize, Sequelize) => {
     soldOut: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
+    },
+    url: {
+      type: Sequelize.STRING,
+    },
+    buyout: {
+      type: Sequelize.INTEGER,
+    },
+    markup: {
+      type: Sequelize.INTEGER,
+    },
+    description: {
+      type: Sequelize.TEXT,
     },
   });
 

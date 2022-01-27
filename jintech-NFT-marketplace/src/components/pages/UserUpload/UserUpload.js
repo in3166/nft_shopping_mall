@@ -3,12 +3,12 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
 import Card from "../../UI/Card/Card";
 import styles from "./UserUpload.module.css";
 import UploadAuction from "./Sections/UploadAuction";
 import UploadSale from "./Sections/UploadSale";
 import { useSelector } from "react-redux";
+import ImageContract from "../../../abis/ImageContract.json";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,21 +41,49 @@ const UserUpload = (props) => {
   const { authChecked } = props;
   const history = useHistory();
   const user = useSelector((state) => state?.user?.user);
+  const [Contract, setContract] = useState("");
+  const [TotalSupply, setTotalSupply] = useState("");
+  const [Address, setAddress] = useState("");
+  const [NetworkId, setNetworkId] = useState("");
+  const [Accounts, setAccounts] = useState("");
+
   const getAccount = useCallback(async () => {
     const accounts = await window.web3.eth.getAccounts();
     console.log(accounts[0]);
+    setAccounts(accounts[0]);
     console.log("user: ", user);
     if (accounts && user.email !== "") {
       await axios
         .get(`/api/users/user/${user.email}`)
-        .then((res) => {
+        .then(async (res) => {
           console.log("res : ", res.data.address);
-          if (accounts[0] !== res.data.address) {
-            if (user.isLoggedIn && authChecked) {
+          // user가 로그인 상태고 권한 체크가 완료된 상태
+          if (user.isLoggedIn && authChecked) {
+            if (accounts[0] !== res.data.address) {
               alert("지갑 주소가 맞지 않습니다.");
               history.replace("/");
+              return;
             }
-            //user.walletAddress = accounts[0];
+
+            const temp_networkId = await window.web3.eth.net.getId();
+            const temp_networkData = ImageContract.networks[temp_networkId];
+            if (temp_networkData) {
+              const abi = ImageContract.abi;
+              const temp_address = temp_networkData.address;
+              const temp_contract = new window.web3.eth.Contract(
+                abi,
+                temp_address
+              );
+              console.log("contreact: ", temp_contract);
+              const temp_totalSupply = await temp_contract.methods
+                .totalSupply()
+                .call();
+
+              setContract(temp_contract);
+              setTotalSupply(temp_totalSupply);
+              setAddress(temp_address);
+              setNetworkId(temp_networkId);
+            }
           }
         })
         .catch((err) => {
@@ -106,10 +134,22 @@ const UserUpload = (props) => {
       </Tabs>
       <Divider />
       <TabPanel value={value} index={1} user={user}>
-        <UploadAuction />
+        <UploadAuction
+          networkId={NetworkId}
+          totalSupply={TotalSupply}
+          address={Address}
+          contract={Contract}
+          accounts={Accounts}
+        />
       </TabPanel>
       <TabPanel value={value} index={2} user={user}>
-        <UploadSale />
+        <UploadSale
+          networkId={NetworkId}
+          totalSupply={TotalSupply}
+          address={Address}
+          contract={Contract}
+          accounts={Accounts}
+        />
       </TabPanel>
     </Card>
   );

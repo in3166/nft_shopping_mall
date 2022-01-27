@@ -46,7 +46,7 @@ const MyImageDetail = ({ match }) => {
       {Image.id && (
         <Grid container spacing={4} columns={18}>
           <Grid item xs={18} sm={9}>
-            <MyProductImage Image={Image} url={Image?.image?.url} />
+            <MyProductImage Image={Image} url={Image?.url} />
           </Grid>
           <Grid item xs={18} sm={9}>
             <MyProductInfo Image={Image} setImage={setImage} Categories={Categories} />

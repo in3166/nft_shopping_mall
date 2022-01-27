@@ -107,7 +107,7 @@ const ProductInfo = (props) => {
     if (isBidding) {
       setValue("1");
     }
-    if (Image.image) {
+    if (Image.id) {
       getAllBidHistory();
       setCountDate(
         new Date(Image.starting_time).getTime() +
@@ -132,7 +132,7 @@ const ProductInfo = (props) => {
     }
   }, [isBidding, getAllBidHistory, Image, CountDate]);
 
-  if (Image.image === undefined) {
+  if (Image.id === undefined) {
     return <>Loading...</>;
   }
 
@@ -178,7 +178,7 @@ const ProductInfo = (props) => {
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
       <div>
-        <h5>{Image.image.filename}</h5>
+        <h5>{Image.name}</h5>
       </div>
       <div style={{ display: "flex", paddingTop: 20, paddingBottom: 14 }}>
         {/* <div style={{ display: "flex" }}>
@@ -211,7 +211,7 @@ const ProductInfo = (props) => {
           }}
           variant="outlined"
         >
-          {Image.image.description}
+          {Image.description}
         </Card>
       </div>
       <div>
@@ -223,7 +223,7 @@ const ProductInfo = (props) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <h5>Minimum Markup</h5>
-            {Image?.image?.markup?.toLocaleString("ko-KR")} ETH
+            {Image?.markup?.toLocaleString("ko-KR")} ETH
           </div>
         </div>
       )}
@@ -262,7 +262,7 @@ const ProductInfo = (props) => {
               <div style={{ fontSize: "10px" }}>Buyout Price</div>
               <div style={{ fontSize: "12px" }}>
                 <strong>
-                  {Image.image.buyout.toLocaleString("ko-KR")} ETH
+                  {Image.buyout.toLocaleString("ko-KR")} ETH
                 </strong>
               </div>
             </Button>
@@ -383,7 +383,7 @@ const ProductInfo = (props) => {
           Image={Image}
           getAllBidHistory={getAllBidHistory}
           EndTime={EndTime}
-          buyout={Image.image.buyout}
+          buyout={Image.buyout}
         />
       )}
       {isBidding !== null && (

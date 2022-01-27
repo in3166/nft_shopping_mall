@@ -65,7 +65,7 @@ const InfoModal = (props) => {
       .get(selectedData.url, { responseType: "blob" })
       .then((res) => {
         console.log(res.data);
-        let file = new File([res.data], selectedData.filename);
+        let file = new File([res.data], selectedData.name);
         // file: name(생성시간 포함), size, type만 존재
         // formandpreview에선 lastModified, lastModifiedDate, webkitRelativePath 포함되어서 mint
         console.log(file);
@@ -96,7 +96,7 @@ const InfoModal = (props) => {
                 // this.state.new_hash 를 파일 구분을 위해 추가 함
                 contract.methods
                   .mint(
-                    selectedData.filename,
+                    selectedData.name,
                     selectedData.description,
                     selectedData.url,
                     selectedData.price,
@@ -175,7 +175,7 @@ const InfoModal = (props) => {
               <TextField
                 id="filename"
                 label="File Name"
-                defaultValue={selectedData.filename}
+                defaultValue={selectedData.name}
                 InputProps={{
                   readOnly: true,
                 }}

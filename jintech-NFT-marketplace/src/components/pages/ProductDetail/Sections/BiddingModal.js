@@ -35,7 +35,7 @@ const BiddingModal = (props) => {
 
   const handlePriceChange = (e) => {
     setPrice(e.target.value);
-    if (Image.current_price + Image.image.markup < Number(e.target.value)) {
+    if (Image.current_price + Image.markup < Number(e.target.value)) {
       setisOverMarkup(true);
       setisUnderPrice(false);
     } else if (Number(e.target.value) <= Image.current_price) {
@@ -131,7 +131,7 @@ const BiddingModal = (props) => {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Minimum Markup</span>
-                <span>{Image.image.markup.toLocaleString("ko-KR")} ETH</span>
+                <span>{Image.markup.toLocaleString("ko-KR")} ETH</span>
               </div>
             </div>
             <br />

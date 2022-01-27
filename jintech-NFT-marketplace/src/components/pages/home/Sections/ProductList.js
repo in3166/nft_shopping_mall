@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "../HomePage.css";
 
 const ProductList = (props) => {
-  const { _DATA, Images, TokenPrice } = props;
+  const { count, Images, TokenPrice } = props;
 
-  return _DATA.currentData().map((val, key) => (
+  return Images.filter((v, k) => k <= count).map((val, key) => (
     <div key={key} className="product-pages-list flex-wrap">
       <div className="card-wrap flex-row card">
         {/* 2021.11.26 스타일 이동(div로 한 번 더 묶음 */}

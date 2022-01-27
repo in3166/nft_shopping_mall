@@ -16,8 +16,10 @@ import Crypto from "crypto";
 import { create } from "ipfs-http-client";
 
 import styles from "../UserUpload.module.css";
+import getBase64 from "../../../../util/getBase64";
 
-const UploadSale = () => {
+const UploadSale = (props) => {
+  const { networkId, totalSupply, address, contract, accounts } = props;
   const [period, setPeriod] = useState(12);
   const [file, setfile] = useState("");
   const user = useSelector((state) => state.user.user);
@@ -62,62 +64,102 @@ const UploadSale = () => {
     }
   };
 
-  const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     if (
-      !urlHasError &&
-      !startPriceHasError &&
-      !descriptionHasError &&
-      file.filename !== ""
+      urlHasError &&
+      startPriceHasError &&
+      descriptionHasError &&
+      !file.filename !== ""
     ) {
-      var client = create("http://127.0.0.1:5002/");
-      const { cid } = await client.add(file);
-
-      console.log("cid: ", cid);
-
-      //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
-      //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-      const urlStr = `http://localhost:9090/ipfs/${cid}`;
-
-      const formData = new FormData();
-      formData.append(
-        "body",
-        JSON.stringify({
-          email: user.email,
-          url: urlStr,
-          price: startPriceValue,
-          buyout: startPriceValue,
-          period: period,
-          description: descriptionValue,
-          type: "sale",
-          address: user.userAddress
-        })
-      );
-      formData.append("file", file);
-
-      axios
-        .post("/api/images/", formData, {
-          header: { "content-type": "multipart/form-data" },
-        })
-        .then((res) => {
-          console.log(res);
-          if (res.data.success) {
-            alert(res.data.msg);
-          } else {
-            alert(res.data.msg);
-          }
-          resetUrl();
-          resetDescription();
-          resetStartPrice();
-          setPeriod(12);
-          setfile({ filename: "" });
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
       alert("입력을 완료해주세요.");
     }
+
+    var client = create("http://127.0.0.1:5002/");
+    const { cid } = await client.add(file);
+    console.log("cid: ", cid);
+    //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+    //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+    const urlStr = `http://localhost:9090/ipfs/${cid}`;
+
+    const body = {
+      ownerEmail: user.email,
+      url: urlStr,
+      current_price: startPriceValue,
+      limit_hours: period,
+      description: descriptionValue,
+      type: "sale",
+      onMarket: false,
+      soldOut: false,
+      networkId: networkId,
+      tokenId: totalSupply - 1,
+      starting_time: new Date(),
+      contractAddress: address,
+      name: urlValue,
+    };
+
+    axios
+      .post("/api/marketplaces", body)
+      .then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          getBase64(file, (result) => {
+            const baseFile = result;
+            const hash = Crypto.createHash("sha256")
+              .update(baseFile)
+              .digest("base64");
+            const tokenURI = "https://token.artblocks.io/3784";
+
+            contract.methods
+              .mint(
+                urlValue, //name
+                descriptionValue,
+                urlStr,
+                startPriceValue,
+                tokenURI
+              )
+              .send({ from: accounts })
+              .once("receipt", (receipt) => {
+                console.log("nft created");
+                alert(res.data.msg);
+                resetUrl();
+                resetDescription();
+                resetStartPrice();
+                setPeriod(12);
+                setfile({ filename: "" });
+              })
+              .catch((err) => {
+                alert(err);
+                // db삭제 ...
+              });
+          });
+        } else {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+
+    // const formData = new FormData();
+    // formData.append(
+    //   "body",
+    //   JSON.stringify({
+    //     email: user.email,
+    //     url: urlStr,
+    //     price: startPriceValue,
+    //     buyout: startPriceValue,
+    //     period: period,
+    //     description: descriptionValue,
+    //     type: "sale",
+    //     address: user.userAddress
+    //   })
+    // );
+    // formData.append("file", file);
+    // axios
+    //   .post("/api/images/", formData, {
+    //     header: { "content-type": "multipart/form-data" },
+    //   })
   };
 
   return (

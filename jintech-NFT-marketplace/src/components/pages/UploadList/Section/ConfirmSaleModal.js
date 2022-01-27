@@ -107,7 +107,7 @@ const ConfirmSaleModal = (props) => {
               <TextField
                 id="filename"
                 label="File Name"
-                defaultValue={selectedData.filename}
+                defaultValue={selectedData.name}
                 InputProps={{
                  // readOnly: true,
                 }}

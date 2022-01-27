@@ -6,15 +6,13 @@ import styles from "./SalesAnalysis.module.css";
 
 const columns = [
   {
-    field: "image",
-    id: "image1",
-    name: "image1",
+    field: "name",
     headerName: "Name",
-    width: 300,
+    width: 150,
     //    align: "center",
     headerAlign: "center",
     renderCell: (params) => (
-      <div title={params?.value?.filename}>{params?.value?.filename}</div>
+      <div title={params?.value}>{params?.value}</div>
     ),
   },
   { field: "userEmail", headerName: "Seller", width: 200 },

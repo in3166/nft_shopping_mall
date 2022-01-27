@@ -80,6 +80,7 @@ const UsersAnalysis = () => {
     console.log(data.row);
     setSelectedUser(data.row);
     setModalOpen(true);
+
   };
 
   return (

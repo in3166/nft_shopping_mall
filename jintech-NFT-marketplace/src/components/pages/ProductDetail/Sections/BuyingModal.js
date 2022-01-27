@@ -25,12 +25,11 @@ const BuyingModal = (props) => {
     if (EndTime) return;
     const body = {
       action: "buy",
-      price: Image.image.buyout,
+      price: Image.buyout,
       userEmail: user.email,
       marketplaceId: Image.id,
       starting_time: Image.starting_time,
       ownerEmail: Image.ownerEmail,
-      imageId: Image.image.id,
     };
     console.log("body: ", body);
     axios
@@ -70,7 +69,7 @@ const BuyingModal = (props) => {
       <Box sx={{ p: 6 }}>
         <div style={{ textAlign: "center" }}>You Will Pay</div>
         <DialogTitle id="responsive-dialog-title" sx={{ textAlign: "center" }}>
-          {Image.image.buyout.toLocaleString("ko-KR")} ETH
+          {Image.buyout.toLocaleString("ko-KR")} ETH
         </DialogTitle>
         <DialogContent sx={{ alignSelf: "center" }}>
           <Box

@@ -22,7 +22,6 @@ db.sequelize = sequelize;
 db.users = require("./users.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
 db.otp = require("../models/otp.model.js")(sequelize, Sequelize);
-db.image = require("../models/image.model.js")(sequelize, Sequelize);
 db.category = require("../models/categories.model.js")(sequelize, Sequelize);
 db.banner = require("../models/banners.model.js")(sequelize, Sequelize);
 db.marketplace = require("../models/marketplaces.model.js")(
@@ -31,6 +30,7 @@ db.marketplace = require("../models/marketplaces.model.js")(
 );
 db.marketHistory = require("./marketHistories.model.js")(sequelize, Sequelize);
 db.view = require("../models/views.model.js")(sequelize, Sequelize);
+db.favorite = require("../models/favorites.model.js")(sequelize, Sequelize);
 
 // db.otp.hasOne(db.users, {
 //   as: "email",
@@ -56,23 +56,12 @@ db.marketplace.belongsTo(db.category, {
   targetKey: "id",
 });
 
-// db.image.hasMany(db.marketplace);
-
-// db.users.hasMany(db.marketplace, {
-//   foreignKey: "ownerEmail",
-//   as: "owner",
-// });
-
 db.marketplace.belongsTo(db.users, {
   foreignKey: "ownerEmail",
   as: "owner",
   targetKey: "email",
 });
 
-// db.users.hasMany(db.marketplace, {
-//   foreignKey: "buyerEmail",
-//   as: "buyer",
-// });
 
 db.marketplace.belongsTo(db.users, {
   foreignKey: "buyerEmail",
@@ -80,20 +69,10 @@ db.marketplace.belongsTo(db.users, {
   targetKey: "email",
 });
 
-// db.marketplace.belongsTo(db.image, {
-//   foreignKey: "product",
-//   targetKey: "id",
-// });
 
 db.marketHistory.belongsTo(db.marketplace, {
   foreignKey: "marketplaceId",
   as: "marketplace",
-  targetKey: "id",
-});
-
-db.marketHistory.belongsTo(db.image, {
-  foreignKey: "imageId",
-  as: "image",
   targetKey: "id",
 });
 
@@ -122,12 +101,17 @@ db.view.belongsTo(db.marketplace, {
   targetKey: "id",
 });
 
-db.view.belongsTo(db.image, {
-  foreignKey: "imageId",
-  as: "image",
-  targetKey: "id",
+db.favorite.belongsTo(db.users, {
+  foreignKey: "userEmail",
+  as: "user",
+  targetKey: "email",
 });
 
+db.favorite.belongsTo(db.marketplace, {
+  foreignKey: "marketplaceId",
+  as: "marketplace",
+  targetKey: "id",
+});
 db.ROLES = ["user", "admin", "admin2"];
 
 module.exports = db;

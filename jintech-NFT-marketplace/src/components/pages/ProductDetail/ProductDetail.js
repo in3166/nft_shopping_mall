@@ -23,7 +23,6 @@ const ProductDetail = ({ match }) => {
         setImage(res.data.info);
         ViewCounts(window.location.pathname, user.email, {
           marketplaceId: res.data.info.id,
-          imageId: res.data.info.image.id,
         });
       })
       .catch((err) => {
@@ -61,7 +60,7 @@ const ProductDetail = ({ match }) => {
         <Box sx={{ p: 2, pt: 4, overflow: "auto" }}>
           <Grid container spacing={6} columns={18}>
             <Grid item xs={18} sm={9}>
-              <ProductImage url={Image?.image?.url} />
+              <ProductImage url={Image?.url} />
             </Grid>
             <Grid item xs={18} sm={9}>
               <ProductInfo Image={Image} setImage={setImage} />

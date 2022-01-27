@@ -36,7 +36,7 @@ const MyProductImage = (props) => {
       </Card>
       <br />
       <div style={{ display: "flex", marginLeft: 8 }}>
-        <h5>{Image.image.filename}</h5>
+        <h5>{Image?.name}</h5>
       </div>
 
       <div
@@ -105,7 +105,7 @@ const MyProductImage = (props) => {
             </label>
             <br />
             <label
-              title={Image.image.url}
+              title={Image.url}
               style={{
                 maxWidth: "100%",
                 overflow: "hidden",
@@ -114,7 +114,7 @@ const MyProductImage = (props) => {
                 margin: 0,
               }}
             >
-              {Image.image.url}
+              {Image.url}
             </label>
           </div>
         </div>

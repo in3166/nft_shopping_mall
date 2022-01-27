@@ -9,6 +9,8 @@ import usePagination from "../../../hooks/usePagination";
 import axios from "axios";
 import HomeBanner from "./Sections/HomeBanner";
 import ProductList from "./Sections/ProductList";
+import { useScroll } from "../../../hooks/useScroll";
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 const HomePage = (props) => {
   const { t } = useTranslation();
@@ -16,14 +18,51 @@ const HomePage = (props) => {
   const [TokenPrice, setTokenPrice] = useState(0);
   const [Loading, setLoading] = useState(false);
 
+  const { scrollY } = useScroll();
+
   const PER_PAGE = 8;
-  const _DATA = usePagination(Images, PER_PAGE);
+  //const _DATA = usePagination(Images, PER_PAGE);
   const [page, setPage] = useState(1);
 
-  const handlePageChange = (e, page) => {
-    setPage(page);
-    _DATA?.jump(page);
-  };
+  // const handlePageChange = (e, page) => {
+  //   setPage(page);
+  //   _DATA?.jump(page);
+  // };
+
+  const [count, setCount] = useState(5);
+  // const [ref, setRef] = useInfiniteScroll((entry, observer) => {
+  //   loadMorePosts();
+  // });
+
+  function loadMorePosts() {
+    setCount((v) => {
+      if (v + 5 <= Images.length) return v + 5;
+      else return Images.length;
+    });
+  }
+  console.log(count, "count");
+
+  console.log(
+    scrollY,
+    window.innerHeight,
+    scrollY + window.innerHeight,
+    document.body.scrollHeight
+  );
+
+  if (
+    Images.length > 0 &&
+    !Loading &&
+    count < Images.length
+    //Math.ceil(Images.length / PER_PAGE) > page
+  ) {
+    console.log("!!");
+    if (scrollY + window.innerHeight >= document.body.scrollHeight - 100) {
+      console.log("@@");
+      loadMorePosts();
+      // setPage(page + 1);
+      //handlePageChange(null, page + 1);
+    }
+  }
 
   const getAllImages = async () => {
     setLoading(true);
@@ -147,15 +186,21 @@ const HomePage = (props) => {
           </Stack>
         )}
         {!Loading && (
-          <ProductList _DATA={_DATA} Images={Images} TokenPrice={TokenPrice} />
+          <ProductList
+           // _DATA={_DATA}
+            Images={Images}
+            TokenPrice={TokenPrice}
+            count={count}
+          />
         )}
       </div>
 
       {/* 21.11.26 페이지 넘기는 부분 */}
-      {!Loading && (
+      {/* {!Loading && (
         <div className="market-pager d-flex">
           <Pagination
             //count={10}
+            ref={setRef}
             color="primary"
             page={page}
             siblingCount={1}
@@ -164,7 +209,7 @@ const HomePage = (props) => {
             onChange={handlePageChange}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

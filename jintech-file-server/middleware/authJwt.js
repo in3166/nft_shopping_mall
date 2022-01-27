@@ -22,15 +22,15 @@ verifyToken = (req, res, next) => {
 
     await User.findOne({ where: { email: decoded.userEmail } })
       .then(async (user) => {
-        console.log("user: ", user.dataValues);
+        //console.log("user: ", user.dataValues);
         req.user = user.dataValues;
         await user.getRoles().then((roles) => {
           req.user.role = roles[0].name;
-          console.log("role", roles);
+          // console.log("role", roles);
         });
       })
       .catch((err) => {
-        console.log("find err: ", err);
+        // console.log("find err: ", err);
         res.status(400).send({ message: err });
       });
 
@@ -53,7 +53,7 @@ isTokenAdmin = (req, res, next) => {
   token = JSON.parse(token);
   jwt.verify(token, config.secret, async (err, decoded) => {
     if (err) {
-      console.log("jwt.verify token err: ", err);
+      //console.log("jwt.verify token err: ", err);
       return res.status(200).send({
         success: false,
         message: "Not admin: Unauthorized!",
@@ -63,15 +63,15 @@ isTokenAdmin = (req, res, next) => {
 
     await User.findOne({ where: { email: decoded.userEmail } })
       .then(async (user) => {
-        console.log("user: ", user.dataValues);
+        // console.log("user: ", user.dataValues);
         req.user = user.dataValues;
         await user.getRoles().then((roles) => {
           req.user.role = roles[0].name;
-          console.log("role", roles);
+          //console.log("role", roles);
         });
       })
       .catch((err) => {
-        console.log("find err: ", err);
+        // console.log("find err: ", err);
         res.status(400).send({ message: err });
       });
 
@@ -92,7 +92,7 @@ isAdmin = (req, res, next) => {
       message: "No email provided!",
     });
   }
-  console.log('isadmin email:" ', email);
+  //console.log('isadmin email:" ', email);
   User.findOne({ where: { email: email } })
     .then((user) => {
       user
@@ -104,18 +104,18 @@ isAdmin = (req, res, next) => {
               return;
             }
           }
-          console.log("isnot admin");
+          //    console.log("isnot admin");
           res.status(403).send({
             message: "Require Admin Role!",
           });
           return;
         })
         .catch((err) => {
-          console.log("isadmin find role: ", err);
+          //    console.log("isadmin find role: ", err);
         });
     })
     .catch((err) => {
-      console.log("isAdmin find err: ", err);
+      //  console.log("isAdmin find err: ", err);
       res.status(400).send({
         message: err,
         error: err,
@@ -124,9 +124,9 @@ isAdmin = (req, res, next) => {
 };
 
 isModerator = (req, res, next) => {
-  console.log("req.body: ", req.body);
+  // console.log("req.body: ", req.body);
   User.findOne({ where: { email: req.body.email } }).then((user) => {
-    console.log("!!!!!!!?:", user);
+    //  console.log("!!!!!!!?:", user);
     user.getRoles().then((roles) => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "moderator") {
@@ -134,7 +134,7 @@ isModerator = (req, res, next) => {
           return;
         }
       }
-      console.log("Require Moderator Role!");
+      //  console.log("Require Moderator Role!");
       res.status(403).send({
         message: "Require Moderator Role!",
       });

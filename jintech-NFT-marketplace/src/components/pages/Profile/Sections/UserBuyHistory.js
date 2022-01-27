@@ -17,7 +17,7 @@ const columns = [
     headerName: "Name",
     width: 310,
     renderCell: (params) => (
-      <div title={params.value?.filename}>{params.value?.filename}</div>
+      <div title={params?.name}>{params?.name}</div>
     ),
   },
   {

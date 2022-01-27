@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import styles from "./MyImage.module.css";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import LoadingSpinner from "../../UI/Loading/LoadingSpinner";
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 const MyImage = (props) => {
   const { authChecked } = props;
@@ -14,15 +15,18 @@ const MyImage = (props) => {
   const [Images, setImages] = useState(null);
   const [Loading, setLoading] = useState(false);
   const [isMounted, setisMounted] = useState(true);
-
+  const [count, setCount] = useState(2);
+  const [OriginalImages, setOriginalImages] = useState([]);
   console.log(Images);
+
   const getAllMyImages = useCallback(() => {
     setLoading(true);
     axios
       .get("/api/marketplaces/myimages/" + user.email)
       .then((res) => {
         if (res.data.success) {
-          setImages(res.data.images);
+          setOriginalImages(res.data.images);
+          setImages(res.data.images.filter((v, k) => k < count));
         } else {
           alert(res.data.message);
         }
@@ -65,9 +69,44 @@ const MyImage = (props) => {
     if (isMounted) setLoading(false);
   }, [history, user, isMounted]);
 
+  const [target, setTarget] = useState(null);
+
+  // const getMoreItem = useCallback(async () => {
+  //   console.log("getmore?");
+  //   await new Promise((resolve) => setTimeout(resolve, 1000));
+  //   setcount((prev) => prev + 2);
+  //   setImages(OriginalImages.filter((v, k) => k < count + 2));
+  //   //let Items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  //   //setItemLists((itemLists) => itemLists.concat(Items));
+  // }, [OriginalImages, count]);
+
+  const [ref, setRef] = useInfiniteScroll((entry, observer) => {
+    loadMorePosts();
+  });
+
+  const loadMorePosts = async () => {
+    console.log("load?", count, OriginalImages.length);
+    if (Images?.length > 0 && count < OriginalImages.length) {
+      console.log("load?");
+      let loadNum;
+      if (count + 6 <= Images.length) loadNum = Images.length;
+      else loadNum = count + 6;
+      setCount((prev) => loadNum);
+      setImages(OriginalImages.filter((v, k) => k < loadNum));
+    }
+  };
+
   useEffect(() => {
     getAccount();
     getAllMyImages();
+
+    // let observer;
+    // if (target) {
+    //   observer = new IntersectionObserver(onIntersect, {
+    //     threshold: 0.4,
+    //   });
+    //   observer.observe(target);
+    // }
 
     return () => {
       setisMounted(false);
@@ -99,17 +138,14 @@ const MyImage = (props) => {
                   // state: {name: "vikas"}
                 }}
               >
-                <Card
-                  className={styles["card-wrap"]}
-                  title={value?.image?.filename}
-                >
+                <Card className={styles["card-wrap"]} title={value?.name}>
                   {/* 2021.11.26 스타일 이동(div로 한 번 더 묶음 */}
                   <div className={styles.imageBox}>
                     {/* 2021.11.26 텍스트 구분 */}
                     <img
                       alt="token"
                       className={styles.image}
-                      src={value?.image?.url}
+                      src={value?.url}
                     />
                   </div>
                   <div className={styles.infoBox}>
@@ -122,9 +158,7 @@ const MyImage = (props) => {
                       }}
                     >
                       Name
-                      <span className="token-data">
-                        {value?.image?.filename}
-                      </span>
+                      <span className="token-data">{value?.name}</span>
                     </div>
                     <div className="token-box-info token-price">
                       Price
@@ -135,7 +169,7 @@ const MyImage = (props) => {
                     </div>
                     <div className="token-box-info token-id">
                       Token ID
-                      <span className="token-data">{value?.token}</span>
+                      <span className="token-data">{value?.tokenId}</span>
                     </div>
                     <div className="token-box-info token-id">
                       Status
@@ -148,6 +182,20 @@ const MyImage = (props) => {
               </Link>
             </Grid>
           ))}
+
+        <div
+          ref={setRef}
+          className="Target-Element"
+          style={{
+            width: "100vw",
+            height: "140px",
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+            alignItems: "center",
+          }}
+        >
+        </div>
       </Grid>
       {noItems}
     </div>

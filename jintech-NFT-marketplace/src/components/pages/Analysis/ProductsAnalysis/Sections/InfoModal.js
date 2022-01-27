@@ -135,7 +135,7 @@ const InfoModal = (props) => {
               <TextField
                 id="filename"
                 label="File Name"
-                defaultValue={selectedData.image?.filename}
+                defaultValue={selectedData?.name}
                 InputProps={{
                   readOnly: true,
                 }}
@@ -146,7 +146,7 @@ const InfoModal = (props) => {
               <TextField
                 id="url"
                 label="URL"
-                defaultValue={selectedData.image?.url}
+                defaultValue={selectedData?.url}
                 InputProps={{
                   readOnly: true,
                 }}

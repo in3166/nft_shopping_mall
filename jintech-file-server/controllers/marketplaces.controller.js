@@ -22,23 +22,23 @@ async function endTimeOrSoldOut(params) {
           attributes: ["email", "address"],
           as: "owner",
         },
-        {
-          model: db.image,
-          attributes: [
-            "id",
-            "filename",
-            "type",
-            "url",
-            "price",
-            "period",
-            "type",
-            "buyout",
-            "markup",
-            "key",
-            "onMarket",
-            "categoryId",
-          ],
-        },
+        // {
+        //   model: db.image,
+        //   attributes: [
+        //     "id",
+        //     "filename",
+        //     "type",
+        //     "url",
+        //     "price",
+        //     "period",
+        //     "type",
+        //     "buyout",
+        //     "markup",
+        //     "key",
+        //     "onMarket",
+        //     "categoryId",
+        //   ],
+        // },
       ],
     });
 
@@ -153,24 +153,6 @@ exports.findOne = (req, res) => {
         attributes: ["email", "address"],
         as: "owner",
       },
-      {
-        model: db.image,
-        attributes: [
-          "categoryId",
-          "filename",
-          "type",
-          "url",
-          "price",
-          "period",
-          "type",
-          "buyout",
-          "markup",
-          "key",
-          "onMarket",
-          "description",
-          "id",
-        ],
-      },
     ],
   })
     .then((info) => {
@@ -190,23 +172,6 @@ exports.findAll = (req, res) => {
         model: db.users,
         attributes: ["email", "address"],
         as: "owner",
-      },
-      {
-        model: db.image,
-        attributes: [
-          "id",
-          "filename",
-          "type",
-          "url",
-          "price",
-          "period",
-          "type",
-          "buyout",
-          "markup",
-          "key",
-          "onMarket",
-          "categoryId",
-        ],
       },
     ],
   })
@@ -231,23 +196,6 @@ exports.findAllOnMarket = (req, res) => {
         model: db.users,
         attributes: ["email", "address"],
         as: "owner",
-      },
-      {
-        model: db.image,
-        attributes: [
-          "id",
-          "filename",
-          "type",
-          "url",
-          "price",
-          "period",
-          "type",
-          "buyout",
-          "markup",
-          "key",
-          "onMarket",
-          "categoryId",
-        ],
       },
     ],
   })
@@ -322,23 +270,6 @@ exports.findAllMyImages = async (req, res) => {
           attributes: ["email", "address"],
           as: "owner",
         },
-        {
-          model: db.image,
-          attributes: [
-            "id",
-            "filename",
-            "type",
-            "url",
-            "price",
-            "period",
-            "type",
-            "buyout",
-            "markup",
-            "key",
-            "onMarket",
-            "categoryId",
-          ],
-        },
       ],
     });
 
@@ -377,28 +308,6 @@ exports.update = async (req, res) => {
     buyerEmail: null,
   };
 
-  let imageData;
-
-  if (marketData.type === "auction") {
-    imageData = {
-      type: req.body.type,
-      price: req.body.current_price,
-      buyout: req.body.buyout,
-      markup: req.body.markup,
-      period: req.body.limit_hours,
-      description: req.body.description,
-      categoryId: req.body.categoryId === 0 ? null : req.body.categoryId,
-    };
-  } else {
-    imageData = {
-      type: req.body.type,
-      price: req.body.current_price,
-      period: req.body.limit_hours,
-      description: req.body.description,
-      categoryId: req.body.categoryId === 0 ? null : req.body.categoryId,
-    };
-  }
-  console.log("imageData: ", imageData);
 
   const historyData = {
     action: "register",
@@ -406,11 +315,11 @@ exports.update = async (req, res) => {
     marketplaceId: req.body.id,
     userEmail: req.body.email,
     starting_time: req.body.starting_time,
-    imageId: req.body.imageId,
   };
+
   console.log("historyData: ", historyData);
+  
   try {
-    await Images.update(imageData, { where: { id: req.body.imageId } });
     await Marketplace.update(marketData, {
       where: { id: req.body.id },
     });
@@ -421,14 +330,6 @@ exports.update = async (req, res) => {
     res.status(500).send({ message: error, error: error });
   }
 
-  // .then((num) => {
-  //   console.log(num);
-  //   res.status(500).send({ success: true });
-  // })
-  // .catch((err) => {
-  //   console.log("err: ", err);
-  //   res.status(500).send({ message: err, error: err });
-  // });
 };
 
 exports.endtime = (req, res) => {

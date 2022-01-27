@@ -11,13 +11,14 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "../UserUpload.module.css";
 import useInput from "../../../../hooks/useInputreduce";
-
+import getBase64 from "../../../../util/getBase64";
 import Crypto from "crypto";
 /* 2021-11-19 ipfs 를 위한 취가 */
 import { create } from "ipfs-http-client";
 
 const UploadAuction = (props) => {
-  // const { user } = props;
+  const { networkId, totalSupply, address, contract, accounts } = props;
+
   const user = useSelector((state) => state.user.user);
   const [period, setPeriod] = useState(12);
   const [Markup, setMarkup] = useState(5);
@@ -88,65 +89,114 @@ const UploadAuction = (props) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     if (
-      !urlHasError &&
-      !startPriceHasError &&
-      !buyoutHasError &&
-      !descriptionHasError &&
-      file.filename !== ""
+      urlHasError &&
+      startPriceHasError &&
+      buyoutHasError &&
+      descriptionHasError &&
+      !file.filename !== ""
     ) {
-      var client = create("http://127.0.0.1:5002/");
-      const { cid } = await client.add(file);
-
-      console.log("cid: ", cid);
-
-      //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
-      //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-      const urlStr = `http://localhost:9090/ipfs/${cid}`;
-
-      const formData = new FormData();
-
-      formData.append(
-        "body",
-        JSON.stringify({
-          email: user.email,
-          url: urlStr,
-          price: startPriceValue,
-          buyout: buyoutValue,
-          period: period,
-          markup: Markup,
-          description: descriptionValue,
-          type: "auction",
-          address: user.userAddress,
-        })
-      );
-      formData.append("file", file);
-      console.log(formData);
-
-      axios
-        .post("/api/images/", formData, {
-          header: { "content-type": "multipart/form-data" },
-        })
-        .then((res) => {
-          console.log(res);
-          if (res.data.success) {
-            alert(res.data.msg);
-          } else {
-            alert(res.data.msg);
-          }
-          resetUrl();
-          resetBuyout();
-          resetDescription();
-          resetStartPrice();
-          setPeriod(12);
-          setMarkup(5);
-          setfile({ filename: "" });
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
       alert("입력을 완료해주세요.");
     }
+
+    // ipfs client 생성 및 이미지 추가
+    var client = create("http://127.0.0.1:5002/");
+    const { cid } = await client.add(file);
+    console.log("cid: ", cid);
+
+    //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
+    //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
+
+    // ipfs에 업로드된 이미지 주소
+    const urlStr = `http://localhost:9090/ipfs/${cid}`;
+
+    // 서버에 이미지를 직접 저장하기 위한 코드
+    // const formData = new FormData();
+    // formData.append(
+    //   "body",
+    //   JSON.stringify({
+    //     email: user.email,
+    //     url: urlStr,
+    //     price: startPriceValue,
+    //     buyout: buyoutValue,
+    //     period: period,
+    //     markup: Markup,
+    //     description: descriptionValue,
+    //     type: "auction",
+    //     address: user.userAddress,
+    //   })
+    // );
+    // formData.append("file", file);
+    // axios
+    //   .post("/api/images/", formData, {
+    //     header: { "content-type": "multipart/form-data" },
+    //   })
+
+    const body = {
+      ownerEmail: user.email,
+      url: urlStr,
+      current_price: startPriceValue,
+      buyout: buyoutValue,
+      limit_hours: period,
+      markup: Markup,
+      description: descriptionValue,
+      type: "auction",
+      onMarket: false,
+      soldOut: false,
+      networkId: networkId,
+      tokenId: totalSupply - 1,
+      contractAddress: address,
+      name: urlValue,
+      starting_time: new Date(),
+    };
+
+    axios
+      .post("/api/marketplaces", body)
+      .then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          getBase64(file, (result) => {
+            const baseFile = result;
+
+            const hash = Crypto.createHash("sha256")
+              .update(baseFile)
+              .digest("base64");
+
+            const tokenURI = "https://token.artblocks.io/3784";
+            console.log("?????????");
+            contract.methods
+              .mint(
+                urlValue, //name
+                descriptionValue,
+                urlStr,
+                startPriceValue,
+                hash
+              )
+              .send({ from: accounts })
+              .once("receipt", (receipt) => {
+                console.log("nft created");
+                console.log(receipt);
+                alert(res.data.msg);
+                resetUrl();
+                resetBuyout();
+                resetDescription();
+                resetStartPrice();
+                setPeriod(12);
+                setMarkup(5);
+                setfile({ filename: "" });
+              })
+              .catch((err) => {
+                alert(err);
+                console.log(err);
+                //db에 추가한 row 삭제하기
+              });
+          });
+        } else {
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
   return (

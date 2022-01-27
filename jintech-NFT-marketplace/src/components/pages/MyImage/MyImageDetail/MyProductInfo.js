@@ -30,9 +30,9 @@ const MyProductInfo = (props) => {
   //console.log(Image);
   //
   const [period, setPeriod] = useState(Number(Image.limit_hours));
-  const [Markup, setMarkup] = useState(Number(Image?.image?.markup) || 5);
+  const [Markup, setMarkup] = useState(Number(Image?.markup) || 5);
   const [categoryId, setcategoryId] = useState(
-    Image.image.categoryId !== null ? Image.image.categoryId : 0
+    Image.categoryId !== null ? Image.categoryId : 0
   );
 
   const {
@@ -50,7 +50,7 @@ const MyProductInfo = (props) => {
     valueBlurHandler: buyoutBlurHandler,
     valueIsValid: buyoutIsValid,
     reset: resetBuyout,
-  } = useInput((data) => data > Image?.current_price, Image?.image?.buyout + 1);
+  } = useInput((data) => data > Image?.current_price, Image?.buyout + 1);
   const {
     value: descriptionValue,
     hasError: descriptionHasError,
@@ -58,7 +58,7 @@ const MyProductInfo = (props) => {
     valueBlurHandler: descriptionBlurHandler,
     valueIsValid: descriptionIsValid,
     reset: resetDescription,
-  } = useInput((data) => data.length > 3, Image?.image?.description);
+  } = useInput((data) => data.length > 3, Image?.description);
 
   const handlePeriodSliderChange = (event, newValue) => {
     if (Image.onMarket) return;
@@ -122,7 +122,7 @@ const MyProductInfo = (props) => {
         .put("/api/marketplaces", body)
         .then((res) => {
           if (res.data.success) {
-            alert("재등록 성공");
+            alert("등록 성공");
           } else {
             alert(res.data.message);
           }
@@ -141,7 +141,7 @@ const MyProductInfo = (props) => {
 
   useEffect(() => {}, []);
 
-  if (Image.image === undefined) {
+  if (Image.id === undefined) {
     return <>Loading...</>;
   }
 
@@ -370,7 +370,7 @@ const MyProductInfo = (props) => {
             style={{ width: "100%" }}
             disabled={Image.onMarket}
           >
-            {Image.onMarket ? "판매중" : "재등록"}
+            {Image.onMarket ? "판매중" : "등록"}
           </Button>
         </Grid>
       </Grid>

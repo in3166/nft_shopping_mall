@@ -25,7 +25,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 import { Box } from "@mui/system";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
@@ -148,60 +148,48 @@ const Navbar = () => {
             )}
           </ul>
           <ul className={`navbar-nav ${styles.ul} ${styles["ul_right"]}`}>
-            {
-              //r관리자 계정 이면 보이고 아니면 안보이는 메뉴 (update : 2021-11-15)
-              //this.props.permission && this.getToken() ? (
-              user.isAdmin ? (
-                <li className={`nav-item ${styles["nav-li"]}`}>
-                  <Link to="/mint" className="nav-link">
-                    {t("Navbar.mintnft")}
-                  </Link>
-                </li>
-              ) : null
-            }
-            {user.isLoggedIn && !user.isAdmin && (
-              <>
-                <Paper
-                  component="form"
-                  sx={{
-                    p: "0px 4px",
-                    mr: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    width: 200,
-                    height: "35px",
-                  }}
-                >
-                  <InputBase
-                    sx={{ ml: 1, flex: 1 }}
-                    placeholder="Search..."
-                    inputProps={{ "aria-label": "search google maps" }}
-                    type="text"
-                    value={SearchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    className={styles["header-search-input"]}
-                  />
-                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            <Paper
+              component="form"
+              sx={{
+                p: "0px 4px",
+                mr: 2,
+                display: "flex",
+                alignItems: "center",
+                width: 200,
+                height: "35px",
+              }}
+            >
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search..."
+                inputProps={{ "aria-label": "search google maps" }}
+                type="text"
+                value={SearchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className={styles["header-search-input"]}
+              />
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-                  <SearchIcon
-                    sx={{ cursor: "pointer" }}
-                    onClick={handleSearchClick}
-                  />
-                </Paper>
-                {/* <li className={`nav-item ${styles["nav-li"]}`}>
-                  <Link to="/upload" className="nav-link">
-                    {t("Navbar.upload")}
-                  </Link>
-                </li> */}
-              </>
-            )}
+              <SearchIcon
+                sx={{ cursor: "pointer" }}
+                onClick={handleSearchClick}
+              />
+            </Paper>
+
             {user.isAdmin && (
               <>
-                <li className={`nav-item ${styles["nav-li"]}`}>
+                {/* <li className={`nav-item ${styles["nav-li"]}`}>
                   <Link className="nav-link" to="/uploadList">
                     {t("Navbar.uploadlist")}
                   </Link>
-                </li>
+                </li> */}
+                {user.isAdmin && (
+                  <li className={`nav-item ${styles["nav-li"]}`}>
+                    <Link to="/upload" className="nav-link">
+                      {t("Navbar.mintnft")}
+                    </Link>
+                  </li>
+                )}
                 <li className={`nav-item ${styles["nav-li"]}`}>
                   <Link className="nav-link" to="/userlist">
                     {t("Navbar.userlist")}

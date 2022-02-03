@@ -1,4 +1,11 @@
-import { Card, Grid } from "@mui/material";
+import {
+  Card,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -15,9 +22,12 @@ const MyImage = (props) => {
   const [Images, setImages] = useState(null);
   const [Loading, setLoading] = useState(false);
   const [isMounted, setisMounted] = useState(true);
-  const [count, setCount] = useState(2);
+  const [count, setCount] = useState(6);
   const [OriginalImages, setOriginalImages] = useState([]);
-  console.log(Images);
+  const [OriginalFilteredImages, setOriginalFilterdImages] = useState([]);
+
+  console.log("immmage : ", Images);
+  console.log("count : ", count);
 
   const getAllMyImages = useCallback(() => {
     setLoading(true);
@@ -26,6 +36,7 @@ const MyImage = (props) => {
       .then((res) => {
         if (res.data.success) {
           setOriginalImages(res.data.images);
+          setOriginalFilterdImages(res.data.images);
           setImages(res.data.images.filter((v, k) => k < count));
         } else {
           alert(res.data.message);
@@ -69,44 +80,26 @@ const MyImage = (props) => {
     if (isMounted) setLoading(false);
   }, [history, user, isMounted]);
 
-  const [target, setTarget] = useState(null);
-
-  // const getMoreItem = useCallback(async () => {
-  //   console.log("getmore?");
-  //   await new Promise((resolve) => setTimeout(resolve, 1000));
-  //   setcount((prev) => prev + 2);
-  //   setImages(OriginalImages.filter((v, k) => k < count + 2));
-  //   //let Items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  //   //setItemLists((itemLists) => itemLists.concat(Items));
-  // }, [OriginalImages, count]);
-
   const [ref, setRef] = useInfiniteScroll((entry, observer) => {
     loadMorePosts();
   });
 
   const loadMorePosts = async () => {
-    console.log("load?", count, OriginalImages.length);
-    if (Images?.length > 0 && count < OriginalImages.length) {
-      console.log("load?");
+    console.log("load?", count, Images?.length);
+    if (Images?.length > 0 && count < OriginalFilteredImages?.length) {
+      console.log("load?2");
       let loadNum;
-      if (count + 6 <= Images.length) loadNum = Images.length;
-      else loadNum = count + 6;
+      if (count + 4 > OriginalFilteredImages?.length)
+        loadNum = OriginalFilteredImages?.length;
+      else loadNum = count + 4;
       setCount((prev) => loadNum);
-      setImages(OriginalImages.filter((v, k) => k < loadNum));
+      setImages(OriginalFilteredImages.filter((v, k) => k < loadNum));
     }
   };
 
   useEffect(() => {
     getAccount();
     getAllMyImages();
-
-    // let observer;
-    // if (target) {
-    //   observer = new IntersectionObserver(onIntersect, {
-    //     threshold: 0.4,
-    //   });
-    //   observer.observe(target);
-    // }
 
     return () => {
       setisMounted(false);
@@ -118,6 +111,19 @@ const MyImage = (props) => {
       <SearchOffIcon className={styles.icon} /> No Items.
     </div>
   );
+  const [SelectedCategory, setSelectedCategory] = useState(0);
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    const filteredImages = OriginalImages.filter(
+      (value) =>
+        e.target.value === 0 ||
+        (e.target.value === 1 && value.type === "auction" && value.onMarket) ||
+        (e.target.value === 2 && value.type === "sale" && value.onMarket) ||
+        (e.target.value === 3 && !value.onMarket)
+    );
+    setOriginalFilterdImages(filteredImages);
+    setImages(filteredImages.filter((k, v) => v <= count));
+  };
 
   return (
     <div className={styles.box}>
@@ -128,6 +134,27 @@ const MyImage = (props) => {
         </div>
       )} */}
       <Grid container columns={24} spacing={4} padding={3}>
+        {!Loading && (
+          <Grid item xs={24}>
+            <FormControl className={styles["header-select-category"]}>
+              <InputLabel id="categories-select-label">Status</InputLabel>
+              <Select
+                labelId="categories-select-label"
+                id="categories-select"
+                onChange={handleCategoryChange}
+                size="small"
+                label="Category"
+                value={SelectedCategory}
+              >
+                <MenuItem value={0}>All</MenuItem>
+                <MenuItem value={1}>Auction</MenuItem>
+                <MenuItem value={2}>Sale</MenuItem>
+                <MenuItem value={3}>보유</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+
         {!Loading &&
           Images?.length > 0 &&
           Images.map((value, index) => (
@@ -194,8 +221,7 @@ const MyImage = (props) => {
             textAlign: "center",
             alignItems: "center",
           }}
-        >
-        </div>
+        ></div>
       </Grid>
       {noItems}
     </div>

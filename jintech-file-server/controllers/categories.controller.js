@@ -106,12 +106,13 @@ exports.getFile = (req, res) => {
   // });
 };
 
+const Marketplace = db.marketplace;
 exports.findOne = async (req, res) => {
   const email = req.params.email;
   console.log("findone", email);
 
-  IMAGE.findAll({
-    where: { email: email },
+  Marketplace.findAll({
+    where: { ownerEmail: email },
   })
     .then((data) => {
       res.status(200).send(data);

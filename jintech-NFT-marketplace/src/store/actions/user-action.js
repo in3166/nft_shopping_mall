@@ -28,16 +28,6 @@ const setLocalStorage = (response) => {
     "nft_token",
     JSON.stringify(response.data.token.accessToken)
   );
-  //console.log(
-  //   "response.data.token.expireTime: ",
-  //   response.data.token.expireTime
-  // );
-  // console.log(
-  //   "response.data.token.expireTime2: ",
-  //   new Date(
-  //     new Date().getTime() + response.data.token.expireTime * 1000 * 30
-  //   )
-  // );
 
   const remainingTime = calculateRemainingTime(
     new Date(new Date().getTime() + response.data.token.expireTime * 1000 * 30)
@@ -49,6 +39,7 @@ const setLocalStorage = (response) => {
   );
   logoutTimer = setTimeout(logoutAction, remainingTime);
 };
+
 // 로그인
 export const loginAction = (body) => {
   return async (dispatch) => {
@@ -78,7 +69,7 @@ export const loginAction = (body) => {
   };
 };
 
-// 로그인
+// otp 로그인
 export const otpConfirmAction = (data) => {
   return async (dispatch) => {
     console.log("users: ", data.user);
@@ -90,9 +81,6 @@ export const otpConfirmAction = (data) => {
 
       if (response.data.success) {
         if (response.data.verify) {
-          console.log(data);
-          console.log(data.user);
-          console.log(data.token);
           const body = {
             data,
           };
@@ -125,7 +113,8 @@ const retrieveStoredToken = () => {
   }
 };
 
-//
+// 로컬스토리지에 있는 jwt를 확인 후 만료시간이 종료 시 삭제후 로그아웃
+// 토큰 존재 시 반환
 export const authCheckAction = (token) => {
   return async (dispatch) => {
     const storedExipirationDate = localStorage.getItem("expirationTime");
@@ -157,7 +146,7 @@ export const authCheckAction = (token) => {
   };
 };
 
-// 페이지 초기 진입 시 토큰 확인 후 로그인
+// 페이지 초기 진입 시 jwt 확인 후 로그인
 export const getLocalTokenAction = (user, token) => {
   return async (dispatch) => {
     const tokenData = retrieveStoredToken();

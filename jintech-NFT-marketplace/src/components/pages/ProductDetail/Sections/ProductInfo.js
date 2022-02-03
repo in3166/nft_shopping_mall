@@ -262,7 +262,7 @@ const ProductInfo = (props) => {
               <div style={{ fontSize: "10px" }}>Buyout Price</div>
               <div style={{ fontSize: "12px" }}>
                 <strong>
-                  {Image.buyout.toLocaleString("ko-KR")} ETH
+                  {Image?.buyout?.toLocaleString("ko-KR")} ETH
                 </strong>
               </div>
             </Button>

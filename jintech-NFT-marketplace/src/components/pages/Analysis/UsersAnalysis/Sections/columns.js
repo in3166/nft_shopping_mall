@@ -7,8 +7,8 @@ export const imageColumns = [
     headerAlign: "center",
   },
   {
-    field: "product",
-    headerName: "Image ID",
+    field: "name",
+    headerName: "Name",
     width: 110,
     align: "center",
     headerAlign: "center",
@@ -17,7 +17,7 @@ export const imageColumns = [
   {
     field: "onMarket",
     headerName: "onMarket",
-    width: 50,
+    width: 90,
     align: "center",
     headerAlign: "center",
   },
@@ -39,11 +39,14 @@ export const buyColumns = [
     headerAlign: "center",
   },
   {
-    field: "marketplaceId",
-    headerName: "상품 ID",
+    field: "name",
+    headerName: "Name",
     width: 110,
     align: "center",
     headerAlign: "center",
+    renderCell: (params) => {
+      return <div title={params?.row?.marketplace?.name}>{params?.row?.marketplace?.name}</div>;
+    },
   },
   { field: "price", headerName: "Price", width: 90 },
   {
@@ -64,11 +67,14 @@ export const saleColumns = [
     headerAlign: "center",
   },
   {
-    field: "marketplaceId",
-    headerName: "상품 ID",
+    field: "name",
+    headerName: "Name",
     width: 110,
     align: "center",
     headerAlign: "center",
+    renderCell: (params) => {
+      return <div title={params?.row?.marketplace?.name}>{params?.row?.marketplace?.name}</div>;
+    },
   },
   { field: "price", headerName: "Price", width: 90 },
   {
@@ -89,11 +95,14 @@ export const bidColumns = [
     headerAlign: "center",
   },
   {
-    field: "marketplaceId",
-    headerName: "상품 ID",
+    field: "name",
+    headerName: "Name",
     width: 110,
     align: "center",
     headerAlign: "center",
+    renderCell: (params) => {
+      return <div title={params?.row?.marketplace?.name}>{params?.row?.marketplace?.name}</div>;
+    },
   },
   { field: "price", headerName: "Price", width: 90 },
   {

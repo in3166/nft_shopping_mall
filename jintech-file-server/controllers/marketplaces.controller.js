@@ -22,23 +22,6 @@ async function endTimeOrSoldOut(params) {
           attributes: ["email", "address"],
           as: "owner",
         },
-        // {
-        //   model: db.image,
-        //   attributes: [
-        //     "id",
-        //     "filename",
-        //     "type",
-        //     "url",
-        //     "price",
-        //     "period",
-        //     "type",
-        //     "buyout",
-        //     "markup",
-        //     "key",
-        //     "onMarket",
-        //     "categoryId",
-        //   ],
-        // },
       ],
     });
 
@@ -91,7 +74,7 @@ async function endTimeOrSoldOut(params) {
           marketplaceId: EndTimeImages[i].id,
           userEmail: EndTimeImages[i].ownerEmail,
           starting_time: EndTimeImages[i].starting_time,
-          imageId: EndTimeImages[i].image.imageId,
+          //  imageId: EndTimeImages[i].image.imageId,
         });
 
         const newMarketHistoryBuyPromise = MarketHistories.create({
@@ -100,7 +83,7 @@ async function endTimeOrSoldOut(params) {
           marketplaceId: EndTimeImages[i].id,
           userEmail: EndTimeImages[i].buyerEmail,
           starting_time: EndTimeImages[i].starting_time,
-          imageId: EndTimeImages[i].image.imageId,
+          //  imageId: EndTimeImages[i].image.imageId,
         });
         promises.push(newMarketHistoryPromise);
         promises.push(newMarketHistoryBuyPromise);
@@ -129,7 +112,8 @@ exports.create = async (req, res) => {
       return res.status(200).json({
         success: true,
         //url: res.req.file.path,
-        msg: "상품 등록을 성공했습니다.",
+        message: "상품 등록을 성공했습니다.",
+        id: createData.id,
       });
     })
     .catch((err) => {
@@ -227,41 +211,6 @@ exports.findAllMyImages = async (req, res) => {
         .status(500)
         .send({ error: endTimeRes.message, message: endTimeRes.message });
 
-    // 판매된 이미지의 소유자 변경 (buyer => owner)
-    // const SoldOut = await Marketplace.findAll({ where: { soldOut: true } });
-    // console.log(SoldOut);
-    // if (SoldOut.length > 0) {
-    //   console.log("SoldOut: ", SoldOut[0].buyerEmail);
-    //   console.log("SoldOut: ", SoldOut[0].id);
-
-    //   let promises = [];
-    //   for (let i = 0; i < SoldOut.length; i++) {
-    //     let newPromise = Marketplace.update(
-    //       {
-    //         ownerEmail: SoldOut[i].buyerEmail,
-    //         buyerEmail: null,
-    //         soldOut: false,
-    //       },
-    //       { where: { id: SoldOut[i].id } }
-    //     );
-    //     let newHistoryPromise = MarketHistory.create({
-    //       action: "sale",
-    //       price: SoldOut[i].current_price,
-    //       userEmail: SoldOut[i].ownerEmail,
-    //       marketplaceId: SoldOut[i].id,
-    //       starting_time: SoldOut[i].starting_time,
-    //     });
-
-    //     promises.push(newPromise);
-    //     promises.push(newHistoryPromise);
-    //   }
-
-    //   const promiseAll = await Promise.all(promises);
-    //   if (promiseAll) {
-    //     console.log(promiseAll);
-    //   }
-    // }
-
     const myAllImages = await Marketplace.findAll({
       where: { ownerEmail: email },
       include: [
@@ -272,19 +221,7 @@ exports.findAllMyImages = async (req, res) => {
         },
       ],
     });
-
-    // console.log("myAllImages: ", myAllImages);
     return res.status(200).send({ success: true, images: myAllImages });
-
-    // .then((images) => {
-    //   res.status(200).send({ success: true, images });
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   res.status(500).send({
-    //     message: err.message || "Some error occurred while retrieving Users.",
-    //   });
-    // });
   } catch (error) {
     console.log("err: ", error);
     return res.status(500).send({
@@ -292,6 +229,30 @@ exports.findAllMyImages = async (req, res) => {
       error: error,
     });
   }
+};
+
+// 사용자가 좋아요한 상품 목록 조회
+exports.findAllFavorites = (req, res) => {
+  const email = req.params.email;
+  db.favorite
+    .findAll({ where: { userEmail: email } })
+    .then((fav) => {
+      console.log(fav);
+      const mk = fav.map((v) => v.marketplaceId);
+      console.log("mk: ", mk);
+      Marketplace.findAll({ where: { id: mk } })
+        .then((data) => {
+          return res.status(200).send(data);
+        })
+        .catch((err) => {
+          console.log("fav marketplace err: ", err);
+          return res.status(400).send({ message: err, error: err });
+        });
+    })
+    .catch((err) => {
+      console.log("market control findallfav err: ", err);
+      return res.status(400).send({ message: err, error: err });
+    });
 };
 
 exports.update = async (req, res) => {
@@ -308,7 +269,6 @@ exports.update = async (req, res) => {
     buyerEmail: null,
   };
 
-
   const historyData = {
     action: "register",
     price: req.body.current_price,
@@ -318,7 +278,7 @@ exports.update = async (req, res) => {
   };
 
   console.log("historyData: ", historyData);
-  
+
   try {
     await Marketplace.update(marketData, {
       where: { id: req.body.id },
@@ -329,7 +289,6 @@ exports.update = async (req, res) => {
     console.log("Re-register error: ", error);
     res.status(500).send({ message: error, error: error });
   }
-
 };
 
 exports.endtime = (req, res) => {
@@ -344,4 +303,32 @@ exports.endtime = (req, res) => {
       console.log;
     })
     .cathch((err) => {});
+};
+
+exports.delete = (req, res) => {
+  const id = req.params.id;
+  console.log("id: ", id);
+  Marketplace.destroy({
+    where: { id },
+  })
+    .then((num) => {
+      console.log("delete num: ", num);
+      if (num == 1) {
+        res.status(200).send({
+          success: true,
+          message: "Market Product was deleted successfully!",
+        });
+      } else {
+        res.status(200).send({
+          success: false,
+          message: `Cannot delete Market Product with name=${name}. Maybe Product was not found!`,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("err: ", err);
+      res.status(500).send({
+        message: "Could not delete",
+      });
+    });
 };

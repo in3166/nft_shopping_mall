@@ -30,7 +30,7 @@ const Marketplace = ({ location }) => {
   const [Images, setImages] = useState(undefined);
   const [OriginalImages, setOriginalImages] = useState(Images);
   const [Categories, setCategories] = useState([]);
-  const [SelectedCategory, setSelectedCategory] = useState(1);
+  const [SelectedCategory, setSelectedCategory] = useState(0);
   const [SelectedType, setSelectedType] = useState(0);
   const [SelectedSort, setSelectedSort] = useState(1);
   const [Loading, setLoading] = useState(false);
@@ -72,15 +72,16 @@ const Marketplace = ({ location }) => {
 
   const [Likes, setLikes] = useState([]);
   const getAllLikes = () => {
-    axios
-      .get("/api/favorites/" + user.email)
-      .then((res) => {
-        console.log("likes: ", res.data);
-        setLikes(res.data);
-      })
-      .catch((err) => {
-        alert(err);
-      });
+    if (user.email && user.email !== "")
+      axios
+        .get("/api/favorites/" + user.email)
+        .then((res) => {
+          console.log("likes: ", res.data);
+          setLikes(res.data);
+        })
+        .catch((err) => {
+          alert(err);
+        });
   };
 
   useEffect(() => {
@@ -176,6 +177,7 @@ const Marketplace = ({ location }) => {
   };
 
   console.log("Images: ", Images);
+
   const [SearchText, setSearchText] = useState("");
   const handleSearchClick = () => {
     console.log(SearchText);
@@ -194,6 +196,7 @@ const Marketplace = ({ location }) => {
     Images?.length === undefined ? [] : Images,
     PER_PAGE
   );
+
   const [page, setPage] = useState(1);
   console.log("_data: ", _DATA);
   console.log("page: ", page);
@@ -209,25 +212,26 @@ const Marketplace = ({ location }) => {
     e.preventDefault();
     console.log("likes!");
     const body = {
-      userEmail: user.email,
+      userEmail: user?.email,
       marketplaceId,
     };
-    axios
-      .post("/api/favorites", body)
-      .then((res) => {
-        if (res.data.success) {
-          if (res.data.status) {
-            setLikes((prev) => [...prev, body]);
+    if (user.email && user.email !== "")
+      axios
+        .post("/api/favorites", body)
+        .then((res) => {
+          if (res.data.success) {
+            if (res.data.status) {
+              setLikes((prev) => [...prev, body]);
+            } else {
+              setLikes((prev) =>
+                prev.filter((v) => v.marketplaceId !== body.marketplaceId)
+              );
+            }
           } else {
-            setLikes((prev) =>
-              prev.filter((v) => v.marketplaceId !== body.marketplaceId)
-            );
+            alert(res.data.message);
           }
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((err) => alert(err));
+        })
+        .catch((err) => alert(err));
   };
 
   return (
@@ -312,18 +316,11 @@ const Marketplace = ({ location }) => {
 
       {Loading && <LoadingSpinner />}
 
-      {!Loading &&
-        (Images?.length === 0 ||
-          Images?.filter(
-            (value, index) =>
-              (Number(SelectedCategory) === 0 ||
-                Number(SelectedCategory) === Number(value.categoryId)) &&
-              (Number(SelectedType) === 0 || SelectedType === value.type)
-          ).length === 0) && (
-          <div className={styles.empty}>
-            <SearchOffIcon className={styles.icon} /> No Items.
-          </div>
-        )}
+      {!Loading && Images?.length === 0 && (
+        <div className={styles.empty}>
+          <SearchOffIcon className={styles.icon} /> No Items.
+        </div>
+      )}
       {/*&&
           Images?.length > 0 &&
           Images.filter(
@@ -419,7 +416,9 @@ const Marketplace = ({ location }) => {
             page={page}
             siblingCount={1}
             boundaryCount={1}
-            count={Math.ceil(Images?.length / PER_PAGE)}
+            count={Math.ceil(
+              (Images?.length > 0 ? Images?.length : 0) / PER_PAGE
+            )}
             onChange={handlePageChange}
           />
         </div>

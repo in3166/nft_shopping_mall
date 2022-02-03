@@ -13,11 +13,13 @@ const columns = [
   },
   //   { field: "email", headerName: "E-Mail", width: 130 },
   {
-    field: "marketplace",
-    headerName: "File name",
+    field: "name",
+    headerName: "Name",
     width: 160,
     renderCell: (params) => (
-      <div title={params.value}>{params.value}</div>
+      <div title={params?.row?.marketplace?.name}>
+        {params?.row?.marketplace?.name}
+      </div>
     ),
   },
   {

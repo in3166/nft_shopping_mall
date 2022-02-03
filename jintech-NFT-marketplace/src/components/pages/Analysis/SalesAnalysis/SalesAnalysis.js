@@ -12,7 +12,7 @@ const columns = [
     //    align: "center",
     headerAlign: "center",
     renderCell: (params) => (
-      <div title={params?.value}>{params?.value}</div>
+      <div title={params?.row?.marketplace?.name}>{params?.row?.marketplace?.name}</div>
     ),
   },
   { field: "userEmail", headerName: "Seller", width: 200 },

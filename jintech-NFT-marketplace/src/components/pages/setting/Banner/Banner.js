@@ -48,7 +48,8 @@ const Banner = () => {
   const [Categories, setCategories] = useState([]);
   const [SelectCatgoryValue, setSelectCatgoryValue] = useState(0);
   const [IsMount, setIsMount] = useState(true);
-  const getAllCategories = () => {
+
+  const getAllCategories = useCallback(() => {
     axios
       .get("/api/categories/")
       .then((res) => {
@@ -61,9 +62,9 @@ const Banner = () => {
       .catch((err) => {
         alert(err);
       });
-  };
+  }, [IsMount]);
 
-  const getAllBanners = () => {
+  const getAllBanners = useCallback(() => {
     setLoadingBanner(true);
     axios
       .get("/api/banners")
@@ -80,63 +81,101 @@ const Banner = () => {
       .finally(() => {
         setLoadingBanner(false);
       });
-  };
+  }, [IsMount]);
 
-  const getImagesFromEth = useCallback(async () => {
-    try {
-      setLoadingItems(true);
-      const accounts = await web3.eth.getAccounts();
-      const networkId = await web3.eth.net.getId();
-      const networkData = ImageContract.networks[networkId];
-      const abi = ImageContract.abi;
-      const address = networkData.address;
-      const contract = new web3.eth.Contract(abi, address);
-      const totalSupply = await contract.methods.totalSupply().call();
+  // const getImagesFromEth = useCallback(async () => {
+  //   try {
+  //     setLoadingItems(true);
+  //     const accounts = await web3.eth.getAccounts();
+  //     const networkId = await web3.eth.net.getId();
+  //     const networkData = ImageContract.networks[networkId];
+  //     const abi = ImageContract.abi;
+  //     const address = networkData.address;
+  //     const contract = new web3.eth.Contract(abi, address);
+  //     const totalSupply = await contract.methods.totalSupply().call();
 
-      const tempImages = [];
-      for (var i = 1; i <= totalSupply; i++) {
-        const id = await contract.methods.images(i - 1).call();
-        const owner = await contract.methods.ownerOf(i - 1).call();
-        const metadata = await contract.methods.imageData(i - 1).call();
-        const body = {
-          id,
-          owner,
-          name: metadata.name,
-          price: metadata.price,
-          token: metadata.token,
-          url: metadata.url,
-          key: i - 1,
-        };
-        tempImages.push(body);
-      }
-      if (IsMount) setImages(tempImages);
+  //     const tempImages = [];
+  //     for (var i = 1; i <= totalSupply; i++) {
+  //       const id = await contract.methods.images(i - 1).call();
+  //       const owner = await contract.methods.ownerOf(i - 1).call();
+  //       const metadata = await contract.methods.imageData(i - 1).call();
+  //       const body = {
+  //         id,
+  //         owner,
+  //         name: metadata.name,
+  //         price: metadata.price,
+  //         token: metadata.token,
+  //         url: metadata.url,
+  //         key: i - 1,
+  //       };
+  //       tempImages.push(body);
+  //     }
+  //     if (IsMount) setImages(tempImages);
 
-      const sale_networkData = TokenSaleContract.networks[networkId];
-      const tokenSaleAbi = TokenSaleContract.abi;
-      const saleAddress = sale_networkData.address;
-      const token_sale_contract = new web3.eth.Contract(
-        tokenSaleAbi,
-        saleAddress
-      );
+  //     const sale_networkData = TokenSaleContract.networks[networkId];
+  //     const tokenSaleAbi = TokenSaleContract.abi;
+  //     const saleAddress = sale_networkData.address;
+  //     const token_sale_contract = new web3.eth.Contract(
+  //       tokenSaleAbi,
+  //       saleAddress
+  //     );
 
-      let token_price = await token_sale_contract.methods.tokenPrice().call();
-      token_price = web3.utils.fromWei(token_price, "ether");
-      setTokenPrice(token_price);
-    } catch (error) {
-      alert(error);
-    } finally {
-      if (IsMount) setLoadingItems(false);
-    }
-  }, [web3.eth, web3.utils, IsMount]);
+  //     let token_price = await token_sale_contract.methods.tokenPrice().call();
+  //     token_price = web3.utils.fromWei(token_price, "ether");
+  //     setTokenPrice(token_price);
+  //   } catch (error) {
+  //     alert(error);
+  //   } finally {
+  //     if (IsMount) setLoadingItems(false);
+  //   }
+  // }, [web3.eth, web3.utils, IsMount]);
+
+  const getImagesFromDB = useCallback(() => {
+    setLoadingItems(true);
+    setIsMount(true);
+    axios
+      .get("/api/marketplaces")
+      .then(async (res) => {
+        if (res.data.success) {
+          console.log(res.data.images);
+          if (IsMount) setImages(res.data.images);
+        } else {
+          alert(res.data.messages);
+        }
+        
+        const accounts = await web3.eth.getAccounts();
+        const networkId = await web3.eth.net.getId();
+        const networkData = ImageContract.networks[networkId];
+        const abi = ImageContract.abi;
+        //const address = IP.CONTRACT_ADDRESS;
+        const sale_networkData = TokenSaleContract.networks[networkId];
+        const tokenSaleAbi = TokenSaleContract.abi;
+        const saleAddress = sale_networkData.address;
+        const token_sale_contract = new web3.eth.Contract(
+          tokenSaleAbi,
+          saleAddress
+        );
+
+        let token_price = await token_sale_contract.methods.tokenPrice().call();
+        token_price = web3.utils.fromWei(token_price, "ether");
+
+        if (IsMount) setLoadingItems(false);
+        setTokenPrice(token_price);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }, [IsMount, web3.eth, web3.utils]);
 
   useEffect(() => {
-    getImagesFromEth();
+    //getImagesFromEth();
     getAllBanners();
     getAllCategories();
+    getImagesFromDB();
     return () => {
       setIsMount(false);
     };
-  }, [getImagesFromEth]);
+  }, [getImagesFromDB, getAllCategories, getAllBanners]);
 
   const handleCheck = (value) => {
     console.log("check value", value);

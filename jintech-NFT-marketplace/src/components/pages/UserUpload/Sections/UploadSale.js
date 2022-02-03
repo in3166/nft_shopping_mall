@@ -25,24 +25,30 @@ const UploadSale = (props) => {
   const user = useSelector((state) => state.user.user);
 
   const {
-    value: urlValue,
-    hasError: urlHasError,
-    valueChangeHandler: urlChangeHandler,
-    valueBlurHandler: urlBlurHandler,
+    value: nameValue,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    valueBlurHandler: nameBlurHandler,
+    inputRef: nameRef,
+    valueIsValid: nameIsValid,
     reset: resetUrl,
   } = useInput((data) => data.length > 3);
 
   const {
     value: startPriceValue,
     hasError: startPriceHasError,
+    valueIsValid: priceIsValid,
     valueChangeHandler: startPriceChangeHandler,
     valueBlurHandler: startPriceBlurHandler,
+    inputRef: priceRef,
     reset: resetStartPrice,
   } = useInput((data) => data >= 1);
 
   const {
     value: descriptionValue,
     hasError: descriptionHasError,
+    inputRef: descriptionRef,
+    valueIsValid: descriptionIsValid,
     valueChangeHandler: descriptionChangeHandler,
     valueBlurHandler: descriptionBlurHandler,
     reset: resetDescription,
@@ -66,13 +72,12 @@ const UploadSale = (props) => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (
-      urlHasError &&
-      startPriceHasError &&
-      descriptionHasError &&
-      !file.filename !== ""
-    ) {
+    if (file === "" || !file.name) {
+      alert("file is empty.");
+      return;
+    } else if (!nameIsValid || !priceIsValid || !descriptionIsValid) {
       alert("입력을 완료해주세요.");
+      return;
     }
 
     var client = create("http://127.0.0.1:5002/");
@@ -95,7 +100,7 @@ const UploadSale = (props) => {
       tokenId: totalSupply - 1,
       starting_time: new Date(),
       contractAddress: address,
-      name: urlValue,
+      name: nameValue,
     };
 
     axios
@@ -112,29 +117,37 @@ const UploadSale = (props) => {
 
             contract.methods
               .mint(
-                urlValue, //name
+                nameValue, //name
                 descriptionValue,
                 urlStr,
                 startPriceValue,
-                tokenURI
+                hash
               )
               .send({ from: accounts })
               .once("receipt", (receipt) => {
                 console.log("nft created");
-                alert(res.data.msg);
+                alert(res.data.message);
                 resetUrl();
                 resetDescription();
                 resetStartPrice();
                 setPeriod(12);
-                setfile({ filename: "" });
+                setfile("");
               })
-              .catch((err) => {
-                alert(err);
+              .catch(async (err) => {
+                console.log(err);
+                alert(err.message);
                 // db삭제 ...
+                const deleteDB = await axios.delete(
+                  "/api/marketplaces/" + res.data.id
+                );
+                console.log("deleteDB: ", deleteDB);
+                if (deleteDB.data.success) {
+                  console.log(deleteDB.data.message);
+                }
               });
           });
         } else {
-          alert(res.data.msg);
+          alert(res.data.message);
         }
       })
       .catch((err) => {
@@ -174,6 +187,7 @@ const UploadSale = (props) => {
               name="file"
               className="form-control my-2"
               placeholder="Choose Image"
+              key={file?.filename}
               onChange={(event) => {
                 // setfile({ new_image: event.target.files[0] })
                 setfile(event.target.files[0]);
@@ -182,18 +196,21 @@ const UploadSale = (props) => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <span className={styles["form-input-name"]}>URL</span>
+            <span className={styles["form-input-name"]}>Name</span>
             <input
               type="text"
               required
               className="form-control my-2"
               placeholder="Name"
-              onBlur={urlBlurHandler}
-              onChange={urlChangeHandler}
-              value={urlValue}
+              onBlur={nameBlurHandler}
+              onChange={nameChangeHandler}
+              value={nameValue}
+              ref={nameRef}
             />
-            {urlHasError && (
-              <p className={styles["error-text"]}>URL을 4자 이상 입력하세요.</p>
+            {nameHasError && (
+              <p className={styles["error-text"]}>
+                Name을 4자 이상 입력하세요.
+              </p>
             )}
           </Grid>
           <Grid item xs={12} md={6}>
@@ -205,6 +222,7 @@ const UploadSale = (props) => {
               placeholder="Price in Ebizon Tokens"
               onBlur={startPriceBlurHandler}
               onChange={startPriceChangeHandler}
+              ref={priceRef}
               value={startPriceValue}
             />
             {startPriceHasError && (
@@ -268,6 +286,7 @@ const UploadSale = (props) => {
               onBlur={descriptionBlurHandler}
               onChange={descriptionChangeHandler}
               value={descriptionValue}
+              ref={descriptionRef}
             />
             {descriptionHasError && (
               <p className={styles["error-text"]}>

@@ -8,6 +8,7 @@ import ConfirmSaleModal from "./Section/ConfirmSaleModal";
 import InfoModal from "./Section/InfoModal";
 import styles from "./UploadList.module.css";
 
+// 사용자가 업로드 가능하면 목록을 관리자가 확인 후 승인 과정 - 사용 x
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   maximumSignificantDigits: 3,
 });

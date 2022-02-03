@@ -161,7 +161,7 @@ xxx버전 업그레이드함 xxx
 
   -
 
-- 시간 지난 상품 `onMaket` column - false 설정 (`marketplaces.cotroller`)
+- 시간 지난 상품 `onMarket` column - false 설정 (`marketplaces.cotroller`)
   - `/bid` 경로에서 모든 제품을 불러올 때 시간 확인, `onMarket` 업데이트
   - 대체 옵션1: db trigger
   - 대체 옵션2: db 프로시저
@@ -201,6 +201,10 @@ xxx버전 업그레이드함 xxx
   - `net stop winnat`
   - `net start winnat`
 
+- `Uncaught DOMException: Failed to set the 'value' property on 'HTMLInputElement': This input element accepts a filename, which may only be programmatically set to the empty string.`
+  - `key={file?.filename}`: key 설정하기!
+  - `value={file?.filename}`: file.name or file은 안됨
+  - 키를 설정하지 않으면 submit 후 reset 시 filename이 남아있음
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지
 - 컨트랙스 수정 후 재실행

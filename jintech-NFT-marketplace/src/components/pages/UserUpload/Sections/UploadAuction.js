@@ -25,30 +25,38 @@ const UploadAuction = (props) => {
   const [file, setfile] = useState("");
 
   const {
-    value: urlValue,
-    hasError: urlHasError,
-    valueChangeHandler: urlChangeHandler,
-    valueBlurHandler: urlBlurHandler,
-    reset: resetUrl,
+    value: nameValue,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    valueBlurHandler: nameBlurHandler,
+    inputRef: nameRef,
+    valueIsValid: nameIsValid,
+    reset: resetName,
   } = useInput((data) => data.length > 3);
 
   const {
     value: startPriceValue,
     hasError: startPriceHasError,
     valueChangeHandler: startPriceChangeHandler,
+    inputRef: priceRef,
+    valueIsValid: priceIsValid,
     valueBlurHandler: startPriceBlurHandler,
     reset: resetStartPrice,
   } = useInput((data) => data >= 1);
   const {
     value: buyoutValue,
     hasError: buyoutHasError,
+    valueIsValid: buyoutIsValid,
+    inputRef: buyoutRef,
     valueChangeHandler: buyoutChangeHandler,
     valueBlurHandler: buyoutBlurHandler,
     reset: resetBuyout,
   } = useInput((data) => data >= 1);
   const {
     value: descriptionValue,
+    valueIsValid: descriptionIsValid,
     hasError: descriptionHasError,
+    inputRef: descriptionRef,
     valueChangeHandler: descriptionChangeHandler,
     valueBlurHandler: descriptionBlurHandler,
     reset: resetDescription,
@@ -88,14 +96,18 @@ const UploadAuction = (props) => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (
-      urlHasError &&
-      startPriceHasError &&
-      buyoutHasError &&
-      descriptionHasError &&
-      !file.filename !== ""
+
+    if (file === "" || !file.name) {
+      alert("file is empty.");
+      return;
+    } else if (
+      !nameIsValid ||
+      !priceIsValid ||
+      !buyoutIsValid ||
+      !descriptionIsValid
     ) {
       alert("입력을 완료해주세요.");
+      return;
     }
 
     // ipfs client 생성 및 이미지 추가
@@ -145,7 +157,7 @@ const UploadAuction = (props) => {
       networkId: networkId,
       tokenId: totalSupply - 1,
       contractAddress: address,
-      name: urlValue,
+      name: nameValue,
       starting_time: new Date(),
     };
 
@@ -161,11 +173,9 @@ const UploadAuction = (props) => {
               .update(baseFile)
               .digest("base64");
 
-            const tokenURI = "https://token.artblocks.io/3784";
-            console.log("?????????");
             contract.methods
               .mint(
-                urlValue, //name
+                nameValue, //name
                 descriptionValue,
                 urlStr,
                 startPriceValue,
@@ -175,30 +185,37 @@ const UploadAuction = (props) => {
               .once("receipt", (receipt) => {
                 console.log("nft created");
                 console.log(receipt);
-                alert(res.data.msg);
-                resetUrl();
+                alert(res.data.message);
+                setfile("");
+                resetName();
                 resetBuyout();
                 resetDescription();
                 resetStartPrice();
                 setPeriod(12);
                 setMarkup(5);
-                setfile({ filename: "" });
               })
-              .catch((err) => {
-                alert(err);
+              .catch(async (err) => {
+                alert(err.message);
                 console.log(err);
                 //db에 추가한 row 삭제하기
+                const deleteDB = await axios.delete(
+                  "/api/marketplaces/" + res.data.id
+                );
+                console.log("deleteDB: ", deleteDB);
+                if (deleteDB.data.success) {
+                  console.log(deleteDB.data.message);
+                }
               });
           });
         } else {
-          alert(res.data.msg);
+          alert(res.data.message);
         }
       })
       .catch((err) => {
         alert(err);
       });
   };
-
+  console.log("file: ", file, file?.name, file?.filename);
   return (
     <Container className={styles.container}>
       <form className="row text-end" onSubmit={submitHandler}>
@@ -211,6 +228,7 @@ const UploadAuction = (props) => {
               name="file"
               className="form-control my-2"
               placeholder="Choose Image"
+              key={file?.filename}
               onChange={(event) => {
                 // setfile({ new_image: event.target.files[0] })
                 setfile(event.target.files[0]);
@@ -219,18 +237,21 @@ const UploadAuction = (props) => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <span className={styles["form-input-name"]}>URL</span>
+            <span className={styles["form-input-name"]}>Name</span>
             <input
               type="text"
               required
               className="form-control my-2"
               placeholder="Name"
-              onBlur={urlBlurHandler}
-              onChange={urlChangeHandler}
-              value={urlValue}
+              onBlur={nameBlurHandler}
+              onChange={nameChangeHandler}
+              ref={nameRef}
+              value={nameValue || ""}
             />
-            {urlHasError && (
-              <p className={styles["error-text"]}>URL을 4자 이상 입력하세요.</p>
+            {nameHasError && (
+              <p className={styles["error-text"]}>
+                Name을 4자 이상 입력하세요.
+              </p>
             )}
           </Grid>
           <Grid item xs={12} md={6}>
@@ -243,6 +264,7 @@ const UploadAuction = (props) => {
               onBlur={startPriceBlurHandler}
               onChange={startPriceChangeHandler}
               value={startPriceValue}
+              ref={priceRef}
             />
             {startPriceHasError && (
               <p className={styles["error-text"]}>1 이상의 값을 입력하세요.</p>
@@ -258,6 +280,7 @@ const UploadAuction = (props) => {
               onBlur={buyoutBlurHandler}
               onChange={buyoutChangeHandler}
               value={buyoutValue}
+              ref={buyoutRef}
             />
             {buyoutHasError && (
               <p className={styles["error-text"]}>1 이상의 값을 입력하세요.</p>
@@ -362,6 +385,7 @@ const UploadAuction = (props) => {
               className="form-control my-2"
               placeholder="Description"
               rows="3"
+              ref={descriptionRef}
               onBlur={descriptionBlurHandler}
               onChange={descriptionChangeHandler}
               value={descriptionValue}

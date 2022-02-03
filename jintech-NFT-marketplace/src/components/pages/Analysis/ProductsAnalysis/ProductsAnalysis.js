@@ -12,11 +12,11 @@ const columns = [
     headerAlign: "center",
   },
   {
-    field: "image",
+    field: "name",
     headerName: "Name",
     width: 310,
     renderCell: (params) => {
-      return <div title={params.value.name}>{params.value.name}</div>;
+      return <div title={params?.row?.name}>{params?.row?.name}</div>;
     },
   },
   {

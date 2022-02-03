@@ -111,10 +111,10 @@
 }
 
 /*** marketplace - product list ***/
-.product-page {
-  padding: 0 10em; /* 1em */
+/* .product-page {
+  padding: 0 10em;
   margin-bottom: 2rem;
-}
+} */
 
 .product-pages-list {
   width: 20em;

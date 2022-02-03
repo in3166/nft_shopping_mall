@@ -15,10 +15,12 @@ router.post("/", marketplaces.create);
 router.get("/", marketplaces.findAllOnMarket);
 router.get("/all", marketplaces.findAll);
 router.get("/myimages/:email", marketplaces.findAllMyImages);
+router.get("/favorites/:email", marketplaces.findAllFavorites);
 router.get("/:email", authJwt.verifyToken, marketplaces.findOne);
 router.get("/goods/:id", marketplaces.findOne);
 
 router.put("/end", marketplaces.endtime);
 router.put("/", marketplaces.update);
+router.delete("/:id", marketplaces.delete);
 
 module.exports = router;

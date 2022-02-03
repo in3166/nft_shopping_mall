@@ -96,45 +96,44 @@ const MyProductInfo = (props) => {
     }
   };
 
-  console.log(Image);
-
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("submit");
 
-    if (startPriceIsValid && buyoutIsValid && descriptionIsValid) {
-      const body = {
-        email: user.email,
-        id: Image.id,
-        type: IsAuction ? "auction" : "sale",
-        starting_time: new Date(),
-        limit_hours: period,
-        current_price: startPriceValue,
-        imageId: Image.product,
-        buyout: buyoutValue,
-        markup: Markup,
-        description: descriptionValue,
-        categoryId: categoryId,
-      };
-      console.log(body);
-
-      axios
-        .put("/api/marketplaces", body)
-        .then((res) => {
-          if (res.data.success) {
-            alert("등록 성공");
-          } else {
-            alert(res.data.message);
-          }
-          window.location.reload();
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
-      console.log(buyoutIsValid);
+    if (IsAuction && !startPriceIsValid && !buyoutIsValid && !descriptionIsValid) {
       alert("입력 값 오류");
+      return;
+    }else if(!IsAuction && !startPriceIsValid && !descriptionIsValid){
+      alert("입력 값 오류");
+      return;
     }
+
+    const body = {
+      email: user.email,
+      id: Image.id,
+      type: IsAuction ? "auction" : "sale",
+      starting_time: new Date(),
+      limit_hours: period,
+      current_price: startPriceValue,
+      imageId: Image.product,
+      buyout: buyoutValue,
+      markup: Markup,
+      description: descriptionValue,
+      categoryId: categoryId,
+    };
+
+    axios
+      .put("/api/marketplaces", body)
+      .then((res) => {
+        if (res.data.success) {
+          alert("등록 성공");
+        } else {
+          alert(res.data.message);
+        }
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
   //

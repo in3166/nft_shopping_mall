@@ -113,8 +113,8 @@ const InfoModal = (props) => {
           <Grid item xs={8} sm={6}>
             <Card className={styles.imageCard}>
               <img
-                src={selectedData["image"].url}
-                alt={selectedData["image"].url}
+                src={selectedData.url}
+                alt={selectedData.url}
                 className={styles.images}
               />
             </Card>

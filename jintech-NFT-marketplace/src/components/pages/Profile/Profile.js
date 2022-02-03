@@ -9,6 +9,7 @@ import SecondAuthentication from "./Sections/SecondAuthentication";
 import UserUploadList from "./Sections/UserUploadList";
 import UserSaleHistory from "./Sections/UserSaleHistory";
 import UserBuyHistory from "./Sections/UserBuyHistory";
+import FavoriteList from "./Sections/FavoriteList";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,9 +63,14 @@ const Profile = (props) => {
             label={<span className={classes.tabLabel}>회원 정보</span>}
             {...a11yProps(0)}
           />
-          <Tab
+          {/* <Tab
             value={2}
             label={<span className={classes.tabLabel}>요청 목록</span>}
+            {...a11yProps(1)}
+          /> */}
+          <Tab
+            value={2}
+            label={<span className={classes.tabLabel}>Favorites</span>}
             {...a11yProps(1)}
           />
           <Tab
@@ -94,8 +100,11 @@ const Profile = (props) => {
         <UserFrom user={props.user} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <UserUploadList />
+        <FavoriteList />
       </TabPanel>
+      {/* <TabPanel value={value} index={2}>
+        <UserUploadList />
+      </TabPanel> */}
       <TabPanel value={value} index={3}>
         <UserBuyHistory />
       </TabPanel>

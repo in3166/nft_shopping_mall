@@ -10,14 +10,17 @@ const columns = [
     width: 50,
     disableColumnMenu: true,
     sortable: false,
+    align: "center",
   },
   //   { field: "email", headerName: "E-Mail", width: 130 },
   {
-    field: "image",
+    field: "name",
     headerName: "Name",
-    width: 310,
+    width: 220,
     renderCell: (params) => (
-      <div title={params?.name}>{params?.name}</div>
+      <div title={params?.row?.marketplace?.name}>
+        {params?.row?.marketplace?.name}
+      </div>
     ),
   },
   {

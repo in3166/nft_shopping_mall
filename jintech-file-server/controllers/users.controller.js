@@ -42,20 +42,6 @@ const authentication = async (email, authCode) => {
   } finally {
     smtpTransport.close();
   }
-
-  //   , (error, users) => {
-  //   if (error) {
-  //     console.log("err? : ", error);
-  //     return error;
-  //     // return res.status(400).send({
-  //     //   message: error,
-  //     // });s
-  //   }
-  //   // else {
-  //   //   console.log("200 send");
-  //   //   return res.status(200).send();
-  //   // }
-  // });
 };
 
 // 이메일 인증
@@ -213,7 +199,6 @@ exports.findAll = (req, res) => {
 // Retrieve all User from the database.
 exports.findAllUserAndSubAdmin = (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  console.log("ffind?????????????");
   User.findAll()
     .then(async (users) => {
       const userData = [];
@@ -458,6 +443,7 @@ exports.login = (req, res) => {
           .send({ success: false, message: "User Not found." });
       } else {
         // user 존재
+        const bcrypt = require("bcrypt");
         if (
           !user.dataValues.password ||
           !(await user.validPassword(password, user.dataValues.password))
@@ -483,7 +469,6 @@ exports.login = (req, res) => {
               success: true,
               user: {
                 //roles: authorities,
-
                 isAdmin: authorities[0] === "ADMIN" ? true : false,
                 isLoggedIn: true,
                 email: user.dataValues.email,

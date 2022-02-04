@@ -22,7 +22,10 @@ exports.create = async (req, res) => {
     })
     .catch((err) => {
       console.log("db err: ", err);
-      return res.status(400).json({ success: false, err, message: err });
+      console.log("db err: ", err.parent);
+      return res
+        .status(400)
+        .json({ success: false, error: err.parent, message: err.parent });
     });
 };
 

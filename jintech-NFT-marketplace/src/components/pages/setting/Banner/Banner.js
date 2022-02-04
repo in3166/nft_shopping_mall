@@ -32,7 +32,7 @@ import ImageSaleContract from "../../../../abis/ImageSaleContract.json";
 import TokenContract from "../../../../abis/TokenContract.json";
 import TokenSaleContract from "../../../../abis/TokenSaleContract.json";
 import axios from "axios";
-
+import LoadingSpinner from "../../../UI/Loading/LoadingSpinner";
 const Banner = () => {
   let web3 = window.web3;
   if (!web3.eth) {
@@ -142,7 +142,7 @@ const Banner = () => {
         } else {
           alert(res.data.messages);
         }
-        
+
         const accounts = await web3.eth.getAccounts();
         const networkId = await web3.eth.net.getId();
         const networkData = ImageContract.networks[networkId];
@@ -193,12 +193,11 @@ const Banner = () => {
   };
 
   const handleAddBanners = () => {
-    console.log(checked);
     if (checked.length < 1) {
       alert("하나 이상 선택하세요.");
       return;
-    } else if (checked.length > 5) {
-      alert("5개 이하의 배너만 추가할 수 있습니다.");
+    } else if (checked.length + Banners.length > 7) {
+      alert("7개 이하의 배너만 추가할 수 있습니다.");
       return;
     }
 
@@ -214,7 +213,8 @@ const Banner = () => {
         setChecked([]);
       })
       .catch((err) => {
-        alert(err);
+        console.log(err.response.data.message.detail);
+        alert(err.response.data.message.detail);
       });
   };
 
@@ -235,6 +235,15 @@ const Banner = () => {
     console.log(e.target.value);
     setSelectCatgoryValue(e.target.value);
   };
+
+  const [SearchText, setSearchText] = useState("");
+  const handleSearchTextChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  // const handlerSearchSubmit = () => {
+  //   setSearchOn(true)
+  // };
 
   return (
     <>
@@ -267,10 +276,12 @@ const Banner = () => {
             </Stack>
           )}
           {!LoadingBanner && Banners.length < 1 ? (
-            <p>No Banners.</p>
+            <div style={{ width: "100%", textAlign: "center", margin: "30px" }}>
+              <h5>No Banners.</h5>
+            </div>
           ) : (
             Banners.map((value, index) => (
-              <ListItem className={styles.bannerItem} key={value.key}>
+              <ListItem className={styles.bannerItem} key={value.id}>
                 <Card
                   sx={{
                     maxWidth: 200,
@@ -341,7 +352,7 @@ const Banner = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
-              marginBottom: "13px",
+              marginBottom: "26px",
             }}
           >
             <div>
@@ -377,33 +388,53 @@ const Banner = () => {
                 </NativeSelect>
               </FormControl>
 
-              <TextField variant="standard" />
-              <Button variant="outlined">검색</Button>
+              <FormControl fullWidth variant="standard">
+                <TextField
+                  variant="standard"
+                  onChange={handleSearchTextChange}
+                  value={SearchText}
+                  placeholder="Search"
+                  inputProps={{
+                    name: "Search",
+                    id: "uncontrolled-search",
+                  }}
+                />
+              </FormControl>
+              {/* <Button variant="outlined" onClick={handlerSearchSubmit}>
+                검색
+              </Button> */}
             </div>
           </div>
+
           <Grid container columns={18} spacing={2}>
             {LoadingItems && Images.length === 0 && (
               <Grid item xs={18}>
-                <Stack
-                  sx={{
-                    color: "grey.500",
-                    width: "100%",
-                    minHeight: "250px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  spacing={2}
-                  direction="row"
-                  //className={styles.loading}
-                >
-                  <CircularProgress color="inherit" />
-                </Stack>
+                <LoadingSpinner />
               </Grid>
             )}
+            {Images.filter(
+              (v) =>
+                (Number(v.categoryId) === Number(SelectCatgoryValue) ||
+                  Number(SelectCatgoryValue) === 0) &&
+                (v.name.includes(SearchText) ||
+                  v.ownerEmail.includes(SearchText))
+            ).length === 0 && (
+              <div
+                style={{ width: "100%", textAlign: "center", margin: "50px" }}
+              >
+                <h5>No Items.</h5>
+              </div>
+            )}
             {!LoadingItems &&
-              Images.map((value, index) => {
+              Images.filter(
+                (v) =>
+                  (Number(v.categoryId) === Number(SelectCatgoryValue) ||
+                    Number(SelectCatgoryValue) === 0) &&
+                  (v.name.includes(SearchText) ||
+                    v.ownerEmail.includes(SearchText))
+              ).map((value, index) => {
                 return (
-                  <Grid item xs={18} sm={9} md={6} lg={4.5} key={value.key}>
+                  <Grid item xs={18} sm={9} md={6} lg={4.5} key={value.id}>
                     <Card title={value.name}>
                       <CardActionArea>
                         <Checkbox
@@ -446,14 +477,15 @@ const Banner = () => {
                               wordWrap: "break-word",
                             }}
                           >
+                            {/* <p>
+                              <strong>Name</strong> {value.name}
+                            </p> */}
                             <p>
-                              <strong>Owner</strong> {value.owner}
+                              <strong>Owner</strong> {value.ownerEmail}
                             </p>
                             <p>
-                              <strong>Token</strong> {value.token}
-                            </p>
-                            <p>
-                              <strong>Price</strong> {value.price * TokenPrice}{" "}
+                              <strong>Price</strong>{" "}
+                              {value.current_price * TokenPrice}
                               ETH
                             </p>
                           </Typography>

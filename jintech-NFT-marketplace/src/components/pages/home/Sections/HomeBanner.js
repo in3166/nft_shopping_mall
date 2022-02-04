@@ -44,7 +44,7 @@ const HomeBanner = (props) => {
       >
         {Banners.map((value, i) => {
           return (
-            <Link to={`/nft-detail/${value.key}`} key={`list-${i}`}>
+            <Link to={`/nft-detail/${value.id}`} key={`list-${i}`}>
               <div className={styles["carousel-item"]} key={`list-${i}`}>
                 <img
                   id="slideImg0"
@@ -58,10 +58,10 @@ const HomeBanner = (props) => {
                   <strong>Name: {value.name}</strong>
                 </div>
                 <div>
-                  <strong>Owner: {value.owner}</strong>
+                  <strong>Owner: {value.ownerEmail}</strong>
                 </div>
                 <div>
-                  <strong>Price: {value.price} ETH</strong>
+                  <strong>Price: {value.current_price} ETH</strong>
                 </div>
               </Card>
             </Link>

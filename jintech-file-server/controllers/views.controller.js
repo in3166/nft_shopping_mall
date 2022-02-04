@@ -27,7 +27,7 @@ const setIntervalQuery = {
   inteval: () =>
     setInterval(() => {
       addCount();
-    }, 1000 * 60 * 5),
+    }, 1000 * 60 * 60),
 };
 
 const clearIntevalQuery = () => {

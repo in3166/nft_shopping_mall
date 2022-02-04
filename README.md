@@ -157,10 +157,6 @@ xxx버전 업그레이드함 xxx
     }
     ```
 
-- 로그 찍기
-
-  -
-
 - 시간 지난 상품 `onMarket` column - false 설정 (`marketplaces.cotroller`)
   - `/bid` 경로에서 모든 제품을 불러올 때 시간 확인, `onMarket` 업데이트
   - 대체 옵션1: db trigger
@@ -205,6 +201,8 @@ xxx버전 업그레이드함 xxx
   - `key={file?.filename}`: key 설정하기!
   - `value={file?.filename}`: file.name or file은 안됨
   - 키를 설정하지 않으면 submit 후 reset 시 filename이 남아있음
+
+- 메모리 누수 경고는 컴포넌트 별로 따로 해줘야 한다. (자식 컴포넌트 따라)
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지
 - 컨트랙스 수정 후 재실행
@@ -218,6 +216,15 @@ xxx버전 업그레이드함 xxx
 
 - ubuntu PostgreSQL: `Connection Refused`
   - `sudo service postgresql restart`
+
+# 추가 계획
+- 로그 찍기
+- onMarket 카운트 엔드, 판매 됐을 때 배너에 해당 이미지 내리기
+- 서버 요청 시 권한 인증 방법 수정 (email => token)
+- password bcrypt 변경됨?
+- page 이동 혹은 서버 요청 시 권한(만료) 체크 더 구체적으로 설계
+- url 등 const로 분리하기
+- catch error message: `err.response.data.message.detail` 수정
 # EC2 Ubuntu에 올리기
 - (nvm)node, (python2.7-), truffle, ganache-cli 설치
 ```
@@ -242,6 +249,12 @@ sudo npm install
 - ganache-cli 실행: `ganache-cli --host 0.0.0.0`
 - truffle compile / migrate
 - ipfs 설치 및 실행
+
+- DB 연결 (PostgresSQL)
+  - local 설치
+  - `config/db.config.js`에 환경설정
+
+
 
 ### 메타 마스크 연결
 - RPC URL: `http://주소:8545`

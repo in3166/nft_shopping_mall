@@ -12,23 +12,28 @@ import Countdown from "react-countdown";
 const ProductList = (props) => {
   const { count, Images, TokenPrice, user, Loading } = props;
 
+  const [IsMount, setIsMount] = useState(true);
   const [Likes, setLikes] = useState([]);
+
   const getAllLikes = useCallback(() => {
     if (user.email && user.email !== "")
       axios
         .get("/api/favorites/" + user.email)
         .then((res) => {
           console.log("likes: ", res.data);
-          setLikes(res.data);
+          if (IsMount) setLikes(res.data);
         })
         .catch((err) => {
           alert(err);
         });
-  }, [user.email]);
+  }, [user.email, IsMount]);
 
   useEffect(() => {
     getAllLikes();
-  }, [getAllLikes]);
+    return () => {
+      setIsMount(false);
+    };
+  }, [getAllLikes, setIsMount]);
 
   // 좋아요
   const handleLikes = (e, marketplaceId) => {
@@ -44,12 +49,13 @@ const ProductList = (props) => {
         .post("/api/favorites", body)
         .then((res) => {
           if (res.data.success) {
-            if (res.data.status) {
+            if (res.data.status && IsMount) {
               setLikes((prev) => [...prev, body]);
             } else {
-              setLikes((prev) =>
-                prev.filter((v) => v.marketplaceId !== body.marketplaceId)
-              );
+              if (IsMount)
+                setLikes((prev) =>
+                  prev.filter((v) => v.marketplaceId !== body.marketplaceId)
+                );
             }
           } else {
             alert(res.data.message);

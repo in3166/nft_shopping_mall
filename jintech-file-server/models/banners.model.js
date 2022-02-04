@@ -6,22 +6,19 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       primaryKey: true,
     },
-    owner: {
+    ownerEmail: {
       type: Sequelize.STRING,
     },
     name: {
       type: Sequelize.STRING,
     },
-    price: {
+    current_price: {
       type: Sequelize.INTEGER,
-    },
-    token: {
-      type: Sequelize.STRING,
     },
     url: {
       type: Sequelize.STRING,
     },
-    key: {
+    tokenId: {
       type: Sequelize.INTEGER,
     },
   });

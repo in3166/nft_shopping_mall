@@ -19,7 +19,7 @@ const HomePage = (props) => {
   const [Images, setImages] = useState([]);
   const [TokenPrice, setTokenPrice] = useState(0);
   const [Loading, setLoading] = useState(false);
-  const [isMounted, setisMounted] = useState(true);
+  const [IsMount, setIsMount] = useState(true);
   const { scrollY } = useScroll();
 
   const PER_PAGE = 8;
@@ -35,21 +35,21 @@ const HomePage = (props) => {
   const [ref, setRef] = useInfiniteScroll((entry, observer) => {
     loadMorePosts();
   });
-
   const loadMorePosts = async () => {
     let loadNum;
     if (Images?.length && Images?.length > 0) {
       if (count + 4 > Images?.length) loadNum = Images?.length;
       else loadNum = count + 4;
-      setCount((prev) => loadNum);
+      if (IsMount) setCount((prev) => loadNum);
       console.log("count: ", count);
     }
   };
 
   const user = useSelector((state) => state.user.user);
+  
   const getAllImages = useCallback(async () => {
     setLoading(true);
-    setisMounted(true);
+    setIsMount(true);
     const imagesRes = await axios.get("/api/marketplaces/", {
       headers: { email: user.email },
     });
@@ -66,10 +66,12 @@ const HomePage = (props) => {
       );
     });
 
-    setImages(imagesRes.data.images);
     console.log(imagesRes.data.images);
-    if (isMounted) setLoading(false);
-  }, [user.email, isMounted]);
+    if (IsMount) {
+      setImages(imagesRes.data.images);
+      setLoading(false);
+    }
+  }, [user.email, IsMount]);
 
   // ipfs 이미지 가져오기
   // const getAllImages = async () => {
@@ -129,12 +131,12 @@ const HomePage = (props) => {
   // };
 
   const [Banners, setBanners] = useState([]);
-  const getAllBanners = () => {
+  const getAllBanners = useCallback(() => {
     axios
       .get("/api/banners")
       .then((res) => {
         console.log("배너 가져오기: ", res.data.banners);
-        if (res.data.success) {
+        if (res.data.success && IsMount) {
           setBanners(res.data.banners);
         } else {
           alert(res.data.message);
@@ -143,20 +145,22 @@ const HomePage = (props) => {
       .catch((err) => {
         alert(err);
       });
-  };
+  }, [IsMount]);
 
   useEffect(() => {
     getAllImages();
     getAllBanners();
     return () => {
-      setisMounted(false);
+      setIsMount(false);
     };
-  }, [getAllImages]);
+  }, [getAllImages, getAllBanners]);
 
   return (
     <div className="contents2">
       {/* 2021.11.26 main img slide 추가 */}
-      <HomeBanner Banners={Banners} Images={Images} TokenPrice={TokenPrice} />
+      {Banners.length > 0 && (
+        <HomeBanner Banners={Banners} Images={Images} TokenPrice={TokenPrice} />
+      )}
       {/* 2021.11.26 main img slide 끝 */}
 
       <div className="card page-head">
@@ -196,7 +200,7 @@ const HomePage = (props) => {
             <CircularProgress color="inherit" />
           </Stack>
         )}
-        {!Loading && (
+        {!Loading && IsMount && (
           <ProductList
             // _DATA={_DATA}
             Images={Images}
@@ -204,6 +208,8 @@ const HomePage = (props) => {
             count={count}
             user={user}
             Loading={Loading}
+            IsMount={IsMount}
+            setIsMount={setIsMount}
           />
         )}
       </div>

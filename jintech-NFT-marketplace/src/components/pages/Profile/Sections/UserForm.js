@@ -136,6 +136,9 @@ const UserForm = (props) => {
                   formChangeHandler(e, "email");
                 }}
                 autoComplete="username"
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </FormControl>
 

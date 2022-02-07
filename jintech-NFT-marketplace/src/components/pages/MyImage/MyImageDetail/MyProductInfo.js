@@ -99,10 +99,15 @@ const MyProductInfo = (props) => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    if (IsAuction && !startPriceIsValid && !buyoutIsValid && !descriptionIsValid) {
+    if (
+      IsAuction &&
+      !startPriceIsValid &&
+      !buyoutIsValid &&
+      !descriptionIsValid
+    ) {
       alert("입력 값 오류");
       return;
-    }else if(!IsAuction && !startPriceIsValid && !descriptionIsValid){
+    } else if (!IsAuction && !startPriceIsValid && !descriptionIsValid) {
       alert("입력 값 오류");
       return;
     }
@@ -118,7 +123,7 @@ const MyProductInfo = (props) => {
       buyout: buyoutValue,
       markup: Markup,
       description: descriptionValue,
-      categoryId: categoryId,
+      categoryId: categoryId === 0 ? null : categoryId,
     };
 
     axios
@@ -152,6 +157,7 @@ const MyProductInfo = (props) => {
   const handleCategoryChange = (e) => {
     setcategoryId(e.target.value);
   };
+  console.log(categoryId);
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
       <h5>Details</h5>

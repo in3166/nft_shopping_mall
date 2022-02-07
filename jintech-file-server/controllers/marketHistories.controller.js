@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
 
   MarketHistory.create({
     action: body.action,
-    price: body.price,
+    price: body.current_price,
     userEmail: body.userEmail,
     marketplaceId: body.marketplaceId,
     starting_time: body.starting_time,
@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
       // console.log("createData: ", createData);
       if (body.action === "bid") {
         Marketplace.update(
-          { current_price: body.price, buyerEmail: body.userEmail },
+          { current_price: body.current_price, buyerEmail: body.userEmail },
           {
             where: {
               id: body.marketplaceId,
@@ -53,7 +53,7 @@ exports.create = async (req, res) => {
         Marketplace.update(
           {
             soldOut: true,
-            current_price: body.price,
+            current_price: body.current_price,
             ownerEmail: body.userEmail,
             buyerEmail: body.userEmail,
             onMarket: false,
@@ -68,7 +68,7 @@ exports.create = async (req, res) => {
             // 판매 히스토리 추가
             MarketHistory.create({
               action: "sale",
-              price: body.price,
+              price: body.current_price,
               userEmail: body.ownerEmail,
               marketplaceId: body.marketplaceId,
               starting_time: body.starting_time,
@@ -77,7 +77,7 @@ exports.create = async (req, res) => {
               .then((data) => {
                 res.status(200).send({
                   success: true,
-                  current_price: body.price,
+                  current_price: body.current_price,
                 });
               })
               .catch((err) => {

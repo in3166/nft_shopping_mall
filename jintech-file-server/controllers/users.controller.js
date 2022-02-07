@@ -487,7 +487,11 @@ exports.login = (req, res) => {
           } else {
             return res
               .status(200)
-              .send({ success: false, message: "이메일 인증을 완료해주세요." });
+              .send({
+                success: false,
+                email: true,
+                message: "이메일 인증을 완료해주세요.",
+              });
           }
         }
       }

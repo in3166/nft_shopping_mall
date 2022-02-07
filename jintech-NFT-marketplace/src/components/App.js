@@ -5,25 +5,14 @@ import * as actions from "../store/actions/user-action";
 import "./App.css";
 import Web3 from "web3";
 
-// import CryptoBoys from "../abis/CryptoBoys.json";
-
-import FormAndPreview from "../components/FormAndPreview/FormAndPreview";
-import AllCryptoBoys from "./AllCryptoBoys/AllCryptoBoys";
-import AccountDetails from "./AccountDetails/AccountDetails";
-//import ContractNotDeployed from "./ContractNotDeployed/ContractNotDeployed";
 import ConnectToMetamask from "./ConnectMetamask/ConnectToMetamask";
-//import Loading from "./Loading/Loading";
 import Navbar from "./Navbar/Navbar";
-//import Queries from "./Queries/Queries";
-import NtfDetail from "./NftDetail/NftDetail";
-import MyTokens from "./MyTokens/MyTokens";
-import UserNFTDetail from "./UserNFTDetail/UserNFTDetail";
 
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import AuthenticationSuccess from "./pages/Register/Authentication/AuthenticationSuccess";
 import AuthenticationFail from "./pages/Register/Authentication/AuthenticationFail";
-//import AuthContext, { AuthContextProvider } from "../store/auth-context";
+
 import Auth from "../hoc/Auth";
 import UserList from "./pages/UserList/UserList";
 import Profile from "./pages/Profile/Profile";
@@ -36,16 +25,6 @@ import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import MyImage from "./pages/MyImage/MyImage";
 import MyImageDetail from "./pages/MyImage/MyImageDetail/MyImageDetail";
 import Analysis from "./pages/Analysis/Analysis";
-//ipfs 서버 정보
-/*
-const ipfsClient = require("ipfs-http-client");
-const ipfs = ipfsClient({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-});
-*/
-
 class App extends Component {
   //static contextType = AuthContext;
   constructor(props) {
@@ -434,60 +413,6 @@ class App extends Component {
                     // />
                   )}
                 />
-                <Route
-                  path="/mint"
-                  component={Auth(() => (
-                    <FormAndPreview
-                      mintMyNFT={this.mintMyNFT}
-                      nameIsUsed={this.state.nameIsUsed}
-                      colorIsUsed={this.state.colorIsUsed}
-                      colorsUsed={this.state.colorsUsed}
-                      setMintBtnTimer={this.setMintBtnTimer}
-                    />
-                  ))}
-                />
-                <Route
-                  path="/marketplace"
-                  render={() => (
-                    <AllCryptoBoys
-                      accountAddress={this.state.accountAddress}
-                      totalTokensMinted={this.state.totalTokensMinted}
-                      changeTokenPrice={this.changeTokenPrice}
-                      toggleForSale={this.toggleForSale}
-                    />
-                  )}
-                />
-
-                <Route
-                  path="/mytokens"
-                  component={Auth(
-                    () => (
-                      <MyTokens
-                        accountAddress={this.state.accountAddress}
-                        totalTokensMinted={this.state.totalTokensMinted}
-                        changeTokenPrice={this.changeTokenPrice}
-                        toggleForSale={this.toggleForSale}
-                      />
-                    ),
-                    true
-                  )}
-                />
-
-                {/*  2021-11-21 주석처리 
-              <Route
-                path="/queries"
-                render={() => (
-                  <Queries cryptoBoysContract={this.state.cryptoBoysContract} />
-                )}
-              />
-                */}
-
-                <Route path="/nft-detail/:name" component={NtfDetail} />
-                <Route
-                  path="/user-nft-detail/:name"
-                  component={UserNFTDetail}
-                />
-
                 <Route
                   path="/userlist"
                   component={Auth(UserList, true, true)}

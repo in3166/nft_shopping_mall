@@ -25,7 +25,7 @@ const BuyingModal = (props) => {
     if (EndTime) return;
     const body = {
       action: "buy",
-      price: Image.buyout,
+      current_price: Image.current_price,
       userEmail: user.email,
       marketplaceId: Image.id,
       starting_time: Image.starting_time,
@@ -69,7 +69,7 @@ const BuyingModal = (props) => {
       <Box sx={{ p: 6 }}>
         <div style={{ textAlign: "center" }}>You Will Pay</div>
         <DialogTitle id="responsive-dialog-title" sx={{ textAlign: "center" }}>
-          {Image.buyout.toLocaleString("ko-KR")} ETH
+          {Image?.buyout?.toLocaleString("ko-KR")} ETH
         </DialogTitle>
         <DialogContent sx={{ alignSelf: "center" }}>
           <Box

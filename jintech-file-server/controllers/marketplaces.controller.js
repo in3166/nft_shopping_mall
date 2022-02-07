@@ -264,6 +264,7 @@ exports.update = async (req, res) => {
     starting_time: req.body.starting_time,
     limit_hours: req.body.limit_hours,
     current_price: req.body.current_price,
+    categoryId: req.body.categoryId,
     onMarket: true,
     soldOut: false,
     buyerEmail: null,

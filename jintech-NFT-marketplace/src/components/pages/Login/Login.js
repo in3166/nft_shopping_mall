@@ -59,6 +59,10 @@ const Login = (props) => {
           setUseOtp(true);
         }
       } else {
+        if(!!res.email){
+          alert(t("Login.verify-email"));
+          return;
+        }
         // console.log(res)
         alert(t("Login.alert"));
       }

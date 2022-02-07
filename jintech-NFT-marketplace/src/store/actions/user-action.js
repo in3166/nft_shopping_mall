@@ -61,7 +61,7 @@ export const loginAction = (body) => {
           return { success: true, otp: true, data: response.data };
         }
       } else {
-        return { success: false, message: response.data.message };
+        return { success: false, email: response.data?.email, message: response.data.message };
       }
     } catch (error) {
       return { error: true, message: error };

@@ -26,7 +26,8 @@
     "otp": "Enter 6 OTP numbers.",
     "cancel": "Cancel",
     "ok": "OK",
-    "alert": "Check the E-Mail or Password."
+    "alert": "Check the E-Mail or Password.",
+    "verify-email": "Please verify your email."
   },
   "Register": {
     "email": "E-Mail",

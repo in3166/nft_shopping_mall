@@ -28,6 +28,7 @@ const HomeBanner = (props) => {
           style: {
             position: "absolute",
             bottom: 0,
+            maxHeight: "450px",
           },
         }}
         indicatorIconButtonProps={{
@@ -44,7 +45,7 @@ const HomeBanner = (props) => {
       >
         {Banners.map((value, i) => {
           return (
-            <Link to={`/nft-detail/${value.id}`} key={`list-${i}`}>
+            <Link to={`/goods/${value.id}`} key={`list-${i}`}>
               <div className={styles["carousel-item"]} key={`list-${i}`}>
                 <img
                   id="slideImg0"

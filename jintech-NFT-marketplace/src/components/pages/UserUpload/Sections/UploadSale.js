@@ -17,6 +17,7 @@ import { create } from "ipfs-http-client";
 
 import styles from "../UserUpload.module.css";
 import getBase64 from "../../../../util/getBase64";
+import IP from "../../../../ipconfig.json";
 
 const UploadSale = (props) => {
   const { networkId, totalSupply, address, contract, accounts } = props;
@@ -80,12 +81,12 @@ const UploadSale = (props) => {
       return;
     }
 
-    var client = create("http://127.0.0.1:5002/");
+    var client = create(IP.IPFS_CREATE_CLIENT_URL);
     const { cid } = await client.add(file);
     console.log("cid: ", cid);
     //const urlStr = `http://jtsol.iptime.org:8080/ipfs/${cid}`;
     //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
-    const urlStr = `http://localhost:9090/ipfs/${cid}`;
+    const urlStr = `${IP.IPFS_SAVE_URL}/${cid}`;
 
     const body = {
       ownerEmail: user.email,

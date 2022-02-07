@@ -197,12 +197,27 @@ xxx버전 업그레이드함 xxx
   - `net stop winnat`
   - `net start winnat`
 
+- `jsipfs: execution of scription is disabled on this system`
+  - powershell 실행 제한 불가, 관리자 권한으로 실행
+  - `get-help Set-ExecutionPolicy`
+  - `Update-Help`
+  - `Set-ExecutionPolicy RemoteSigned` 
+
 - `Uncaught DOMException: Failed to set the 'value' property on 'HTMLInputElement': This input element accepts a filename, which may only be programmatically set to the empty string.`
   - `key={file?.filename}`: key 설정하기!
   - `value={file?.filename}`: file.name or file은 안됨
   - 키를 설정하지 않으면 submit 후 reset 시 filename이 남아있음
 
 - 메모리 누수 경고는 컴포넌트 별로 따로 해줘야 한다. (자식 컴포넌트 따라)
+
+- `err find python` (ipfs 실행 x)
+  - admin powershell: `npm install --global windows-build-tools`
+  - windows 의존성 설치가 안되어 있어서
+  - 이것 또한 다운로드가 멈춰서 안됨 => choco install 사용
+  - `Set-ExecutionPolicy Bypass -Scope Process` in Powershell
+  - `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
+  - `choco install python visualcpp-build-tools`
+  - `npm config set msvs_version 2017`
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지
 - 컨트랙스 수정 후 재실행
@@ -219,12 +234,12 @@ xxx버전 업그레이드함 xxx
 
 # 추가 계획
 - 로그 찍기
-- onMarket 카운트 엔드, 판매 됐을 때 배너에 해당 이미지 내리기
 - 서버 요청 시 권한 인증 방법 수정 (email => token)
 - password bcrypt 변경됨?
 - page 이동 혹은 서버 요청 시 권한(만료) 체크 더 구체적으로 설계
 - url 등 const로 분리하기
 - catch error message: `err.response.data.message.detail` 수정
+- 상품 판매 시 배너에 있으면 배너에서 제거, 시간 초과 시에도 동일
 # EC2 Ubuntu에 올리기
 - (nvm)node, (python2.7-), truffle, ganache-cli 설치
 ```

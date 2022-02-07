@@ -15,7 +15,7 @@ import getBase64 from "../../../../util/getBase64";
 import Crypto from "crypto";
 /* 2021-11-19 ipfs 를 위한 취가 */
 import { create } from "ipfs-http-client";
-
+import IP from "../../../../ipconfig.json";
 const UploadAuction = (props) => {
   const { networkId, totalSupply, address, contract, accounts } = props;
 
@@ -111,7 +111,8 @@ const UploadAuction = (props) => {
     }
 
     // ipfs client 생성 및 이미지 추가
-    var client = create("http://127.0.0.1:5002/");
+    // IPFS_CREATE_CLIENT_URL
+    var client = create(IP.IPFS_CREATE_CLIENT_URL);
     const { cid } = await client.add(file);
     console.log("cid: ", cid);
 
@@ -119,7 +120,8 @@ const UploadAuction = (props) => {
     //const urlStr = `http://ipfs.infura.io/ipfs/${cid}`;
 
     // ipfs에 업로드된 이미지 주소
-    const urlStr = `http://localhost:9090/ipfs/${cid}`;
+    // IPFS_SAVE_URL
+    const urlStr = `${IP.IPFS_SAVE_URL}/${cid}`;
 
     // 서버에 이미지를 직접 저장하기 위한 코드
     // const formData = new FormData();

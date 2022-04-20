@@ -92,12 +92,17 @@ const Navbar = () => {
     setLanguageAnchor(null);
   };
 
+  // search
   const history = useHistory();
   const [SearchText, setSearchText] = useState("");
+
   const handleSearchClick = () => {
-    console.log(SearchText);
     history.push("/bid/" + SearchText);
     setSearchText("");
+  };
+
+  const searchKeyPress = (e) => {
+    if (e.key === "Enter") handleSearchClick();
   };
 
   return (
@@ -167,6 +172,7 @@ const Navbar = () => {
                 value={SearchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 className={styles["header-search-input"]}
+                onKeyPress={searchKeyPress}
               />
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 

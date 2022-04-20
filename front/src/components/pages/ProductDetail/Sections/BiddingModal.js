@@ -131,7 +131,7 @@ const BiddingModal = (props) => {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Minimum Markup</span>
-                <span>{Image.markup.toLocaleString("ko-KR")} ETH</span>
+                <span>{Image?.markup?.toLocaleString("ko-KR")} ETH</span>
               </div>
             </div>
             <br />

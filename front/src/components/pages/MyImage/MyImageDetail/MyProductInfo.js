@@ -157,7 +157,8 @@ const MyProductInfo = (props) => {
   const handleCategoryChange = (e) => {
     setcategoryId(e.target.value);
   };
-  console.log(categoryId);
+  console.log(Markup);
+
   return (
     <Box sx={{ mt: 1, pr: 2 }}>
       <h5>Details</h5>

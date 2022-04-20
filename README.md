@@ -1,4 +1,147 @@
-# 추가사항
+# NFT 쇼핑몰
+- 유저가 업로드한 이미지를 운영자가 NFT로 변경하여 쇼핑몰에 상품 등록할 수 있는 서비스
+- 상품은 경매와 판매로 등록 가능하며 사용자는 상품 구입이나 경매에 참여할 수 있다.
+
+<img src="https://github.com/in3166/nft_shopping_mall/images/home.PNG" width="70%" />
+
+<br><br>
+
+# 설치 및 실행 (ubuntu)
+- file-server, NFT-marketplace 각각 폴더에서 `sudo npm install`
+
+- file-server에서 `npm install nodemon`
+
+- `truffle-config.js` 설정 변경
+- NFT-marketplace 폴더 안에서 `truffle compile`, `truffle migration` 실행
+
+- `ipconfig.json` url 변경 ( “IP” 만 해당 서버 url로 변경)
+- 하드코딩된 url 변경 (추후 ipconfig에 따로 빼서 관리 가능)
+  - server: `users.controller.js` 메일 주소 변경 (회원가입 시 보낼 메일의 링크 변경)
+  - client: `UploadAuction.js`, `UploadSale.js` 등의 URL 주소 변경 
+    (upload 파일 올릴 때 주소가 하드코딩 되어 있음)
+```
+// 예시
+var client = create("http://127.0.0.1:5002/"); // 변경!
+    const { cid } = await client.add(file);
+    const urlStr = `http://localhost:9090/ipfs/${cid}`;
+```
+
+실행
+- file-server, NFT-marketplace 각각 폴더에서 `sudo npm start`
+
+<br><br>
+
+## 디렉토리
+### Server: Node.js (Express)
+- app.js: 메인 파일, db 정의 라우팅 설정
+
+- config
+  - auth.config.js: JWT 시크릿 키, 만료 기한 등 설정 정보
+  - db.config.js: postgres 설정 정보
+  - email.config.js: 회원 가입 시 이메일 전송 정보(이메일 변경해야 합니다.)
+
+- controllers: DB 기능(쿼리)
+  - views.controller.js: view 카운트 기능, setIntervalQuery에서 시간 지정하여 한 번에 DB에 쌓음(시간 변경 or 바로 되도록 수정해도 됨)
+
+- middleware
+  - authJWT.js: 토큰, 이메일 등으로 권한 인증
+  - multerFile.js: 이미지 업로드, 현재 사용 x
+  - verifySignUp.js: 회원가입 시 권한이 미리 정의되어 있는지
+
+- models: DB(테이블 등) 정의, 테이블이 없어도 자동 생성됨
+- routes: 라우팅 정의
+<br>
+### 라이브러리
+- 메일 전송: nodemailer (회원가입)
+- DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore
+- JWT: jsonwebtoken (로그인 시 생성하여 클라이언트에 토큰을 보내줌)
+- 2FA: speakeasy, qrcode
+	
+### 참고
+- images와 관련된 db, 파일 등은 사용하지 않음
+- auth.controller.js 사용 x
+- 경매 기능은 marketplave.controller.js에 정의 (endTimeOrSoldOut)
+<br><br>
+
+# Client: React
+- src: 화면 구성, 기능 소스
+  - ConnectMetamask: 초기 Metamask 접속화면
+  - Navbar: 상단 내비게이션바
+
+- pages
+  - Analysis: 분석 페이지
+  - home: 홈 페이지
+  - Login: 로그인 페이지
+  - Marketplace: 마켓플레이스 페이지
+  - MyImage: MyTokens 페이지
+  - ProductDetail: 마켓플레이스에 있는 상품 상세 페이지
+  - Profile: 프로필 페이지
+  - Register: 회원가입 페이지
+  - setting: 셋팅 페이지
+  - UserList: 사용자 목록 페이지
+  - UserUpload: Mint 페이지
+
+- UI
+  - Loading: 로딩 컴포넌트
+
+- Auth.js: 페이지 이동 시 해당 권한 체크 기능 
+- app.js에서 넘겨주는 페이지 권한을 기준으로 해당 사용자가 가진 권한 비교
+
+- hooks
+  - useInfiniteScroll.js: 무한 스크롤 기능
+  - useInputreduce.js: 회원 가입 등에 입력 값 받는 기능
+  - usePagination.js: 페이지네이션 기능, 무한 스크롤로 대체
+  - useScroll, useInput 사용 x
+
+- locales
+  - 다국어 기능
+  ```
+  "Navbar": {
+      "mytokens": "MyTokens",
+
+  위처럼 정의 후 아래처럼 사용
+
+  import i18next from "i18next";
+  import { useTranslation } from "react-i18next";
+  // …
+
+  const { t, i18n } = useTranslation();
+  const getLanguage = () => i18next.language || window.localStorage.i18nextLng;
+  //…
+
+  return (
+  <Link to="/myimages" className="nav-link">
+              {t("Navbar.mytokens")}
+        </Link>
+  )
+  ```
+
+- store: react-redux 사용
+  - 로그인, 로그아웃, 유저 정보 변경 등 기능
+  - 크롬 ReduxDevtools 설치하면 현재 유저 정보 등 확인 가능
+
+- util
+  - getBase64.js: mint 시 이미지 파일 암호화 기능 분리
+  - ViewCounts.js: view 카운트 기능 정의
+  - setupProxy.js: node 서버와 통신하기 위한 프록시 설정
+
+### 라이브러리
+- material ui 5.3 추가
+  - `npm install @mui/material @emotion/react @emotion/styled`
+  - table ui 추가
+    - `npm install @mui/x-data-grid`
+  - `@mui/lab` 추가
+  - `@mui/icons-material`
+-  http-proxy-middleware (setupProxy.js)
+- i18next: 다국어 기능
+- react-material-ui-carousel: 홈 페이지 배너 Carousel 기능(슬라이드)
+<br><br>
+
+## DB 구조
+<img src="https://github.com/in3166/nft_shopping_mall/images/ERD.PNG" width="80%" />
+<br><br>
+
+# 기능 추가
 
 - `<meta name="viewport" content="initial-scale=1, width=device-width" />`
 
@@ -24,7 +167,7 @@ xxx버전 업그레이드함 xxx
   - `@material-ui/x-grid@v4.0.0-alpha.20`
 ```
 
-- http-proxy-middleware 설치, 추가 setup proxy.js / ipconfig
+- `http-proxy-middleware` 설치, 추가 setup `proxy.js / ipconfig`
 - db 추가
 - axios 설치
   @material-ui/core@4.12.3 @material-ui/icons@4.11.2 @material-ui/lab@4.0.0-alpha.60 @material-ui/x-grid@4.0.0-alpha.20
@@ -53,7 +196,6 @@ xxx버전 업그레이드함 xxx
 
 - Banner Carousel 기능 추가
   - `npm install react-material-ui-carousel`
-## 기능 추가
 
 - 회원 가입
 - 로그인
@@ -163,11 +305,19 @@ xxx버전 업그레이드함 xxx
   - 대체 옵션2: db 프로시저
   - 대체 옵션3: 해당 상품 상세페이지 들어갈 때 시간비교 => 안들어갈 때 문제
 
+- 무한 스크롤 기능
+ - useInfiniteScroll
+
+- 상품 필터, 정렬 기능 추가
+
+<br><br>
+
 ## 수정 사항
 
 - 같은 이미지의 경우 mint 방지 => hash url
   - `ImageContract.sol`
     - `require(!_imageExists[_hash], "ERC721: token already minted");` 추가
+<br><br>
 
 ## Warning
 
@@ -218,6 +368,18 @@ xxx버전 업그레이드함 xxx
   - `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
   - `choco install python visualcpp-build-tools`
   - `npm config set msvs_version 2017`
+<br>
+
+
+## error
+- git push 시 하위 폴더 에러 (`modified content, untracked content`)
+
+  - `.git` 폴더 삭제
+  - `git rm -rf --cached`
+
+- Class component history 사용: 해당 컴포넌트를 `withRouter`로 감싸서 export
+<br><br>
+
 # 참고
 - `err.response.data.message` 서버에서 받은 에러메세지
 - 컨트랙스 수정 후 재실행
@@ -240,6 +402,7 @@ xxx버전 업그레이드함 xxx
 - url 등 const로 분리하기
 - catch error message: `err.response.data.message.detail` 수정
 - 상품 판매 시 배너에 있으면 배너에서 제거, 시간 초과 시에도 동일
+
 # EC2 Ubuntu에 올리기
 - (nvm)node, (python2.7-), truffle, ganache-cli 설치
 ```
@@ -268,7 +431,6 @@ sudo npm install
 - DB 연결 (PostgresSQL)
   - local 설치
   - `config/db.config.js`에 환경설정
-
 
 
 ### 메타 마스크 연결
@@ -304,17 +466,6 @@ sudo npm install
 - .env.production
 
 <br><br>
-
-## error
-
-- git push 시 하위 폴더 에러 (`modified content, untracked content`)
-
-  - `.git` 폴더 삭제
-  - `git rm -rf --cached`
-
-- Class component history 사용: 해당 컴포넌트를 `withRouter`로 감싸서 export
-
-  <br>
 
 # Jintech NFT Marketplace
 

@@ -257,7 +257,7 @@ exports.findAllFavorites = (req, res) => {
 
 exports.update = async (req, res) => {
   //var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  console.log("update", req.body);
+  console.log("update: ", req.body);
 
   const marketData = {
     type: req.body.type,
@@ -268,6 +268,8 @@ exports.update = async (req, res) => {
     onMarket: true,
     soldOut: false,
     buyerEmail: null,
+    markup: req.body.markup,
+    buyout: req.body.buyout,
   };
 
   const historyData = {

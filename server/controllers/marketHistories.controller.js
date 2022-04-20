@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
 
   MarketHistory.create({
     action: body.action,
-    price: body.current_price,
+    price: body.price,
     userEmail: body.userEmail,
     marketplaceId: body.marketplaceId,
     starting_time: body.starting_time,

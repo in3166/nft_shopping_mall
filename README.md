@@ -2,7 +2,7 @@
 - 유저가 업로드한 이미지를 운영자가 NFT로 변경하여 쇼핑몰에 상품 등록할 수 있는 서비스
 - 상품은 경매와 판매로 등록 가능하며 사용자는 상품 구입이나 경매에 참여할 수 있다.
 
-<img src="https://github.com/in3166/nft_shopping_mall/images/home.PNG" width="70%" />
+<img src="https://github.com/in3166/nft_shopping_mall/blob/master/images/home.PNG" width="70%" />
 
 <br><br>
 
@@ -138,7 +138,7 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
 <br><br>
 
 ## DB 구조
-<img src="https://github.com/in3166/nft_shopping_mall/images/ERD.PNG" width="80%" />
+<img src="https://github.com/in3166/nft_shopping_mall/blob/master/images/ERD.PNG" width="80%" />
 <br><br>
 
 # 기능 추가

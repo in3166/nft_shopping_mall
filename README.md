@@ -125,6 +125,7 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
   - ViewCounts.js: view 카운트 기능 정의
   - setupProxy.js: node 서버와 통신하기 위한 프록시 설정
 
+
 ### 라이브러리
 - material ui 5.3 추가
   - `npm install @mui/material @emotion/react @emotion/styled`
@@ -132,9 +133,11 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
     - `npm install @mui/x-data-grid`
   - `@mui/lab` 추가
   - `@mui/icons-material`
+
 -  http-proxy-middleware (setupProxy.js)
 - i18next: 다국어 기능
 - react-material-ui-carousel: 홈 페이지 배너 Carousel 기능(슬라이드)
+
 <br><br>
 
 ## DB 구조
@@ -466,104 +469,3 @@ sudo npm install
 - .env.production
 
 <br><br>
-
-# Jintech NFT Marketplace
-
-<i>NFT marketplace DApp where users mint ERC721 implemented Jintech NFTs.</i>
-
-#
-
-`<img align="right" width="350" src="./image.png"></img>`
-
-### Features
-
-- Mint custom ERC721 implemented Jintech Tokens.
-- Sell Jintech tokens on the marketplace.
-- Set desired token price.
-- Toggle between keeping the token for sale and not for sale.
-- Keeps track of all the tokens owned by an account - minted and bought.
-- Query blockchain for token owner and token metadata.
-- User can mint a token only after every 5 minutes.
-
-#
-
-### Stack
-
-- [Solidity](https://docs.soliditylang.org/en/v0.7.6/) - Object-oriented, high-level language for implementing smart contracts.
-- [Bootstrap 4](https://getbootstrap.com/) - CSS framework for faster and easier web development.
-- [React.js](https://reactjs.org/) - JavaScript library for building user interfaces.
-- [web3.js](https://web3js.readthedocs.io/en/v1.3.4/) - Allows users to interact with a local or remote ethereum node using HTTP, IPC or WebSocket.
-- [Truffle](https://www.trufflesuite.com/truffle) - Development environment, testing framework and asset pipeline for blockchains using the Ethereum Virtual Machine (EVM).
-- [Ganache](https://www.truffleste.com/ganache) - Personal blockchain for Ethereum development used to deploy contracts, develop DApps, and run tests.
-
-#
-
-### Interact with the deployed DApp
-
-- Jintech Marketplace DApp requires [Metamask](https://metamask.io/) browser wallet extension to interact with.
-- Connect metamask browser wallet to Kovan Test Network.
-- Request and get test etheres for the metamask account from [Kovan Faucet](https://gitter.im/kovan-testnet/faucet) to make transactions.
-- Jintech Marketplace Smart Contract is deployed to Kovan Testnet - [0x420d2a6E87D87992EB01e5BFe762B3F437dBfD85](https://kovan.etherscan.io/address/0x420d2a6e87d87992eb01e5bfe762b3f437dbfd85)
-- Access Jintech Marketplace DApp at [cryptoboys-NFT-marketplace](https://devpavan04.github.io/cryptoboys-nft-marketplace/) and start minting your Jintech.
-
-#
-
-### Run the DApp Locally
-
-#### Install truffle
-
-```
-npm install -g truffle
-```
-
-#### Install ganache-cli
-
-```
-npm i ganache-cli
-```
-
-#### Run ganache-cli
-
-```
-ganache-cli --port 7545
-```
-
-#### Open new terminal window and clone this repository
-
-```
-git clone https://github.com/devpavan04/cryptoboys-NFT-marketplace.git
-```
-
-#### Install dependencies
-
-```
-cd cryptoboys-NFT-marketplace
-npm install
-```
-
-#### Compile smart contract
-
-```
-truffle compile
-```
-
-#### Deploy smart contract to ganache
-
-```
-truffle migrate
-```
-
-#### Test smart contract
-
-```
-truffle test
-```
-
-#### Start DApp
-
-```
-npm start
-```
-
-- Open metamask browser wallet and connect network to Localhost 7545.
-- Import accounts from ganache-cli into the metamask browser wallet to make transactions on the DApp.

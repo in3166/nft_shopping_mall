@@ -51,12 +51,13 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
 - models: DB(테이블 등) 정의, 테이블이 없어도 자동 생성됨
 - routes: 라우팅 정의
 <br>
+
 ### 라이브러리
 - 메일 전송: nodemailer (회원가입)
 - DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore
 - JWT: jsonwebtoken (로그인 시 생성하여 클라이언트에 토큰을 보내줌)
 - 2FA: speakeasy, qrcode
-	
+
 ### 참고
 - images와 관련된 db, 파일 등은 사용하지 않음
 - auth.controller.js 사용 x

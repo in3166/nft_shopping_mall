@@ -1,58 +1,38 @@
 import React, { useState } from "react";
-import icon from "./favicon-32x32.png";
 import { Link, useHistory } from "react-router-dom";
-
-import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { useDispatch, useSelector } from "react-redux";
-import * as actions from "../../store/actions/user-action";
 import { useTranslation } from "react-i18next";
-import styles from "./Navbar.module.css";
-import SettingsIcon from "@mui/icons-material/Settings";
+import i18next from "i18next";
 import {
   Avatar,
-  Button,
   Divider,
   IconButton,
-  Input,
   InputBase,
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
   Menu,
   MenuItem,
   Paper,
-  Stack,
-  Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box } from "@mui/system";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import i18next from "i18next";
 import SearchIcon from "@mui/icons-material/Search";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+
+import icon from "./favicon-32x32.png";
+import * as actions from "../../store/actions/user-action";
 import "./Navbar.css";
+import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const options = [t("Navbar.lang.en"), t("Navbar.lang.ko")];
-
-  const getToken = () => {
-    const tokenString = sessionStorage.getItem("nft_user_token");
-    const userToken = JSON.parse(tokenString);
-    //임시 코드 , 2021-11-15
-    let result = false;
-
-    try {
-      result = userToken.accessToken !== "" ? true : false;
-    } catch (e) {
-      result = false;
-    }
-    return result;
-  };
 
   const logoutHandler = () => {
     dispatch(actions.logoutAction());
@@ -126,11 +106,6 @@ const Navbar = () => {
           style={{ justifyContent: "space-between" }}
         >
           <ul className={`navbar-nav ${styles.ul} ${styles["ul_left"]}`}>
-            {/* <li className={`nav-item ${styles["nav-li"]}`}>
-              <Link to="/marketplace" className="nav-link">
-                {t("Navbar.marketplace")}
-              </Link>
-            </li> */}
             <li className={`nav-item ${styles["nav-li"]}`}>
               <Link to="/bid" className="nav-link">
                 {t("Navbar.marketplace")}
@@ -138,12 +113,6 @@ const Navbar = () => {
             </li>
             {user.isLoggedIn && (
               <>
-                {/* <li className={`nav-item ${styles["nav-li"]}`}>
-                  <Link to="/mytokens" className="nav-link">
-                    {t("Navbar.mytokens")}
-                  </Link>
-                </li> */}
-
                 <li className={`nav-item ${styles["nav-li"]}`}>
                   <Link to="/myimages" className="nav-link">
                     {t("Navbar.mytokens")}
@@ -184,11 +153,6 @@ const Navbar = () => {
 
             {user.isAdmin && (
               <>
-                {/* <li className={`nav-item ${styles["nav-li"]}`}>
-                  <Link className="nav-link" to="/uploadList">
-                    {t("Navbar.uploadlist")}
-                  </Link>
-                </li> */}
                 {user.isAdmin && (
                   <li className={`nav-item ${styles["nav-li"]}`}>
                     <Link to="/upload" className="nav-link">

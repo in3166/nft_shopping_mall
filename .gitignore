@@ -2,9 +2,12 @@
 */config
 **/.env.development
 **/.env.production
-
+**/package-lock.json
 **/.pnp
 .pnp.js
+*/contracts
+*/abis
+*/openzeppelin
 
 # testing
 /coverage

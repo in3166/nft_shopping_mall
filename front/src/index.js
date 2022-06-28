@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
+import App from "./pages/App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
 import "./bootstrap.min.css";

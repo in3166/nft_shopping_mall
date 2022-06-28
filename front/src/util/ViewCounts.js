@@ -1,9 +1,4 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
-import { authCheckAction } from "../store/actions/user-action";
-import { userAction } from "../store/reducers/user-slice";
 
 const ViewCounts = async (url, email, data) => {
   const res = await axios.get("https://geolocation-db.com/json/");

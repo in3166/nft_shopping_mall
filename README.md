@@ -1,70 +1,43 @@
 # NFT 쇼핑몰
 - 유저가 업로드한 이미지를 운영자가 NFT로 변경하여 쇼핑몰에 상품 등록할 수 있는 서비스
-- 상품은 경매와 판매로 등록 가능하며 사용자는 상품 구입이나 경매에 참여할 수 있다.
-
 <img src="https://github.com/in3166/nft_shopping_mall/blob/master/images/home.PNG" width="70%" />
+
+- 상품은 경매와 판매로 등록 가능하다.
+  - 경매로 등록할 경우 페이지에 경매 버튼이 보인다.
+  - 설정한 시간 동안 경매에 참여 가능하고 시간이 지나면 낙찰자가 있는 경우 낙찰자에게 해당 상품이 판매된다.
+  - 경매에 참여 History를 보여준다.
+
+- 사용자는 상품 구입이나 경매에 참여 가능
+<br>
+
+- [페이지 설명](https://github.com/in3166/nft_shopping_mall/blob/master/images/%ED%8E%98%EC%9D%B4%EC%A7%80%20%EC%84%A4%EB%AA%85.md)
+
 
 <br><br>
 
 # 설치 및 실행 (ubuntu)
-- file-server, NFT-marketplace 각각 폴더에서 `sudo npm install`
-
-- file-server에서 `npm install nodemon`
+- front, server 각각 폴더에서 `sudo npm install`
+- server에서 `npm install nodemon`
 
 - `truffle-config.js` 설정 변경
-- NFT-marketplace 폴더 안에서 `truffle compile`, `truffle migration` 실행
+- front 폴더 안에서 `truffle compile`, `truffle migration` 실행
 
 - `ipconfig.json` url 변경 ( “IP” 만 해당 서버 url로 변경)
-- 하드코딩된 url 변경 (추후 ipconfig에 따로 빼서 관리 가능)
-  - server: `users.controller.js` 메일 주소 변경 (회원가입 시 보낼 메일의 링크 변경)
-  - client: `UploadAuction.js`, `UploadSale.js` 등의 URL 주소 변경 
-    (upload 파일 올릴 때 주소가 하드코딩 되어 있음)
-```
-// 예시
-var client = create("http://127.0.0.1:5002/"); // 변경!
-    const { cid } = await client.add(file);
-    const urlStr = `http://localhost:9090/ipfs/${cid}`;
-```
 
-실행
-- file-server, NFT-marketplace 각각 폴더에서 `sudo npm start`
+- ipfs 설치
+  - `npm install -g ipfs`
+  - `jsipfs init`
+  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\", \"GET\"]'`
+  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]'`
+  - `jsipfs daemon`
+
+- 실행
+  - front, server 각각 폴더에서 `sudo npm start`
 
 <br><br>
 
-## 디렉토리
-### Server: Node.js (Express)
-- app.js: 메인 파일, db 정의 라우팅 설정
-
-- config
-  - auth.config.js: JWT 시크릿 키, 만료 기한 등 설정 정보
-  - db.config.js: postgres 설정 정보
-  - email.config.js: 회원 가입 시 이메일 전송 정보(이메일 변경해야 합니다.)
-
-- controllers: DB 기능(쿼리)
-  - views.controller.js: view 카운트 기능, setIntervalQuery에서 시간 지정하여 한 번에 DB에 쌓음(시간 변경 or 바로 되도록 수정해도 됨)
-
-- middleware
-  - authJWT.js: 토큰, 이메일 등으로 권한 인증
-  - multerFile.js: 이미지 업로드, 현재 사용 x
-  - verifySignUp.js: 회원가입 시 권한이 미리 정의되어 있는지
-
-- models: DB(테이블 등) 정의, 테이블이 없어도 자동 생성됨
-- routes: 라우팅 정의
-<br>
-
-### 라이브러리
-- 메일 전송: nodemailer (회원가입)
-- DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore
-- JWT: jsonwebtoken (로그인 시 생성하여 클라이언트에 토큰을 보내줌)
-- 2FA: speakeasy, qrcode
-
-### 참고
-- images와 관련된 db, 파일 등은 사용하지 않음
-- auth.controller.js 사용 x
-- 경매 기능은 marketplave.controller.js에 정의 (endTimeOrSoldOut)
-<br><br>
-
-# Client: React
+# 디렉토리
+## Client: React
 - src: 화면 구성, 기능 소스
   - ConnectMetamask: 초기 Metamask 접속화면
   - Navbar: 상단 내비게이션바
@@ -138,6 +111,35 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
 -  http-proxy-middleware (setupProxy.js)
 - i18next: 다국어 기능
 - react-material-ui-carousel: 홈 페이지 배너 Carousel 기능(슬라이드)
+<br><br>
+
+## Server: Node.js (Express)
+- app.js: 메인 파일, db 정의 라우팅 설정
+
+- config
+  - auth.config.js: JWT 시크릿 키, 만료 기한 등 설정 정보
+  - db.config.js: postgres 설정 정보
+  - email.config.js: 회원 가입 시 이메일 전송 정보(이메일 변경해야 합니다.)
+
+- controllers: DB 기능(쿼리)
+  - views.controller.js: view 카운트 기능, setIntervalQuery에서 시간 지정하여 한 번에 DB에 쌓음(시간 변경 or 바로 되도록 수정해도 됨)
+
+- middleware
+  - authJWT.js: 토큰, 이메일 등으로 권한 인증
+  - multerFile.js: 이미지 업로드, 현재 사용 x
+  - verifySignUp.js: 회원가입 시 권한이 미리 정의되어 있는지
+
+- models: DB(테이블 등) 정의, 테이블이 없어도 자동 생성됨
+- routes: 라우팅 정의
+<br>
+
+
+### 라이브러리
+- 메일 전송: nodemailer (회원가입)
+- DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore
+- JWT: jsonwebtoken (로그인 시 생성하여 클라이언트에 토큰을 보내줌)
+- 2FA: speakeasy, qrcode
+
 
 <br><br>
 
@@ -146,31 +148,6 @@ var client = create("http://127.0.0.1:5002/"); // 변경!
 <br><br>
 
 # 기능 추가
-
-- `<meta name="viewport" content="initial-scale=1, width=device-width" />`
-
-- react version 17.0.2로 업그레이드
-
-  - `npm install react@17.0.2 react-dom@17.0.2`
-
-- material ui 5.3 추가
-  - `npm install @mui/material @emotion/react @emotion/styled`
-  - table ui 추가
-    - `npm install @mui/x-data-grid`
-  - `@mui/lab` 추가
-  - `@mui/icons-material`
-
-```
-xxx버전 업그레이드함 xxx
-- material ui 4.7ver 추가 (notistack)
-  - `npm install @material-ui/core `
-  - `npm install @material-ui/icons`
-  - `npm install @material-ui/lab`
-  - `npm install @mui/icons-material` (x)
-- table ui 추가
-  - `@material-ui/x-grid@v4.0.0-alpha.20`
-```
-
 - `http-proxy-middleware` 설치, 추가 setup `proxy.js / ipconfig`
 - db 추가
 - axios 설치
@@ -179,14 +156,6 @@ xxx버전 업그레이드함 xxx
 - 메일 인증 라이브러리: `npm install nodemailer`
   - 서버에 config 추가, controllers에 함수 추가
 - postgreSQL: ` npm install sequelize pg pg-hstore`
-
-- ipfs 설치
-
-  - `npm install -g ipfs`
-  - `jsipfs init`
-  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\", \"GET\"]'`
-  - `jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]'`
-  - `jsipfs daemon`
 
 - 다국어 기능 추가
 
@@ -203,7 +172,8 @@ xxx버전 업그레이드함 xxx
 
 - 회원 가입
 - 로그인
-- JWT 인증 구현 (refresh 미구현)
+- JWT 인증 구현
+
 - 이메일 인증
 
   - `server/ verify 메서드`
@@ -251,6 +221,7 @@ xxx버전 업그레이드함 xxx
       {
         //...
   ```
+<br>
 
 - 조회수 기능
 
@@ -302,6 +273,7 @@ xxx버전 업그레이드함 xxx
       //...
     }
     ```
+<br>
 
 - 시간 지난 상품 `onMarket` column - false 설정 (`marketplaces.cotroller`)
   - `/bid` 경로에서 모든 제품을 불러올 때 시간 확인, `onMarket` 업데이트
@@ -310,7 +282,7 @@ xxx버전 업그레이드함 xxx
   - 대체 옵션3: 해당 상품 상세페이지 들어갈 때 시간비교 => 안들어갈 때 문제
 
 - 무한 스크롤 기능
- - useInfiniteScroll
+ - `hooks/useInfiniteScroll`
 
 - 상품 필터, 정렬 기능 추가
 
@@ -322,6 +294,91 @@ xxx버전 업그레이드함 xxx
   - `ImageContract.sol`
     - `require(!_imageExists[_hash], "ERC721: token already minted");` 추가
 <br><br>
+
+# EC2 Ubuntu에 올리기
+- (nvm)node, (python2.7-), truffle, ganache-cli 설치
+```
+$ sudo apt-get update
+$ sudo apt-get -y upgrade
+$ sudo apt install -y build-essential
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+source ~/.bashrc
+nvm install v16.13.0
+```
+```
+[npm install 시 sudo npm intall => command not found] 
+n=$(which node); \
+n=${n%/bin/node}; \
+chmod -R 755 $n/bin/*; \
+sudo cp -r $n/{bin,lib,share} /usr/local
+-----
+[EC2 보안- 아웃바운드 규칙 433 -> Anyware]
+sudo npm install
+```
+- ganache-cli 실행: `ganache-cli --host 0.0.0.0`
+- truffle compile / migrate
+- ipfs 설치 및 실행
+
+- DB 연결 (PostgresSQL)
+  - local 설치
+  - `config/db.config.js`에 환경설정
+
+
+### 메타 마스크 연결
+- RPC URL: `http://주소:8545`
+- Chain Id: 1337
+- 계정 비밀키 등록
+
+### SERVER GIT CLONE
+- git clone -
+- npm install
+- 파일 생성
+  - server
+    - config (`auth.confing.js`, `db.config.js`, `email.config.js`)
+
+  - nft-marketplace
+   - `.env.development`, `.env.production`
+
+- `truffle-config.js` 설정 변경
+- `ipconfig.json` 설정 변경
+- 하드코딩 url 변경
+  - server: `users.controller.js` 메일 주소
+  - client
+    - `UploadAuction.js`
+    - `UploadSale.js`
+
+<br><br>
+
+# 추가 계획
+- 로그 찍기
+- 서버 요청 시 권한 인증 방법 수정 (email => token)
+- page 이동 혹은 서버 요청 시 권한(만료) 체크 더 구체적으로 설계
+- url 분리 => `const`
+- catch error message: `err.response.data.message.detail` 수정
+- 상품 판매 시 배너에 있으면 배너에서 제거, 시간 초과 시에도 동일
+
+<br><br><br>
+
+<hr>
+
+<br><br>
+
+# 참고 사항
+- `err.response.data.message` 서버에서 받은 에러메세지
+- 컨트랙스 수정 후 재실행
+
+  - `truffle compile`
+  - `truffle migrate --reset`
+
+- sequelize migration - undo
+- winsoton, morgan - logger
+- `useInputReduce`에서 initalValue 내려줄 때 동일한 객체(전역?)를 내려주면 값을 공유하게 됨 => 객체를 새롭게
+
+- ubuntu PostgreSQL: `Connection Refused`
+  - `sudo service postgresql restart`
+
+<br>
 
 ## Warning
 
@@ -372,8 +429,6 @@ xxx버전 업그레이드함 xxx
   - `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
   - `choco install python visualcpp-build-tools`
   - `npm config set msvs_version 2017`
-<br>
-
 
 ## error
 - git push 시 하위 폴더 에러 (`modified content, untracked content`)
@@ -382,91 +437,3 @@ xxx버전 업그레이드함 xxx
   - `git rm -rf --cached`
 
 - Class component history 사용: 해당 컴포넌트를 `withRouter`로 감싸서 export
-<br><br>
-
-# 참고
-- `err.response.data.message` 서버에서 받은 에러메세지
-- 컨트랙스 수정 후 재실행
-
-  - `truffle compile`
-  - `truffle migrate --reset`
-
-- sequelize migration - undo
-- winsoton, morgan - logger
-- `useInputReduce`에서 initalValue 내려줄 때 동일한 객체(전역?)를 내려주면 값을 공유하게 됨 => 객체를 새롭게
-
-- ubuntu PostgreSQL: `Connection Refused`
-  - `sudo service postgresql restart`
-
-# 추가 계획
-- 로그 찍기
-- 서버 요청 시 권한 인증 방법 수정 (email => token)
-- password bcrypt 변경됨?
-- page 이동 혹은 서버 요청 시 권한(만료) 체크 더 구체적으로 설계
-- url 등 const로 분리하기
-- catch error message: `err.response.data.message.detail` 수정
-- 상품 판매 시 배너에 있으면 배너에서 제거, 시간 초과 시에도 동일
-
-# EC2 Ubuntu에 올리기
-- (nvm)node, (python2.7-), truffle, ganache-cli 설치
-```
-$ sudo apt-get update
-$ sudo apt-get -y upgrade
-$ sudo apt install -y build-essential
-
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-source ~/.bashrc
-nvm install v16.13.0
-```
-```
-[npm install 시 sudo npm intall => command not found] 
-n=$(which node); \
-n=${n%/bin/node}; \
-chmod -R 755 $n/bin/*; \
-sudo cp -r $n/{bin,lib,share} /usr/local
------
-[EC2 보안- 아웃바운드 규칙 433 -> Anyware]
-sudo npm install
-```
-- ganache-cli 실행: `ganache-cli --host 0.0.0.0`
-- truffle compile / migrate
-- ipfs 설치 및 실행
-
-- DB 연결 (PostgresSQL)
-  - local 설치
-  - `config/db.config.js`에 환경설정
-
-
-### 메타 마스크 연결
-- RPC URL: `http://주소:8545`
-- Chain Id: 1337
-- 계정 비밀키 등록
-
-### SERVER GIT CLONE
-- git clone -
-- npm install
-- 파일 생성
-  - jintech-file-server
-    - config (auth.confing.js, db.config.js, email.config.js)
-
-  - jintech-nft-marketplace
-   - .env.development, .env.production
-
-- `truffle-config.js` 설정 변경
-- `ipconfig.json` 설정 변경
-- 하드코딩 url 변경
-  - server: `users.controller.js` 메일 주소
-  - client
-    - `UploadAuction.js`
-    - `UploadSale.js`
-
-<br><br><br>
-
-### ignore
-
-- \*/node_modules
-- \*/config
-- .env.development
-- .env.production
-
-<br><br>

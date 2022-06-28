@@ -38,9 +38,13 @@
 
 # 디렉토리
 ## Client: React
-- src: 화면 구성, 기능 소스
+- components
   - ConnectMetamask: 초기 Metamask 접속화면
-  - Navbar: 상단 내비게이션바
+  - Navbar
+  - Loading
+  - Card
+  - Input
+  - Button
 
 - pages
   - Analysis: 분석 페이지
@@ -54,9 +58,6 @@
   - setting: 셋팅 페이지
   - UserList: 사용자 목록 페이지
   - UserUpload: Mint 페이지
-
-- UI
-  - Loading: 로딩 컴포넌트
 
 - Auth.js: 페이지 이동 시 해당 권한 체크 기능 
 - app.js에서 넘겨주는 페이지 권한을 기준으로 해당 사용자가 가진 권한 비교

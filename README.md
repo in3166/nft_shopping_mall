@@ -7,12 +7,174 @@
   - 설정한 시간 동안 경매에 참여 가능하고 시간이 지나면 낙찰자가 있는 경우 낙찰자에게 해당 상품이 판매된다.
   - 경매에 참여 History를 보여준다.
 
-- 사용자는 상품 구입이나 경매에 참여 가능
 <br>
 
 - [페이지 설명](https://github.com/in3166/nft_shopping_mall/blob/master/images/%ED%8E%98%EC%9D%B4%EC%A7%80%20%EC%84%A4%EB%AA%85.md)
 
 
+<br><br>
+
+
+# 기능
+- 회원가입, 로그인
+  - 메일 인증: `nodemailer`
+    - 서버에 config 추가, controllers에 함수 추가
+    - 회원 가입을 완료 한 후 등록한 메일을 인증해야 로그인이 가능하다.
+
+  - `server/verify`
+  - `/verify?email=...&code=...`
+<br>
+
+- 사용자 계정 관리
+
+  - 지갑 정보 갱신 가능
+  - 좋아요 목록
+  - 구매, 판매 이력 리스트
+  - 2차 인증 사용 관리
+  - 회원 탈퇴
+<br>
+
+- 관리자 설정 페이지
+
+  - 배너 관리
+  - 카테고리 관리
+  - 관리자 계정 관리
+<br>
+
+- 다국어 기능 추가
+
+  - `i18next` 라이브러리 사용
+  - `npm install react-i18next i18next`
+  - `npm install i18next-http-backend i18next-browser-languagedetector`
+  - (i18next 참고)[https://react.i18next.com/latest/using-with-hooks]
+<br>
+
+- 무한 스크롤 기능
+
+  - `hooks/useInfiniteScroll`
+  - `IntersectionObserver` 사용
+<br>
+
+- 상품 필터, 정렬, 검색, 좋아요 기능 추가
+<br>
+
+- 경매 시간 카운트 추가
+  - `react-countdown` 라이브러리
+
+<br>
+
+- Banner Carousel 기능 추가
+  - `npm install react-material-ui-carousel`
+<br>
+
+- JWT 인증 구현
+<br>
+
+- 2FA(Goole OTP) 구현
+
+  - 키 생성, RESERT
+  - `users` 테이블에 컬럼 추가
+  - 라이브러리: `speakeasy`, `qrcode`
+
+- 상품 경매, 판매 등록
+
+  - 이미지 파일을 선택하고 정보 입력 후 등록 시 Mint 되고 ipfs, db에 저장
+
+- ~~이미지 업로드 (`multer`)~~ => ipfs 저장으로 수정
+  - `formData` 와 `{ header: { "content-type": "multipart/form-data" }` 를 사용하여 request를 보내야 한다.
+  - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
+  - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
+  
+<br>
+
+- 조회수 기능
+
+  - views 테이블: 날짜별, 제품별 통계 분석을 위해 테이블을 따로 둠.
+
+  ```
+  (id, ip, client_url, server_url, userEmail, marketplaceId, imageId, date)
+  ```
+
+  - `views.controller.js`
+
+    - front에서 `ip-url` 형식으로 localStorage에 저장하여 조회수 연속 추가 방지
+
+    ```js
+    // src/utils/ViewCounts.js
+    const existed = localStorage.getItem(ip + url);
+    if (!!existed) return;
+
+    localStorage.setItem(ip + url, true);
+
+    const request = async () => {
+      //...
+    };
+    ```
+
+    - interval을 줘서 views 테이블에 한 번에 할 수 있도록 함. (2-3시간 간격)
+
+    ```js
+    const counts = []; // [{id:1,...}, {id:2, ...}, ...]
+
+    const addCount = () => {
+      Views.bulkCreate(...) // 여기서 모아진 counts를 db에 넣기
+      counts.length = 0;
+      console.log(counts);
+    };
+
+    const setIntervalQuery = {
+      inteval: () =>
+        setInterval(() => {
+          addCount();
+        }, 36000),
+    };
+
+    setIntervalQuery.inteval();
+
+    exports.create = async (req, res) => {
+      //...
+      counts.push(req.body);
+      //...
+    }
+    ```
+<br>
+
+- 시간 지난 상품 `onMarket` column - false 설정 (`marketplaces.cotroller`)
+  - `/bid` 경로에서 모든 제품을 불러올 때 시간 확인, `onMarket` 업데이트
+  - 대체 옵션1: db trigger
+  - 대체 옵션2: db 프로시저
+  - 대체 옵션3: 해당 상품 상세페이지 들어갈 때 시간비교 => 안들어갈 때 문제
+
+<br>
+
+- postgreSQL sequelize 외래키 설정하고 조회하기
+
+  ```js
+  // 설정 in index
+  db.marketplace.belongsTo(db.users, {
+    foreignKey: "buyerEmail",
+    as: "buyer",
+    targetKey: "email",
+  });
+
+  // 조회 in controller
+  Marketplace.findAll({
+    include: [
+      {
+        model: db.users,
+        attributes: ["email", "address"],
+        as: "owner",
+      },
+
+  // findOne 은 where 절과 함께 객체에 넣기
+  Marketplace.findOne({
+    where: { id },
+    include: [
+            { association: "owner" },
+      {
+        //...
+  ```
+  
 <br><br>
 
 # 설치 및 실행 (ubuntu)
@@ -102,16 +264,18 @@
 
 
 ### 라이브러리
-- material ui 5.3 추가
-  - `npm install @mui/material @emotion/react @emotion/styled`
-  - table ui 추가
-    - `npm install @mui/x-data-grid`
-  - `@mui/lab` 추가
-  - `@mui/icons-material`
-
--  http-proxy-middleware (setupProxy.js)
+- material-ui
+- http-proxy-middleware (setupProxy.js)
 - i18next: 다국어 기능
 - react-material-ui-carousel: 홈 페이지 배너 Carousel 기능(슬라이드)
+- axios
+- dayjs
+- ipfs-http-client
+- react-countdown: 경매 상품의 경우 상품 목록에서 남은 시간을 보여준다.
+- react-redux
+- reduxjs/toolkit
+- 
+
 <br><br>
 
 ## Server: Node.js (Express)
@@ -137,156 +301,15 @@
 
 ### 라이브러리
 - 메일 전송: nodemailer (회원가입)
-- DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore
+- DB: sequelize(쿼리 대신 controllers 소스처럼 디비 사용사능), pg, pg-hstore, sequelize
 - JWT: jsonwebtoken (로그인 시 생성하여 클라이언트에 토큰을 보내줌)
 - 2FA: speakeasy, qrcode
-
+- bcrypt
 
 <br><br>
 
 ## DB 구조
 <img src="https://github.com/in3166/nft_shopping_mall/blob/master/images/ERD.PNG" width="80%" />
-<br><br>
-
-# 기능 추가
-- `http-proxy-middleware` 설치, 추가 setup `proxy.js / ipconfig`
-- db 추가
-- axios 설치
-  @material-ui/core@4.12.3 @material-ui/icons@4.11.2 @material-ui/lab@4.0.0-alpha.60 @material-ui/x-grid@4.0.0-alpha.20
-
-- 메일 인증 라이브러리: `npm install nodemailer`
-  - 서버에 config 추가, controllers에 함수 추가
-- postgreSQL: ` npm install sequelize pg pg-hstore`
-
-- 다국어 기능 추가
-
-  - `i18next` 라이브러리 사용
-  - `npm install react-i18next i18next --save`
-  - `npm install i18next-http-backend i18next-browser-languagedetector --save`
-  - (i18next 참고)[https://react.i18next.com/latest/using-with-hooks]
-
-- 경매 시간 카운트 추가
-  - `react-countdown` 라이브러리 설치
-
-- Banner Carousel 기능 추가
-  - `npm install react-material-ui-carousel`
-
-- 회원 가입
-- 로그인
-- JWT 인증 구현
-
-- 이메일 인증
-
-  - `server/ verify 메서드`
-  - `/verify?email=...&code=...`
-  - 현재 쿠키로 이메일 인증을 한 후에 success/fail 페이지에 들어왔는지 확인
-  - 현재 success/fail => confirm 페이지 하나에서 비동기 요청해서 처리 하는게 나을듯..
-    - => `/confirm?code=...`
-
-- 2FA(Goole OTP) 구현
-
-  - 키 생성, RESERT
-  - `users` 테이블에 컬럼 추가
-  - 라이브러리: `speakeasy`, `qrcode`
-
-- 이미지 업로드 (`multer`)
-
-  - `formData` 와 `{ header: { "content-type": "multipart/form-data" }` 를 사용하여 request를 보내야 한다.
-  - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
-  - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
-
-- postgreSQL sequelize 외래키 설정하고 조회하기
-
-  ```js
-  // 설정 in index
-  db.marketplace.belongsTo(db.users, {
-    foreignKey: "buyerEmail",
-    as: "buyer",
-    targetKey: "email",
-  });
-
-  // 조회 in controller
-  Marketplace.findAll({
-    include: [
-      {
-        model: db.users,
-        attributes: ["email", "address"],
-        as: "owner",
-      },
-
-  // findOne 은 where 절과 함께 객체에 넣기
-  Marketplace.findOne({
-    where: { id },
-    include: [
-            { association: "owner" },
-      {
-        //...
-  ```
-<br>
-
-- 조회수 기능
-
-  - views 테이블: 날짜별, 제품별 통계 분석을 위해 테이블을 따로 둠.
-
-  ```
-  (id, ip, client_url, server_url, userEmail, marketplaceId, imageId, date)
-  ```
-
-  - `views.controller.js`
-
-    - front에서 `ip-url` 형식으로 localStorage에 저장하여 조회수 연속 추가 방지
-
-    ```js
-    // src/utils/ViewCounts.js
-    const existed = localStorage.getItem(ip + url);
-    if (!!existed) return;
-
-    localStorage.setItem(ip + url, true);
-
-    const request = async () => {
-      //...
-    };
-    ```
-
-    - interval을 줘서 views 테이블에 한 번에 생성할 수 있도록 함. (2-3시간 간격)
-
-    ```js
-    const counts = []; // [{id:1,...}, {id:2, ...}, ...]
-
-    const addCount = () => {
-      Views.bulkCreate(...) // 여기서 모아진 counts를 db에 넣기
-      counts.length = 0;
-      console.log(counts);
-    };
-
-    const setIntervalQuery = {
-      inteval: () =>
-        setInterval(() => {
-          addCount();
-        }, 36000),
-    };
-
-    setIntervalQuery.inteval();
-
-    exports.create = async (req, res) => {
-      //...
-      counts.push(req.body);
-      //...
-    }
-    ```
-<br>
-
-- 시간 지난 상품 `onMarket` column - false 설정 (`marketplaces.cotroller`)
-  - `/bid` 경로에서 모든 제품을 불러올 때 시간 확인, `onMarket` 업데이트
-  - 대체 옵션1: db trigger
-  - 대체 옵션2: db 프로시저
-  - 대체 옵션3: 해당 상품 상세페이지 들어갈 때 시간비교 => 안들어갈 때 문제
-
-- 무한 스크롤 기능
- - `hooks/useInfiniteScroll`
-
-- 상품 필터, 정렬 기능 추가
-
 <br><br>
 
 ## 수정 사항

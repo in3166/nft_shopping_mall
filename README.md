@@ -30,8 +30,13 @@
   - 지갑 정보 갱신 가능
   - 좋아요 목록
   - 구매, 판매 이력 리스트
-  - 2차 인증 사용 관리
+  - 2차 인증 사용 관리 (OTP, QRcode)
+    - 2FA(Goole OTP) 사용
+    - 키 생성, RESERT
+    - `users` 테이블에 컬럼 추가
+    - 라이브러리: `speakeasy`, `qrcode`
   - 회원 탈퇴
+
 <br>
 
 - 관리자 설정 페이지
@@ -58,23 +63,12 @@
 - 상품 필터, 정렬, 검색, 좋아요 기능 추가
 <br>
 
-- 경매 시간 카운트 추가
-  - `react-countdown` 라이브러리
-
-<br>
-
 - Banner Carousel 기능 추가
   - `npm install react-material-ui-carousel`
 <br>
 
 - JWT 인증 구현
 <br>
-
-- 2FA(Goole OTP) 구현
-
-  - 키 생성, RESERT
-  - `users` 테이블에 컬럼 추가
-  - 라이브러리: `speakeasy`, `qrcode`
 
 - 상품 경매, 판매 등록
 
@@ -85,6 +79,12 @@
   - `file` 타입의 `input`은 그냥 body에 넣어서 보내면 빈 객체만 보여짐.
   - `file`과 같이 데이터를 보내기 위해 `formData.append('body', JSON.stringfy(body))`를 사용함
   
+<br>
+
+- 경매 첨여
+  - 구매자가 입찰가를 등록하고 저장해둔다.
+  - `react-countdown` 라이브러리: 시간을 카운트하고 일정 기간동안 가장 높은 입찰가를 등록한 사용자에게 판매
+
 <br>
 
 - 조회수 기능
@@ -274,7 +274,7 @@
 - react-countdown: 경매 상품의 경우 상품 목록에서 남은 시간을 보여준다.
 - react-redux
 - reduxjs/toolkit
-- 
+
 
 <br><br>
 

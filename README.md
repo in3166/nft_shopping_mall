@@ -1,5 +1,5 @@
 # NFT 쇼핑몰
-- 유저가 업로드한 이미지를 운영자가 NFT로 변경하여 쇼핑몰에 상품 등록할 수 있는 서비스
+- NFT 구매, 경매, 판매할 수 있는 서비스
 <img src="https://github.com/in3166/nft_shopping_mall/blob/master/images/home.PNG" width="70%" />
 
 - 상품은 경매와 판매로 등록 가능하다.
@@ -81,7 +81,7 @@
   
 <br>
 
-- 경매 첨여
+- 경매 참여
   - 구매자가 입찰가를 등록하고 저장해둔다.
   - `react-countdown` 라이브러리: 시간을 카운트하고 일정 기간동안 가장 높은 입찰가를 등록한 사용자에게 판매
 
